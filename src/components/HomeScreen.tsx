@@ -24,6 +24,7 @@ import {
 import { PetCard } from '@/components/home/PetCard';
 import { CareItemRow } from '@/components/home/CareItemRow';
 import { AddCareItemSheet } from '@/components/AddCareItemSheet';
+import { PetDetailScreen } from '@/components/PetDetailScreen';
 
 export function HomeScreen() {
   const c = useColors();
@@ -37,6 +38,7 @@ export function HomeScreen() {
   const [showAddSheet, setShowAddSheet] = useState(false);
   const [editingItem, setEditingItem] = useState<CareItem | undefined>();
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
 
   // Get upcoming care items (next 14 days)
   const upcomingCareItems = useMemo(() => {
@@ -82,6 +84,16 @@ export function HomeScreen() {
     setShowAddSheet(false);
     setEditingItem(undefined);
   };
+
+  // If a pet is selected, show detail screen
+  if (selectedPetId) {
+    return (
+      <PetDetailScreen
+        petId={selectedPetId}
+        onBack={() => setSelectedPetId(null)}
+      />
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -171,9 +183,7 @@ export function HomeScreen() {
                   <PetCard
                     pet={pet}
                     nextCareItem={getNextCareItem(pet.id)}
-                    onPress={() => {
-                      // Future: Navigate to pet detail
-                    }}
+                    onPress={() => setSelectedPetId(pet.id)}
                   />
                 </Animated.View>
               ))}

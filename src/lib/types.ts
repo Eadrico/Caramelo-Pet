@@ -12,6 +12,25 @@ export interface Pet {
   weightKg?: number;
   photoUri?: string;
   createdAt: string; // ISO date string
+  // Advanced info
+  breed?: string;
+  microchipId?: string;
+  allergies?: string;
+  vetName?: string;
+  vetPhone?: string;
+  notes?: string;
+}
+
+export interface Reminder {
+  id: string;
+  petId: string;
+  title: string;
+  message?: string;
+  dateTime: string; // ISO date string with time
+  repeatType: 'none' | 'daily' | 'weekly' | 'monthly';
+  isEnabled: boolean;
+  notificationId?: string;
+  createdAt: string; // ISO date string
 }
 
 export interface CareItem {
@@ -87,4 +106,46 @@ export function getSpeciesEmoji(species: Species): string {
     case 'cat': return '🐈';
     case 'other': return '🐾';
   }
+}
+
+export function getRepeatLabel(repeatType: Reminder['repeatType']): string {
+  switch (repeatType) {
+    case 'none': return 'Does not repeat';
+    case 'daily': return 'Every day';
+    case 'weekly': return 'Every week';
+    case 'monthly': return 'Every month';
+  }
+}
+
+export function calculateAge(birthdate: string): { years: number; months: number } {
+  const birth = new Date(birthdate);
+  const now = new Date();
+  let years = now.getFullYear() - birth.getFullYear();
+  let months = now.getMonth() - birth.getMonth();
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  if (now.getDate() < birth.getDate()) {
+    months--;
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+  }
+
+  return { years, months };
+}
+
+export function formatAge(birthdate: string): string {
+  const { years, months } = calculateAge(birthdate);
+  if (years === 0) {
+    return `${months} month${months !== 1 ? 's' : ''}`;
+  }
+  if (months === 0) {
+    return `${years} year${years !== 1 ? 's' : ''}`;
+  }
+  return `${years}y ${months}m`;
 }

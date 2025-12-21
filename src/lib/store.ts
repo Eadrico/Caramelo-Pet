@@ -1,12 +1,13 @@
 // Zustand store for Caramelo app state
 import { create } from 'zustand';
-import { Pet, CareItem, OnboardingPetData, Species, CareType } from './types';
+import { Pet, CareItem, Reminder, OnboardingPetData, Species, CareType } from './types';
 import * as storage from './storage';
 
 interface AppState {
   // Data
   pets: Pet[];
   careItems: CareItem[];
+  reminders: Reminder[];
   isLoading: boolean;
   isInitialized: boolean;
 
@@ -26,6 +27,12 @@ interface AppState {
   addCareItem: (item: Omit<CareItem, 'id' | 'createdAt'>) => Promise<CareItem>;
   updateCareItem: (itemId: string, updates: Partial<CareItem>) => Promise<void>;
   deleteCareItem: (itemId: string) => Promise<void>;
+
+  // Reminder actions
+  addReminder: (reminder: Omit<Reminder, 'id' | 'createdAt' | 'notificationId'>) => Promise<Reminder>;
+  updateReminder: (reminderId: string, updates: Partial<Reminder>) => Promise<void>;
+  deleteReminder: (reminderId: string) => Promise<void>;
+  toggleReminder: (reminderId: string) => Promise<void>;
 
   // Onboarding actions
   setOnboardingName: (name: string) => void;
@@ -51,17 +58,19 @@ const initialOnboardingData: OnboardingPetData = {
 export const useStore = create<AppState>((set, get) => ({
   pets: [],
   careItems: [],
+  reminders: [],
   isLoading: true,
   isInitialized: false,
   onboardingData: { ...initialOnboardingData },
 
   initialize: async () => {
     try {
-      const [pets, careItems] = await Promise.all([
+      const [pets, careItems, reminders] = await Promise.all([
         storage.getPets(),
         storage.getCareItems(),
+        storage.getReminders(),
       ]);
-      set({ pets, careItems, isLoading: false, isInitialized: true });
+      set({ pets, careItems, reminders, isLoading: false, isInitialized: true });
     } catch (error) {
       console.error('Error initializing app:', error);
       set({ isLoading: false, isInitialized: true });
@@ -70,11 +79,12 @@ export const useStore = create<AppState>((set, get) => ({
 
   refreshData: async () => {
     try {
-      const [pets, careItems] = await Promise.all([
+      const [pets, careItems, reminders] = await Promise.all([
         storage.getPets(),
         storage.getCareItems(),
+        storage.getReminders(),
       ]);
-      set({ pets, careItems });
+      set({ pets, careItems, reminders });
     } catch (error) {
       console.error('Error refreshing data:', error);
     }
@@ -98,6 +108,7 @@ export const useStore = create<AppState>((set, get) => ({
     set((state) => ({
       pets: state.pets.filter((p) => p.id !== petId),
       careItems: state.careItems.filter((c) => c.petId !== petId),
+      reminders: state.reminders.filter((r) => r.petId !== petId),
     }));
   },
 
@@ -121,6 +132,42 @@ export const useStore = create<AppState>((set, get) => ({
     set((state) => ({
       careItems: state.careItems.filter((c) => c.id !== itemId),
     }));
+  },
+
+  // Reminder actions
+  addReminder: async (reminderData) => {
+    const reminder = await storage.saveReminder(reminderData);
+    set((state) => ({ reminders: [...state.reminders, reminder] }));
+    return reminder;
+  },
+
+  updateReminder: async (reminderId, updates) => {
+    const updated = await storage.updateReminder(reminderId, updates);
+    if (updated) {
+      set((state) => ({
+        reminders: state.reminders.map((r) =>
+          r.id === reminderId ? updated : r
+        ),
+      }));
+    }
+  },
+
+  deleteReminder: async (reminderId) => {
+    await storage.deleteReminder(reminderId);
+    set((state) => ({
+      reminders: state.reminders.filter((r) => r.id !== reminderId),
+    }));
+  },
+
+  toggleReminder: async (reminderId) => {
+    const updated = await storage.toggleReminder(reminderId);
+    if (updated) {
+      set((state) => ({
+        reminders: state.reminders.map((r) =>
+          r.id === reminderId ? updated : r
+        ),
+      }));
+    }
   },
 
   // Onboarding actions

@@ -13,8 +13,21 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
 
 - **Home Screen**: View your pets and upcoming care items
   - Horizontal scrolling pet cards with photos
+  - Tap on a pet to view details
   - Upcoming care items list (next 14 days)
   - Quick add care items
+
+- **Pet Detail Screen**: Comprehensive pet management
+  - View and edit advanced pet info (breed, microchip, allergies, vet details)
+  - Set reminders with notifications
+  - View upcoming care items for this pet
+  - Delete pet with confirmation
+
+- **Reminders & Notifications**
+  - Create reminders for pet care tasks
+  - Push notifications at scheduled times
+  - Toggle reminders on/off
+  - Support for one-time and recurring reminders (daily/weekly/monthly)
 
 - **Care Item Management**
   - Add new care items (vaccines, grooming, medication, vet visits)
@@ -42,6 +55,7 @@ src/
 ├── components/
 │   ├── design-system.tsx # Core UI components (GlassCard, PrimaryButton, etc.)
 │   ├── HomeScreen.tsx    # Main home screen
+│   ├── PetDetailScreen.tsx # Pet detail screen with reminders
 │   ├── OnboardingWizard.tsx # Onboarding container
 │   ├── AddCareItemSheet.tsx # Add/edit care item modal
 │   ├── home/
@@ -54,8 +68,8 @@ src/
 │       ├── OnboardingCare.tsx    # Step 4
 │       └── OnboardingReview.tsx  # Step 5
 └── lib/
-    ├── types.ts          # TypeScript types (Pet, CareItem, etc.)
-    ├── storage.ts        # AsyncStorage persistence
+    ├── types.ts          # TypeScript types (Pet, CareItem, Reminder, etc.)
+    ├── storage.ts        # AsyncStorage persistence + notifications
     ├── store.ts          # Zustand state management
     └── cn.ts             # Classname utility
 ```
@@ -66,13 +80,21 @@ src/
 - id, name, species (dog/cat/other)
 - birthdate (optional), weightKg (optional)
 - photoUri (optional), createdAt
+- **Advanced fields**: breed, microchipId, allergies, vetName, vetPhone, notes
 
 ### CareItem
 - id, petId, type (vaccine/grooming/medication/vet_visit)
 - title, dueDate, notes (optional), createdAt
 
+### Reminder
+- id, petId, title, message (optional)
+- dateTime, repeatType (none/daily/weekly/monthly)
+- isEnabled, notificationId (for push notifications)
+- createdAt
+
 ## Local Storage
 
 All data is persisted locally using:
-- AsyncStorage for pets and care items
+- AsyncStorage for pets, care items, and reminders
 - FileSystem for pet photos
+- expo-notifications for scheduled notifications

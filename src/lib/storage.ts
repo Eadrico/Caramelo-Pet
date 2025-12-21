@@ -1,10 +1,12 @@
 // Local persistence layer for Caramelo app
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
-import { Pet, CareItem, generateId } from './types';
+import * as Notifications from 'expo-notifications';
+import { Pet, CareItem, Reminder, generateId } from './types';
 
 const PETS_KEY = 'caramelo_pets';
 const CARE_ITEMS_KEY = 'caramelo_care_items';
+const REMINDERS_KEY = 'caramelo_reminders';
 const PHOTOS_DIR = `${FileSystem.documentDirectory}photos/`;
 
 // Initialize photos directory
@@ -207,4 +209,149 @@ export async function savePetWithCareItems(
 export async function hasPets(): Promise<boolean> {
   const pets = await getPets();
   return pets.length > 0;
+}
+
+// Reminder operations
+export async function getReminders(): Promise<Reminder[]> {
+  try {
+    const data = await AsyncStorage.getItem(REMINDERS_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Error getting reminders:', error);
+    return [];
+  }
+}
+
+export async function getRemindersByPet(petId: string): Promise<Reminder[]> {
+  const reminders = await getReminders();
+  return reminders.filter((r) => r.petId === petId);
+}
+
+async function scheduleNotification(reminder: Reminder): Promise<string | undefined> {
+  try {
+    const { status } = await Notifications.getPermissionsAsync();
+    if (status !== 'granted') {
+      const { status: newStatus } = await Notifications.requestPermissionsAsync();
+      if (newStatus !== 'granted') {
+        return undefined;
+      }
+    }
+
+    const triggerDate = new Date(reminder.dateTime);
+    if (triggerDate <= new Date()) {
+      return undefined; // Don't schedule past notifications
+    }
+
+    const notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: reminder.title,
+        body: reminder.message || 'Time for pet care!',
+        sound: true,
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date: triggerDate,
+      },
+    });
+
+    return notificationId;
+  } catch (error) {
+    console.error('Error scheduling notification:', error);
+    return undefined;
+  }
+}
+
+async function cancelNotification(notificationId: string): Promise<void> {
+  try {
+    await Notifications.cancelScheduledNotificationAsync(notificationId);
+  } catch (error) {
+    console.error('Error canceling notification:', error);
+  }
+}
+
+export async function saveReminder(
+  reminderData: Omit<Reminder, 'id' | 'createdAt' | 'notificationId'>
+): Promise<Reminder> {
+  try {
+    const reminders = await getReminders();
+    const newReminder: Reminder = {
+      ...reminderData,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+    };
+
+    // Schedule notification if enabled
+    if (newReminder.isEnabled) {
+      const notificationId = await scheduleNotification(newReminder);
+      newReminder.notificationId = notificationId;
+    }
+
+    reminders.push(newReminder);
+    await AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders));
+    return newReminder;
+  } catch (error) {
+    console.error('Error saving reminder:', error);
+    throw error;
+  }
+}
+
+export async function updateReminder(
+  reminderId: string,
+  updates: Partial<Reminder>
+): Promise<Reminder | null> {
+  try {
+    const reminders = await getReminders();
+    const index = reminders.findIndex((r) => r.id === reminderId);
+    if (index === -1) return null;
+
+    const existingReminder = reminders[index];
+
+    // Cancel existing notification if there is one
+    if (existingReminder.notificationId) {
+      await cancelNotification(existingReminder.notificationId);
+    }
+
+    const updatedReminder = { ...existingReminder, ...updates };
+
+    // Schedule new notification if enabled
+    if (updatedReminder.isEnabled) {
+      const notificationId = await scheduleNotification(updatedReminder);
+      updatedReminder.notificationId = notificationId;
+    } else {
+      updatedReminder.notificationId = undefined;
+    }
+
+    reminders[index] = updatedReminder;
+    await AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders));
+    return updatedReminder;
+  } catch (error) {
+    console.error('Error updating reminder:', error);
+    throw error;
+  }
+}
+
+export async function deleteReminder(reminderId: string): Promise<void> {
+  try {
+    const reminders = await getReminders();
+    const reminder = reminders.find((r) => r.id === reminderId);
+
+    // Cancel notification if exists
+    if (reminder?.notificationId) {
+      await cancelNotification(reminder.notificationId);
+    }
+
+    const filteredReminders = reminders.filter((r) => r.id !== reminderId);
+    await AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(filteredReminders));
+  } catch (error) {
+    console.error('Error deleting reminder:', error);
+    throw error;
+  }
+}
+
+export async function toggleReminder(reminderId: string): Promise<Reminder | null> {
+  const reminders = await getReminders();
+  const reminder = reminders.find((r) => r.id === reminderId);
+  if (!reminder) return null;
+
+  return updateReminder(reminderId, { isEnabled: !reminder.isEnabled });
 }
