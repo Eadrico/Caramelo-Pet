@@ -1015,7 +1015,7 @@ export default function SettingsScreen() {
                 marginBottom: 16,
               }}
             >
-              {/* Brownie - leftmost card */}
+              {/* Loki - leftmost card */}
               <View
                 style={{
                   width: 56,
@@ -1034,6 +1034,32 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
+                  source={require('../../../assets/loki.png')}
+                  style={{ width: 56, height: 72 }}
+                  resizeMode="cover"
+                />
+              </View>
+
+              {/* Brownie */}
+              <View
+                style={{
+                  width: 56,
+                  height: 72,
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  backgroundColor: '#D4A87C',
+                  transform: [{ rotate: '-5deg' }, { translateX: 8 }],
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 4,
+                  elevation: 4,
+                  borderWidth: 2,
+                  borderColor: '#FFFFFF',
+                  zIndex: 1,
+                }}
+              >
+                <Image
                   source={require('../../../assets/brownie-1766763191626-1.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
@@ -1047,33 +1073,7 @@ export default function SettingsScreen() {
                   height: 72,
                   borderRadius: 8,
                   overflow: 'hidden',
-                  backgroundColor: '#87CEEB',
-                  transform: [{ rotate: '-5deg' }, { translateX: 8 }],
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.15,
-                  shadowRadius: 4,
-                  elevation: 4,
-                  borderWidth: 2,
-                  borderColor: '#FFFFFF',
-                  zIndex: 1,
-                }}
-              >
-                <Image
-                  source={require('../../../assets/fuba-1766763191626-2.png')}
-                  style={{ width: 56, height: 72 }}
-                  resizeMode="cover"
-                />
-              </View>
-
-              {/* Baunilia */}
-              <View
-                style={{
-                  width: 56,
-                  height: 72,
-                  borderRadius: 8,
-                  overflow: 'hidden',
-                  backgroundColor: '#D4A574',
+                  backgroundColor: '#F5A623',
                   transform: [{ rotate: '5deg' }, { translateX: -8 }],
                   shadowColor: '#000',
                   shadowOffset: { width: 0, height: 2 },
@@ -1086,20 +1086,20 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/Baunilia-1766763191626-0.png')}
+                  source={require('../../../assets/fuba-1766763191626-2.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
               </View>
 
-              {/* Loki - rightmost card */}
+              {/* Baunilia - rightmost card */}
               <View
                 style={{
                   width: 56,
                   height: 72,
                   borderRadius: 8,
                   overflow: 'hidden',
-                  backgroundColor: '#F5A623',
+                  backgroundColor: '#D4A574',
                   transform: [{ rotate: '15deg' }, { translateX: -24 }],
                   shadowColor: '#000',
                   shadowOffset: { width: 0, height: 2 },
@@ -1112,7 +1112,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/loki.png')}
+                  source={require('../../../assets/Baunilia-1766763191626-0.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
