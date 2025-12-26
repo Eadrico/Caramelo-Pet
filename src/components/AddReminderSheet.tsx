@@ -1,4 +1,4 @@
-// Add/Edit Care Item Sheet
+// Add/Edit Reminder Sheet
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -14,65 +14,49 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
-import {
-  Syringe,
-  Scissors,
-  Pill,
-  Stethoscope,
-  Calendar,
-  Trash2,
-} from 'lucide-react-native';
-import { CareItem, CareType, Pet, formatDate, getCareTypeLabel } from '@/lib/types';
+import { Calendar, Trash2 } from 'lucide-react-native';
+import { Reminder, getRepeatLabel } from '@/lib/types';
 import { useStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n';
-import { useColors, PrimaryButton, SegmentedControl } from '@/components/design-system';
+import { useColors } from '@/components/design-system';
 import { PetChip } from '@/components/PetChip';
 
-interface AddCareItemSheetProps {
+interface AddReminderSheetProps {
   visible: boolean;
   onClose: () => void;
-  editItem?: CareItem;
+  editItem?: Reminder;
   preselectedPetId?: string;
 }
 
-const careTypeConfig: {
-  type: CareType;
-  label: string;
-  icon: React.ComponentType<{ size: number; color: string }>;
-  defaultTitle: string;
-}[] = [
-  { type: 'vaccine', label: 'Vaccine', icon: Syringe, defaultTitle: 'Vaccination' },
-  { type: 'grooming', label: 'Grooming', icon: Scissors, defaultTitle: 'Grooming appointment' },
-  { type: 'medication', label: 'Medication', icon: Pill, defaultTitle: 'Medication refill' },
-  { type: 'vet_visit', label: 'Vet Visit', icon: Stethoscope, defaultTitle: 'Vet checkup' },
-];
-
-export function AddCareItemSheet({
+export function AddReminderSheet({
   visible,
   onClose,
   editItem,
   preselectedPetId,
-}: AddCareItemSheetProps) {
+}: AddReminderSheetProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
 
   const pets = useStore((s) => s.pets);
-  const addCareItem = useStore((s) => s.addCareItem);
-  const updateCareItem = useStore((s) => s.updateCareItem);
-  const deleteCareItem = useStore((s) => s.deleteCareItem);
+  const addReminder = useStore((s) => s.addReminder);
+  const updateReminder = useStore((s) => s.updateReminder);
+  const deleteReminder = useStore((s) => s.deleteReminder);
 
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>(
     editItem ? [editItem.petId] : preselectedPetId ? [preselectedPetId] : pets.length > 0 ? [pets[0].id] : []
   );
-  const [selectedType, setSelectedType] = useState<CareType>(editItem?.type || 'vaccine');
   const [title, setTitle] = useState(editItem?.title || '');
-  const [dueDate, setDueDate] = useState<Date>(
-    editItem ? new Date(editItem.dueDate) : new Date()
+  const [message, setMessage] = useState(editItem?.message || '');
+  const [dateTime, setDateTime] = useState<Date>(
+    editItem ? new Date(editItem.dateTime) : new Date()
   );
-  const [notes, setNotes] = useState(editItem?.notes || '');
+  const [repeatType, setRepeatType] = useState<Reminder['repeatType']>(
+    editItem?.repeatType || 'none'
+  );
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   // Reset form when opening
@@ -81,30 +65,20 @@ export function AddCareItemSheet({
       if (editItem) {
         // Edit mode: only one pet
         setSelectedPetIds([editItem.petId]);
-        setSelectedType(editItem.type);
         setTitle(editItem.title);
-        setDueDate(new Date(editItem.dueDate));
-        setNotes(editItem.notes || '');
+        setMessage(editItem.message || '');
+        setDateTime(new Date(editItem.dateTime));
+        setRepeatType(editItem.repeatType);
       } else {
         // Create mode: start with one pet if preselected, otherwise empty
         setSelectedPetIds(preselectedPetId ? [preselectedPetId] : []);
-        setSelectedType('vaccine');
         setTitle('');
-        setDueDate(new Date());
-        setNotes('');
+        setMessage('');
+        setDateTime(new Date());
+        setRepeatType('none');
       }
     }
   }, [visible, editItem, preselectedPetId, pets]);
-
-  // Auto-fill title when type changes (only for new items)
-  useEffect(() => {
-    if (!editItem && !title) {
-      const config = careTypeConfig.find((c) => c.type === selectedType);
-      if (config) {
-        setTitle(config.defaultTitle);
-      }
-    }
-  }, [selectedType, editItem]);
 
   const handleSave = async () => {
     if (!title.trim() || selectedPetIds.length === 0) return;
@@ -112,23 +86,25 @@ export function AddCareItemSheet({
     setIsSaving(true);
     try {
       if (editItem) {
-        // Edit mode: update single item
-        await updateCareItem(editItem.id, {
+        // Edit mode: update single reminder
+        await updateReminder(editItem.id, {
           petId: selectedPetIds[0],
-          type: selectedType,
           title: title.trim(),
-          dueDate: dueDate.toISOString(),
-          notes: notes.trim() || undefined,
+          message: message.trim() || undefined,
+          dateTime: dateTime.toISOString(),
+          repeatType,
+          isEnabled: editItem.isEnabled,
         });
       } else {
-        // Create mode: create one item for each selected pet
+        // Create mode: create one reminder for each selected pet
         const promises = selectedPetIds.map((petId) =>
-          addCareItem({
+          addReminder({
             petId,
-            type: selectedType,
             title: title.trim(),
-            dueDate: dueDate.toISOString(),
-            notes: notes.trim() || undefined,
+            message: message.trim() || undefined,
+            dateTime: dateTime.toISOString(),
+            repeatType,
+            isEnabled: true,
           })
         );
         await Promise.all(promises);
@@ -136,7 +112,7 @@ export function AddCareItemSheet({
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       onClose();
     } catch (error) {
-      console.error('Error saving care item:', error);
+      console.error('Error saving reminder:', error);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     } finally {
       setIsSaving(false);
@@ -147,20 +123,20 @@ export function AddCareItemSheet({
     if (!editItem) return;
 
     Alert.alert(
-      t('care_delete_item'),
-      t('care_delete_confirm', { title: editItem.title }),
+      'Delete Reminder',
+      'Are you sure you want to delete this reminder?',
       [
-        { text: t('common_cancel'), style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: t('common_delete'),
+          text: 'Delete',
           style: 'destructive',
           onPress: async () => {
             try {
-              await deleteCareItem(editItem.id);
+              await deleteReminder(editItem.id);
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
               onClose();
             } catch (error) {
-              console.error('Error deleting care item:', error);
+              console.error('Error deleting reminder:', error);
             }
           },
         },
@@ -174,16 +150,28 @@ export function AddCareItemSheet({
     }
     if (selectedDate) {
       Haptics.selectionAsync();
-      setDueDate(selectedDate);
+      const newDate = new Date(dateTime);
+      newDate.setFullYear(selectedDate.getFullYear());
+      newDate.setMonth(selectedDate.getMonth());
+      newDate.setDate(selectedDate.getDate());
+      setDateTime(newDate);
+    }
+  };
+
+  const handleTimeChange = (event: any, selectedTime?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowTimePicker(false);
+    }
+    if (selectedTime) {
+      Haptics.selectionAsync();
+      const newDate = new Date(dateTime);
+      newDate.setHours(selectedTime.getHours());
+      newDate.setMinutes(selectedTime.getMinutes());
+      setDateTime(newDate);
     }
   };
 
   const isValid = title.trim() && selectedPetIds.length > 0;
-
-  const typeOptions = careTypeConfig.map((c) => ({
-    value: c.type,
-    label: c.label,
-  }));
 
   return (
     <Modal
@@ -207,10 +195,10 @@ export function AddCareItemSheet({
             }}
           >
             <Pressable onPress={onClose}>
-              <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
+              <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-              {editItem ? t('care_edit_item') : t('care_add_item')}
+              {editItem ? 'Edit Reminder' : 'New Reminder'}
             </Text>
             <Pressable onPress={handleSave} disabled={!isValid || isSaving}>
               <Text
@@ -220,7 +208,7 @@ export function AddCareItemSheet({
                   fontWeight: '600',
                 }}
               >
-                {isSaving ? 'Saving...' : t('settings_save')}
+                {isSaving ? 'Saving...' : editItem ? 'Save' : 'Add'}
               </Text>
             </Pressable>
           </View>
@@ -276,27 +264,6 @@ export function AddCareItemSheet({
               </ScrollView>
             </View>
 
-            {/* Care Type */}
-            <View>
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: '600',
-                  color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
-                }}
-              >
-                {t('care_type_label')}
-              </Text>
-              <SegmentedControl
-                options={typeOptions}
-                selected={selectedType}
-                onSelect={setSelectedType}
-              />
-            </View>
-
             {/* Title */}
             <View>
               <Text
@@ -309,12 +276,12 @@ export function AddCareItemSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                {t('care_title_label')}
+                Title
               </Text>
               <RNTextInput
                 value={title}
                 onChangeText={setTitle}
-                placeholder={t('care_title_placeholder')}
+                placeholder="e.g., Give medication"
                 placeholderTextColor={c.textTertiary}
                 style={{
                   fontSize: 17,
@@ -327,7 +294,7 @@ export function AddCareItemSheet({
               />
             </View>
 
-            {/* Due Date */}
+            {/* Message */}
             <View>
               <Text
                 style={{
@@ -339,48 +306,12 @@ export function AddCareItemSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                {t('care_due_date_label')}
-              </Text>
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setShowDatePicker(true);
-                }}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingVertical: 14,
-                  paddingHorizontal: 16,
-                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                  borderRadius: 12,
-                  gap: 12,
-                }}
-              >
-                <Calendar size={20} color={c.accent} />
-                <Text style={{ fontSize: 17, color: c.text }}>
-                  {formatDate(dueDate.toISOString())}
-                </Text>
-              </Pressable>
-            </View>
-
-            {/* Notes */}
-            <View>
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: '600',
-                  color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
-                }}
-              >
-                {t('care_notes_label')}
+                Message (optional)
               </Text>
               <RNTextInput
-                value={notes}
-                onChangeText={setNotes}
-                placeholder={t('care_notes_placeholder')}
+                value={message}
+                onChangeText={setMessage}
+                placeholder="Additional details..."
                 placeholderTextColor={c.textTertiary}
                 multiline
                 numberOfLines={3}
@@ -395,6 +326,121 @@ export function AddCareItemSheet({
                   textAlignVertical: 'top',
                 }}
               />
+            </View>
+
+            {/* Date & Time */}
+            <View>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: '600',
+                  color: c.textTertiary,
+                  marginBottom: 8,
+                  textTransform: 'uppercase',
+                  letterSpacing: 0.5,
+                }}
+              >
+                Date & Time
+              </Text>
+              <View style={{ flexDirection: 'row', gap: 12 }}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowDatePicker(true);
+                  }}
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 14,
+                    paddingHorizontal: 16,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                    borderRadius: 12,
+                    gap: 12,
+                  }}
+                >
+                  <Calendar size={20} color={c.accent} />
+                  <Text style={{ fontSize: 17, color: c.text }}>
+                    {dateTime.toLocaleDateString()}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowTimePicker(true);
+                  }}
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 14,
+                    paddingHorizontal: 16,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                    borderRadius: 12,
+                    gap: 12,
+                  }}
+                >
+                  <Calendar size={20} color={c.accent} />
+                  <Text style={{ fontSize: 17, color: c.text }}>
+                    {dateTime.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+
+            {/* Repeat */}
+            <View>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: '600',
+                  color: c.textTertiary,
+                  marginBottom: 8,
+                  textTransform: 'uppercase',
+                  letterSpacing: 0.5,
+                }}
+              >
+                Repeat
+              </Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {(['none', 'daily', 'weekly', 'monthly'] as const).map((type) => (
+                  <Pressable
+                    key={type}
+                    onPress={() => {
+                      setRepeatType(type);
+                      Haptics.selectionAsync();
+                    }}
+                    style={{
+                      paddingHorizontal: 16,
+                      paddingVertical: 10,
+                      borderRadius: 20,
+                      backgroundColor:
+                        repeatType === type
+                          ? c.accent
+                          : isDark
+                          ? 'rgba(255,255,255,0.05)'
+                          : 'rgba(0,0,0,0.05)',
+                      borderWidth: 1,
+                      borderColor: repeatType === type ? c.accent : c.border,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: repeatType === type ? '#FFFFFF' : c.text,
+                        fontSize: 14,
+                        fontWeight: '500',
+                      }}
+                    >
+                      {type === 'none'
+                        ? 'Once'
+                        : type.charAt(0).toUpperCase() + type.slice(1)}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
             </View>
 
             {/* Delete Button (Edit Mode) */}
@@ -417,7 +463,7 @@ export function AddCareItemSheet({
                     color: c.destructive,
                   }}
                 >
-                  {t('care_delete_item')}
+                  Delete Reminder
                 </Text>
               </Pressable>
             )}
@@ -457,14 +503,14 @@ export function AddCareItemSheet({
                   <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
                 </Pressable>
                 <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-                  Due Date
+                  Date
                 </Text>
                 <Pressable onPress={() => setShowDatePicker(false)}>
                   <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>Done</Text>
                 </Pressable>
               </View>
               <DateTimePicker
-                value={dueDate}
+                value={dateTime}
                 mode="date"
                 display="spinner"
                 onChange={handleDateChange}
@@ -475,10 +521,69 @@ export function AddCareItemSheet({
         ) : (
           showDatePicker && (
             <DateTimePicker
-              value={dueDate}
+              value={dateTime}
               mode="date"
               display="default"
               onChange={handleDateChange}
+            />
+          )
+        )}
+
+        {/* Time Picker */}
+        {Platform.OS === 'ios' ? (
+          <Modal
+            visible={showTimePicker}
+            transparent
+            animationType="slide"
+          >
+            <Pressable
+              style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
+              onPress={() => setShowTimePicker(false)}
+            />
+            <View
+              style={{
+                backgroundColor: c.surface,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                paddingBottom: 34,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: 16,
+                  borderBottomWidth: 1,
+                  borderBottomColor: c.border,
+                }}
+              >
+                <Pressable onPress={() => setShowTimePicker(false)}>
+                  <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+                </Pressable>
+                <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
+                  Time
+                </Text>
+                <Pressable onPress={() => setShowTimePicker(false)}>
+                  <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>Done</Text>
+                </Pressable>
+              </View>
+              <DateTimePicker
+                value={dateTime}
+                mode="time"
+                display="spinner"
+                onChange={handleTimeChange}
+                style={{ height: 200 }}
+              />
+            </View>
+          </Modal>
+        ) : (
+          showTimePicker && (
+            <DateTimePicker
+              value={dateTime}
+              mode="time"
+              display="default"
+              onChange={handleTimeChange}
             />
           )
         )}
@@ -486,3 +591,4 @@ export function AddCareItemSheet({
     </Modal>
   );
 }
+

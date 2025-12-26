@@ -126,6 +126,7 @@ type TranslationKey =
   | 'care_due_date_label'
   | 'care_notes_label'
   | 'care_select_pet'
+  | 'care_select_pets'
   | 'care_title_placeholder'
   | 'care_notes_placeholder'
   // Care types
@@ -286,6 +287,7 @@ const en: Translations = {
   care_due_date_label: 'Due Date',
   care_notes_label: 'Notes (Optional)',
   care_select_pet: 'Select a pet',
+  care_select_pets: 'Select Pet(s)',
   care_title_placeholder: 'e.g., Annual vaccination',
   care_notes_placeholder: 'Add any notes...',
   // Care types
@@ -443,6 +445,7 @@ const pt: Translations = {
   care_due_date_label: 'Data de Vencimento',
   care_notes_label: 'Notas (Opcional)',
   care_select_pet: 'Selecione um pet',
+  care_select_pets: 'Selecione Pet(s)',
   care_title_placeholder: 'Ex: Vacinação anual',
   care_notes_placeholder: 'Adicione notas...',
   // Care types
@@ -600,6 +603,7 @@ const es: Translations = {
   care_due_date_label: 'Fecha de Vencimiento',
   care_notes_label: 'Notas (Opcional)',
   care_select_pet: 'Selecciona una mascota',
+  care_select_pets: 'Selecciona Mascota(s)',
   care_title_placeholder: 'Ej: Vacunación anual',
   care_notes_placeholder: 'Agrega notas...',
   // Care types
@@ -757,6 +761,7 @@ const fr: Translations = {
   care_due_date_label: 'Date d\'Expiration',
   care_notes_label: 'Notes (Optionnel)',
   care_select_pet: 'Sélectionnez un animal',
+  care_select_pets: 'Sélectionnez Animal(s)',
   care_title_placeholder: 'Ex: Vaccination annuelle',
   care_notes_placeholder: 'Ajoutez des notes...',
   // Care types
@@ -914,6 +919,7 @@ const zh: Translations = {
   care_due_date_label: '截止日期',
   care_notes_label: '备注（可选）',
   care_select_pet: '选择一个宠物',
+  care_select_pets: '选择宠物',
   care_title_placeholder: '例如：年度接种',
   care_notes_placeholder: '添加备注...',
   // Care types

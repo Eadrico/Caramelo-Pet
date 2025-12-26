@@ -54,6 +54,7 @@ import {
   SectionHeader,
 } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';
+import { AddCareItemSheet } from '@/components/AddCareItemSheet';
 
 interface PetDetailScreenProps {
   petId: string;
@@ -90,6 +91,8 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showAddCareSheet, setShowAddCareSheet] = useState(false);
+  const [editingCareItem, setEditingCareItem] = useState<CareItem | undefined>();
 
   if (!pet) {
     return (
@@ -182,6 +185,23 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
         onPress: () => deleteReminder(reminderId),
       },
     ]);
+  };
+
+  const handleAddCarePress = () => {
+    setEditingCareItem(undefined);
+    setShowAddCareSheet(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handleCareItemPress = (item: CareItem) => {
+    setEditingCareItem(item);
+    setShowAddCareSheet(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handleCloseCareSheet = () => {
+    setShowAddCareSheet(false);
+    setEditingCareItem(undefined);
   };
 
   const upcomingCareItems = petCareItems
@@ -535,13 +555,17 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
             entering={FadeInDown.duration(400).delay(200)}
             style={{ paddingHorizontal: 20, marginBottom: 24 }}
           >
-            <SectionHeader title={t('pet_details_upcoming_care')} />
+            <SectionHeader
+              title={t('pet_details_upcoming_care')}
+              action={{ label: t('common_add'), onPress: handleAddCarePress }}
+            />
 
             {upcomingCareItems.length > 0 ? (
               <View style={{ gap: 10 }}>
                 {upcomingCareItems.map((item) => (
-                  <View
+                  <Pressable
                     key={item.id}
+                    onPress={() => handleCareItemPress(item)}
                     style={{
                       backgroundColor: isDark
                         ? 'rgba(255,255,255,0.05)'
@@ -589,7 +613,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                         {getCareTypeLabel(item.type)} • {formatRelativeDate(item.dueDate)}
                       </Text>
                     </View>
-                  </View>
+                  </Pressable>
                 ))}
               </View>
             ) : (
@@ -618,6 +642,14 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 >
                   {t('pet_details_no_upcoming')}
                 </Text>
+                <Pressable
+                  onPress={handleAddCarePress}
+                  style={{ marginTop: 16 }}
+                >
+                  <Text style={{ color: c.accent, fontSize: 15, fontWeight: '500' }}>
+                    {t('home_add_care_item')}
+                  </Text>
+                </Pressable>
               </View>
             )}
           </Animated.View>
@@ -939,6 +971,14 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
           </SafeAreaView>
         </View>
       </Modal>
+
+      {/* Add/Edit Care Item Sheet */}
+      <AddCareItemSheet
+        visible={showAddCareSheet}
+        onClose={handleCloseCareSheet}
+        editItem={editingCareItem}
+        preselectedPetId={petId}
+      />
     </View>
   );
 }

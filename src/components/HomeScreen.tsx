@@ -24,12 +24,16 @@ import {
 } from '@/components/design-system';
 import { PetCard } from '@/components/home/PetCard';
 import { CareItemRow } from '@/components/home/CareItemRow';
+import { ReminderRow } from '@/components/home/ReminderRow';
 import { AddCareItemSheet } from '@/components/AddCareItemSheet';
+import { AddReminderSheet } from '@/components/AddReminderSheet';
+import { AddItemSelector } from '@/components/AddItemSelector';
 import { AddPetWizard } from '@/components/AddPetWizard';
 import { PetDetailScreen } from '@/components/PetDetailScreen';
 import { PaywallScreen } from '@/components/PaywallScreen';
 import { useTranslation } from '@/lib/i18n';
 import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
+import { Reminder } from '@/lib/types';
 
 export function HomeScreen() {
   const c = useColors();
@@ -39,6 +43,7 @@ export function HomeScreen() {
 
   const pets = useStore((s) => s.pets);
   const careItems = useStore((s) => s.careItems);
+  const reminders = useStore((s) => s.reminders);
   const refreshData = useStore((s) => s.refreshData);
 
   // Premium state
@@ -48,10 +53,13 @@ export function HomeScreen() {
   const isInitialized = usePremiumStore((s) => s.isInitialized);
 
   const [showAddSheet, setShowAddSheet] = useState(false);
+  const [showAddReminderSheet, setShowAddReminderSheet] = useState(false);
+  const [showItemSelector, setShowItemSelector] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [showAddPetWizard, setShowAddPetWizard] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [editingItem, setEditingItem] = useState<CareItem | undefined>();
+  const [editingReminder, setEditingReminder] = useState<Reminder | undefined>();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
 
@@ -76,6 +84,43 @@ export function HomeScreen() {
       .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
   }, [careItems]);
 
+  // Get upcoming reminders (next 14 days)
+  const upcomingReminders = useMemo(() => {
+    const now = new Date();
+    const futureDate = new Date();
+    futureDate.setDate(now.getDate() + 14);
+
+    return reminders
+      .filter((reminder) => {
+        if (!reminder.isEnabled) return false;
+        const reminderDate = new Date(reminder.dateTime);
+        return reminderDate >= now && reminderDate <= futureDate;
+      })
+      .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+  }, [reminders]);
+
+  // Unified list combining care items and reminders
+  type UnifiedItem = 
+    | { type: 'care'; item: CareItem }
+    | { type: 'reminder'; item: Reminder };
+
+  const unifiedItems = useMemo(() => {
+    const items: UnifiedItem[] = [
+      ...upcomingCareItems.map((item) => ({ type: 'care' as const, item })),
+      ...upcomingReminders.map((item) => ({ type: 'reminder' as const, item })),
+    ];
+
+    return items.sort((a, b) => {
+      const dateA = a.type === 'care' 
+        ? new Date(a.item.dueDate).getTime()
+        : new Date(a.item.dateTime).getTime();
+      const dateB = b.type === 'care'
+        ? new Date(b.item.dueDate).getTime()
+        : new Date(b.item.dateTime).getTime();
+      return dateA - dateB;
+    });
+  }, [upcomingCareItems, upcomingReminders]);
+
   // Get next care item for each pet
   const getNextCareItem = (petId: string) => {
     const petItems = careItems
@@ -96,6 +141,21 @@ export function HomeScreen() {
     setShowAddMenu(true);
   };
 
+  const handleAddPressUnified = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setShowItemSelector(true);
+  };
+
+  const handleSelectCare = () => {
+    setEditingItem(undefined);
+    setShowAddSheet(true);
+  };
+
+  const handleSelectReminder = () => {
+    setEditingReminder(undefined);
+    setShowAddReminderSheet(true);
+  };
+
   const handleAddCarePress = () => {
     setShowAddMenu(false);
     setEditingItem(undefined);
@@ -107,9 +167,19 @@ export function HomeScreen() {
     setShowAddSheet(true);
   };
 
+  const handleReminderPress = (reminder: Reminder) => {
+    setEditingReminder(reminder);
+    setShowAddReminderSheet(true);
+  };
+
   const handleCloseSheet = () => {
     setShowAddSheet(false);
     setEditingItem(undefined);
+  };
+
+  const handleCloseReminderSheet = () => {
+    setShowAddReminderSheet(false);
+    setEditingReminder(undefined);
   };
 
   // Handle add pet button press - check premium limit
@@ -304,35 +374,48 @@ export function HomeScreen() {
             </ScrollView>
           </Animated.View>
 
-          {/* Upcoming Care Section */}
+          {/* Upcoming Care & Reminders Section */}
           <Animated.View
             entering={FadeInDown.duration(400).delay(200)}
             style={{ marginTop: 32, paddingHorizontal: 20 }}
           >
             <SectionHeader
-              title={t('home_upcoming_care')}
+              title="Upcoming"
               action={
-                upcomingCareItems.length > 0
-                  ? { label: t('common_add'), onPress: handleAddPress }
+                unifiedItems.length > 0
+                  ? { label: t('common_add'), onPress: handleAddPressUnified }
                   : undefined
               }
             />
 
-            {upcomingCareItems.length > 0 ? (
+            {unifiedItems.length > 0 ? (
               <View style={{ gap: 10 }}>
-                {upcomingCareItems.map((item, index) => {
-                  const pet = pets.find((p) => p.id === item.petId);
+                {unifiedItems.map((unifiedItem, index) => {
+                  const pet = pets.find((p) => 
+                    p.id === (unifiedItem.type === 'care' 
+                      ? unifiedItem.item.petId 
+                      : unifiedItem.item.petId)
+                  );
                   if (!pet) return null;
+
                   return (
                     <Animated.View
-                      key={item.id}
+                      key={`${unifiedItem.type}-${unifiedItem.item.id}`}
                       entering={FadeIn.duration(200).delay(index * 30)}
                     >
-                      <CareItemRow
-                        item={item}
-                        pet={pet}
-                        onPress={() => handleCareItemPress(item)}
-                      />
+                      {unifiedItem.type === 'care' ? (
+                        <CareItemRow
+                          item={unifiedItem.item}
+                          pet={pet}
+                          onPress={() => handleCareItemPress(unifiedItem.item)}
+                        />
+                      ) : (
+                        <ReminderRow
+                          reminder={unifiedItem.item}
+                          pet={pet}
+                          onPress={() => handleReminderPress(unifiedItem.item)}
+                        />
+                      )}
                     </Animated.View>
                   );
                 })}
@@ -340,20 +423,35 @@ export function HomeScreen() {
             ) : (
               <EmptyState
                 icon={<Calendar size={32} color={c.accent} />}
-                title={t('home_no_care')}
-                description={t('home_no_care_desc')}
-                action={{ label: t('home_add_care_item'), onPress: handleAddPress }}
+                title="No upcoming items"
+                description="Add care items or reminders to keep track of your pets"
+                action={{ label: t('common_add'), onPress: handleAddPressUnified }}
               />
             )}
           </Animated.View>
         </ScrollView>
       </SafeAreaView>
 
-      {/* Add/Edit Sheet */}
+      {/* Add Item Selector */}
+      <AddItemSelector
+        visible={showItemSelector}
+        onClose={() => setShowItemSelector(false)}
+        onSelectCare={handleSelectCare}
+        onSelectReminder={handleSelectReminder}
+      />
+
+      {/* Add/Edit Care Sheet */}
       <AddCareItemSheet
         visible={showAddSheet}
         onClose={handleCloseSheet}
         editItem={editingItem}
+      />
+
+      {/* Add/Edit Reminder Sheet */}
+      <AddReminderSheet
+        visible={showAddReminderSheet}
+        onClose={handleCloseReminderSheet}
+        editItem={editingReminder}
       />
 
       {/* Add Pet Wizard */}
