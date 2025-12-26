@@ -77,6 +77,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
                 source={require('../../assets/loki.png')}
                 style={{ width: 120, height: 120 }}
                 resizeMode="cover"
+                defaultSource={require('../../assets/loki.png')}
               />
             </View>
           </Animated.View>
