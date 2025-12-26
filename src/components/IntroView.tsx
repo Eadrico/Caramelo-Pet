@@ -1,17 +1,15 @@
 // IntroView - Welcome splash screen
 import React from 'react';
-import { View, Text, useColorScheme, Dimensions } from 'react-native';
+import { View, Text, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
-  FadeIn,
   FadeInDown,
   FadeInUp,
 } from 'react-native-reanimated';
 import { Heart, PawPrint, Bell, Calendar } from 'lucide-react-native';
 import { useColors, PrimaryButton } from '@/components/design-system';
-
-const { width } = Dimensions.get('window');
+import { useTranslation } from '@/lib/i18n';
 
 interface IntroViewProps {
   onContinue: () => void;
@@ -21,22 +19,23 @@ export function IntroView({ onContinue }: IntroViewProps) {
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const c = useColors();
+  const { t } = useTranslation();
 
   const features = [
     {
       icon: PawPrint,
-      title: 'Cadastre seus pets',
-      description: 'Mantenha todas as informações importantes em um só lugar',
+      titleKey: 'intro_feature_pets_title' as const,
+      descKey: 'intro_feature_pets_desc' as const,
     },
     {
       icon: Calendar,
-      title: 'Agende cuidados',
-      description: 'Vacinas, banhos, consultas e muito mais',
+      titleKey: 'intro_feature_schedule_title' as const,
+      descKey: 'intro_feature_schedule_desc' as const,
     },
     {
       icon: Bell,
-      title: 'Lembretes inteligentes',
-      description: 'Nunca mais esqueça um compromisso importante',
+      titleKey: 'intro_feature_reminders_title' as const,
+      descKey: 'intro_feature_reminders_desc' as const,
     },
   ];
 
@@ -100,7 +99,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
                 marginBottom: 12,
               }}
             >
-              Bem-vindo ao Caramelo
+              {t('intro_welcome_title')}
             </Text>
             <Text
               style={{
@@ -111,7 +110,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
                 maxWidth: 300,
               }}
             >
-              O app completo para cuidar dos seus pets com carinho e organização
+              {t('intro_welcome_subtitle')}
             </Text>
           </Animated.View>
 
@@ -119,7 +118,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
           <View style={{ gap: 20 }}>
             {features.map((feature, index) => (
               <Animated.View
-                key={feature.title}
+                key={feature.titleKey}
                 entering={FadeInDown.delay(600 + index * 150)
                   .duration(600)
                   .springify()}
@@ -152,7 +151,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
                       marginBottom: 2,
                     }}
                   >
-                    {feature.title}
+                    {t(feature.titleKey)}
                   </Text>
                   <Text
                     style={{
@@ -161,7 +160,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
                       lineHeight: 20,
                     }}
                   >
-                    {feature.description}
+                    {t(feature.descKey)}
                   </Text>
                 </View>
               </Animated.View>
@@ -176,7 +175,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
             entering={FadeInUp.delay(1200).duration(600).springify()}
             style={{ paddingBottom: 20 }}
           >
-            <PrimaryButton title="Continuar" onPress={onContinue} />
+            <PrimaryButton title={t('intro_continue')} onPress={onContinue} />
           </Animated.View>
         </View>
       </SafeAreaView>

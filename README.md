@@ -37,11 +37,17 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
     - Profile photo (tap to change)
     - Name, email, phone (optional fields with edit modals)
   - **Preferences Section**
-    - Language picker (System default, Portuguese, English)
+    - Language picker (System default, English, Portuguese, Spanish, French, Chinese)
     - Theme picker (System, Light, Dark)
   - **Danger Zone**
     - Reset app button with confirmation modal
     - Clears all data and returns to IntroView
+
+- **Internationalization (i18n)**: Full multi-language support
+  - 5 languages: English, Portuguese, Spanish, French, Chinese
+  - System language auto-detection
+  - Instant language switching without app restart
+  - All UI strings localized (IntroView, Onboarding, Settings, Tabs)
 
 - **Reminders & Notifications**
   - Create reminders for pet care tasks
@@ -98,7 +104,11 @@ src/
     ├── storage.ts        # AsyncStorage persistence + notifications
     ├── store.ts          # Zustand state management
     ├── settings-store.ts # Settings/preferences + onboarding state
-    └── cn.ts             # Classname utility
+    ├── cn.ts             # Classname utility
+    └── i18n/
+        ├── index.ts          # i18n exports
+        ├── translations.ts   # All translations (en, pt, es, fr, zh)
+        └── LanguageContext.tsx # Language provider and hooks
 ```
 
 ## Data Model

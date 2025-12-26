@@ -4,11 +4,13 @@ import { useColorScheme, Platform } from 'react-native';
 import { Home, Settings } from 'lucide-react-native';
 import { colors } from '@/components/design-system';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from '@/lib/i18n';
 
 export default function TabsLayout() {
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const c = isDark ? colors.dark : colors.light;
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -51,7 +53,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Início',
+          title: t('tab_home'),
           tabBarIcon: ({ color, size }) => (
             <Home size={size} color={color} strokeWidth={2} />
           ),
@@ -60,7 +62,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Configurações',
+          title: t('tab_settings'),
           tabBarIcon: ({ color, size }) => (
             <Settings size={size} color={color} strokeWidth={2} />
           ),

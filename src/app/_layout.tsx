@@ -9,6 +9,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { useEffect, useState } from 'react';
 import { useSettingsStore } from '@/lib/settings-store';
 import { useStore } from '@/lib/store';
+import { LanguageProvider } from '@/lib/i18n';
 
 import '../../global.css';
 
@@ -100,8 +101,10 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardProvider>
-          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-          <RootLayoutNav colorScheme={colorScheme} />
+          <LanguageProvider>
+            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+            <RootLayoutNav colorScheme={colorScheme} />
+          </LanguageProvider>
         </KeyboardProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>

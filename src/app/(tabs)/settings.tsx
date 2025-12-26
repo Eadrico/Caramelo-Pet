@@ -10,20 +10,16 @@ import {
   useColorScheme,
   Image,
   Platform,
-  Alert,
   Appearance,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  FadeIn,
-  FadeOut,
 } from 'react-native-reanimated';
 import {
   User,
@@ -40,24 +36,20 @@ import {
 } from 'lucide-react-native';
 import { useSettingsStore, ThemeMode, LanguageMode } from '@/lib/settings-store';
 import { useStore } from '@/lib/store';
-import { colors, useColors } from '@/components/design-system';
-import { cn } from '@/lib/cn';
+import { useColors } from '@/components/design-system';
 import { router } from 'expo-router';
+import { useTranslation } from '@/lib/i18n';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-// Language labels
+// Language labels - these are native language names so they don't need translation
 const languageLabels: Record<LanguageMode, string> = {
-  system: 'Padrão do Sistema',
-  pt: 'Português',
+  system: '', // This will be replaced with translated string
   en: 'English',
-};
-
-// Theme labels
-const themeLabels: Record<ThemeMode, string> = {
-  system: 'Sistema',
-  light: 'Claro',
-  dark: 'Escuro',
+  pt: 'Português',
+  es: 'Español',
+  fr: 'Français',
+  zh: '中文',
 };
 
 // Setting Row Component
@@ -330,10 +322,18 @@ function ConfirmationModal({
   visible,
   onClose,
   onConfirm,
+  title,
+  message,
+  confirmText,
+  cancelText,
 }: {
   visible: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  title: string;
+  message: string;
+  confirmText: string;
+  cancelText: string;
 }) {
   const c = useColors();
 
@@ -388,7 +388,7 @@ function ConfirmationModal({
                 marginBottom: 8,
               }}
             >
-              Resetar App?
+              {title}
             </Text>
 
             <Text
@@ -399,8 +399,7 @@ function ConfirmationModal({
                 lineHeight: 22,
               }}
             >
-              Tem certeza? Todos os dados serão apagados permanentemente,
-              incluindo seus pets e configurações.
+              {message}
             </Text>
           </View>
 
@@ -428,7 +427,7 @@ function ConfirmationModal({
                   color: c.accent,
                 }}
               >
-                Cancelar
+                {cancelText}
               </Text>
             </Pressable>
             <Pressable
@@ -449,7 +448,7 @@ function ConfirmationModal({
                   color: c.destructive,
                 }}
               >
-                Resetar
+                {confirmText}
               </Text>
             </Pressable>
           </View>
@@ -466,12 +465,20 @@ function EditProfileModal({
   field,
   value,
   onSave,
+  fieldLabel,
+  editText,
+  cancelText,
+  saveText,
 }: {
   visible: boolean;
   onClose: () => void;
   field: 'name' | 'email' | 'phone';
   value: string;
   onSave: (value: string) => void;
+  fieldLabel: string;
+  editText: string;
+  cancelText: string;
+  saveText: string;
 }) {
   const c = useColors();
   const [inputValue, setInputValue] = useState(value);
@@ -479,12 +486,6 @@ function EditProfileModal({
   useEffect(() => {
     setInputValue(value);
   }, [value, visible]);
-
-  const fieldLabels = {
-    name: 'Nome',
-    email: 'E-mail',
-    phone: 'Telefone',
-  };
 
   const keyboardTypes: Record<string, 'default' | 'email-address' | 'phone-pad'> = {
     name: 'default',
@@ -527,13 +528,12 @@ function EditProfileModal({
               marginBottom: 16,
             }}
           >
-            Editar {fieldLabels[field]}
+            {editText} {fieldLabel}
           </Text>
 
           <TextInput
             value={inputValue}
             onChangeText={setInputValue}
-            placeholder={`Digite seu ${fieldLabels[field].toLowerCase()}`}
             placeholderTextColor={c.textTertiary}
             keyboardType={keyboardTypes[field]}
             autoCapitalize={field === 'name' ? 'words' : 'none'}
@@ -570,7 +570,7 @@ function EditProfileModal({
                   color: c.textSecondary,
                 }}
               >
-                Cancelar
+                {cancelText}
               </Text>
             </Pressable>
             <Pressable
@@ -594,7 +594,7 @@ function EditProfileModal({
                   color: '#FFFFFF',
                 }}
               >
-                Salvar
+                {saveText}
               </Text>
             </Pressable>
           </View>
@@ -609,6 +609,7 @@ export default function SettingsScreen() {
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const c = useColors();
+  const { t } = useTranslation();
 
   // Settings state
   const profile = useSettingsStore((s) => s.profile);
@@ -673,8 +674,13 @@ export default function SettingsScreen() {
   const languageOptions: { value: LanguageMode; label: string; icon: React.ReactNode }[] = [
     {
       value: 'system',
-      label: 'Padrão do Sistema',
+      label: t('common_system_default'),
       icon: <Monitor size={20} color={c.textSecondary} />,
+    },
+    {
+      value: 'en',
+      label: 'English',
+      icon: <Text style={{ fontSize: 18 }}>🇺🇸</Text>,
     },
     {
       value: 'pt',
@@ -682,26 +688,36 @@ export default function SettingsScreen() {
       icon: <Text style={{ fontSize: 18 }}>🇧🇷</Text>,
     },
     {
-      value: 'en',
-      label: 'English',
-      icon: <Text style={{ fontSize: 18 }}>🇺🇸</Text>,
+      value: 'es',
+      label: 'Español',
+      icon: <Text style={{ fontSize: 18 }}>🇪🇸</Text>,
+    },
+    {
+      value: 'fr',
+      label: 'Français',
+      icon: <Text style={{ fontSize: 18 }}>🇫🇷</Text>,
+    },
+    {
+      value: 'zh',
+      label: '中文',
+      icon: <Text style={{ fontSize: 18 }}>🇨🇳</Text>,
     },
   ];
 
   const themeOptions: { value: ThemeMode; label: string; icon: React.ReactNode }[] = [
     {
       value: 'system',
-      label: 'Sistema',
+      label: t('settings_theme_system'),
       icon: <Monitor size={20} color={c.textSecondary} />,
     },
     {
       value: 'light',
-      label: 'Claro',
+      label: t('settings_theme_light'),
       icon: <Sun size={20} color={c.textSecondary} />,
     },
     {
       value: 'dark',
-      label: 'Escuro',
+      label: t('settings_theme_dark'),
       icon: <Moon size={20} color={c.textSecondary} />,
     },
   ];
@@ -734,7 +750,7 @@ export default function SettingsScreen() {
               letterSpacing: -0.5,
             }}
           >
-            Configurações
+            {t('settings_title')}
           </Text>
         </View>
 
@@ -743,7 +759,7 @@ export default function SettingsScreen() {
           contentContainerStyle={{ paddingBottom: 120 }}
         >
           {/* Profile Section */}
-          <Section title="Perfil do Usuário">
+          <Section title={t('settings_profile')}>
             {/* Profile Photo */}
             <Pressable
               onPress={handlePickPhoto}
@@ -782,41 +798,41 @@ export default function SettingsScreen() {
                   fontWeight: '500',
                 }}
               >
-                Alterar Foto
+                {t('settings_change_photo')}
               </Text>
             </Pressable>
 
             <SettingRow
               icon={<User size={18} color={c.accent} strokeWidth={2} />}
-              title="Nome"
-              subtitle={profile.name || 'Não informado'}
+              title={t('settings_name')}
+              subtitle={profile.name || t('settings_not_set')}
               onPress={() => setEditField('name')}
               rightContent={<ChevronRight size={18} color={c.textTertiary} />}
             />
             <View style={{ height: 1, backgroundColor: c.border, marginLeft: 66 }} />
             <SettingRow
               icon={<Mail size={18} color={c.accent} strokeWidth={2} />}
-              title="E-mail"
-              subtitle={profile.email || 'Não informado'}
+              title={t('settings_email')}
+              subtitle={profile.email || t('settings_not_set')}
               onPress={() => setEditField('email')}
               rightContent={<ChevronRight size={18} color={c.textTertiary} />}
             />
             <View style={{ height: 1, backgroundColor: c.border, marginLeft: 66 }} />
             <SettingRow
               icon={<Phone size={18} color={c.accent} strokeWidth={2} />}
-              title="Telefone"
-              subtitle={profile.phone || 'Não informado'}
+              title={t('settings_phone')}
+              subtitle={profile.phone || t('settings_not_set')}
               onPress={() => setEditField('phone')}
               rightContent={<ChevronRight size={18} color={c.textTertiary} />}
             />
           </Section>
 
           {/* Preferences Section */}
-          <Section title="Preferências Gerais">
+          <Section title={t('settings_preferences')}>
             <SettingRow
               icon={<Globe size={18} color={c.accent} strokeWidth={2} />}
-              title="Idioma"
-              subtitle={languageLabels[language]}
+              title={t('settings_language')}
+              subtitle={language === 'system' ? t('common_system_default') : languageLabels[language]}
               onPress={() => setShowLanguageModal(true)}
               rightContent={<ChevronRight size={18} color={c.textTertiary} />}
             />
@@ -829,19 +845,19 @@ export default function SettingsScreen() {
                   <Sun size={18} color={c.accent} strokeWidth={2} />
                 )
               }
-              title="Tema"
-              subtitle={themeLabels[theme]}
+              title={t('settings_theme')}
+              subtitle={themeOptions.find(o => o.value === theme)?.label ?? ''}
               onPress={() => setShowThemeModal(true)}
               rightContent={<ChevronRight size={18} color={c.textTertiary} />}
             />
           </Section>
 
           {/* Danger Zone */}
-          <Section title="Zona de Perigo">
+          <Section title={t('settings_danger_zone')}>
             <SettingRow
               icon={<RotateCcw size={18} color={c.destructive} strokeWidth={2} />}
-              title="Resetar App"
-              subtitle="Apaga todos os dados"
+              title={t('settings_reset_app')}
+              subtitle={t('settings_reset_desc')}
               onPress={() => setShowResetModal(true)}
               destructive
             />
@@ -853,7 +869,7 @@ export default function SettingsScreen() {
       <SelectionModal
         visible={showLanguageModal}
         onClose={() => setShowLanguageModal(false)}
-        title="Selecionar Idioma"
+        title={t('common_select_language')}
         options={languageOptions}
         selected={language}
         onSelect={setLanguage}
@@ -862,7 +878,7 @@ export default function SettingsScreen() {
       <SelectionModal
         visible={showThemeModal}
         onClose={() => setShowThemeModal(false)}
-        title="Selecionar Tema"
+        title={t('common_select_theme')}
         options={themeOptions}
         selected={theme}
         onSelect={setTheme}
@@ -872,6 +888,10 @@ export default function SettingsScreen() {
         visible={showResetModal}
         onClose={() => setShowResetModal(false)}
         onConfirm={handleReset}
+        title={t('settings_reset_confirm_title')}
+        message={t('settings_reset_confirm_message')}
+        confirmText={t('settings_reset_confirm')}
+        cancelText={t('settings_cancel')}
       />
 
       <EditProfileModal
@@ -884,6 +904,10 @@ export default function SettingsScreen() {
             updateProfile({ [editField]: value });
           }
         }}
+        fieldLabel={editField === 'name' ? t('settings_name') : editField === 'email' ? t('settings_email') : t('settings_phone')}
+        editText={t('settings_edit')}
+        cancelText={t('settings_cancel')}
+        saveText={t('settings_save')}
       />
     </View>
   );

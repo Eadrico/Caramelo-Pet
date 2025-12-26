@@ -106,7 +106,9 @@ type TranslationKey =
   | 'common_delete'
   | 'common_edit'
   | 'common_confirm'
-  | 'common_select_language';
+  | 'common_select_language'
+  | 'common_select_theme'
+  | 'common_system_default';
 
 type Translations = Record<TranslationKey, string>;
 
@@ -196,6 +198,8 @@ const en: Translations = {
   common_edit: 'Edit',
   common_confirm: 'Confirm',
   common_select_language: 'Select Language',
+  common_select_theme: 'Select Theme',
+  common_system_default: 'System Default',
 };
 
 const pt: Translations = {
@@ -284,6 +288,8 @@ const pt: Translations = {
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
   common_select_language: 'Selecionar Idioma',
+  common_select_theme: 'Selecionar Tema',
+  common_system_default: 'Padrão do Sistema',
 };
 
 const es: Translations = {
@@ -372,6 +378,8 @@ const es: Translations = {
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
   common_select_language: 'Seleccionar Idioma',
+  common_select_theme: 'Seleccionar Tema',
+  common_system_default: 'Predeterminado del Sistema',
 };
 
 const fr: Translations = {
@@ -460,6 +468,8 @@ const fr: Translations = {
   common_edit: 'Modifier',
   common_confirm: 'Confirmer',
   common_select_language: 'Sélectionner la Langue',
+  common_select_theme: 'Sélectionner le Thème',
+  common_system_default: 'Par Défaut du Système',
 };
 
 const zh: Translations = {
@@ -548,6 +558,8 @@ const zh: Translations = {
   common_edit: '编辑',
   common_confirm: '确认',
   common_select_language: '选择语言',
+  common_select_theme: '选择主题',
+  common_system_default: '跟随系统',
 };
 
 export const translations: Record<Exclude<SupportedLanguage, 'system'>, Translations> = {
