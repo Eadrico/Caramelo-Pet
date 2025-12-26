@@ -103,6 +103,35 @@ type TranslationKey =
   | 'care_grooming'
   | 'care_medication'
   | 'care_vet_visit'
+  // Paywall
+  | 'paywall_title'
+  | 'paywall_subtitle'
+  | 'paywall_limit_reached'
+  | 'paywall_feature_unlimited'
+  | 'paywall_feature_unlimited_desc'
+  | 'paywall_feature_support'
+  | 'paywall_feature_support_desc'
+  | 'paywall_feature_lifetime'
+  | 'paywall_feature_lifetime_desc'
+  | 'paywall_buy_button'
+  | 'paywall_restore'
+  | 'paywall_one_time'
+  | 'paywall_close'
+  | 'paywall_purchase_success'
+  | 'paywall_restore_success'
+  | 'paywall_restore_none'
+  | 'paywall_error'
+  // Settings - Premium
+  | 'settings_premium'
+  | 'settings_premium_active'
+  | 'settings_premium_upgrade'
+  | 'settings_premium_desc'
+  | 'settings_premium_desc_active'
+  | 'settings_premium_badge'
+  // Settings - Developer
+  | 'settings_developer'
+  | 'settings_admin_mode'
+  | 'settings_admin_desc'
   // Common
   | 'common_today'
   | 'common_tomorrow'
@@ -200,6 +229,24 @@ const en: Translations = {
   care_grooming: 'Grooming',
   care_medication: 'Medication',
   care_vet_visit: 'Vet Visit',
+  // Paywall
+  paywall_title: 'Unlock Premium',
+  paywall_subtitle: 'Unlimited care for all your pets',
+  paywall_limit_reached: 'You\'ve reached the limit of 2 free pets',
+  paywall_feature_unlimited: 'Unlimited Pets',
+  paywall_feature_unlimited_desc: 'Register all your furry friends',
+  paywall_feature_support: 'Priority Support',
+  paywall_feature_support_desc: 'Get help when you need it',
+  paywall_feature_lifetime: 'Lifetime Access',
+  paywall_feature_lifetime_desc: 'Pay once, use forever',
+  paywall_buy_button: 'Get Premium',
+  paywall_restore: 'Restore Purchases',
+  paywall_one_time: 'One-time payment',
+  paywall_close: 'Maybe Later',
+  paywall_purchase_success: 'Welcome to Premium!',
+  paywall_restore_success: 'Purchases restored successfully!',
+  paywall_restore_none: 'No previous purchases found',
+  paywall_error: 'Something went wrong. Please try again.',
   // Common
   common_today: 'Today',
   common_tomorrow: 'Tomorrow',
@@ -212,6 +259,17 @@ const en: Translations = {
   common_select_language: 'Select Language',
   common_select_theme: 'Select Theme',
   common_system_default: 'System Default',
+  // Settings - Premium
+  settings_premium: 'Premium',
+  settings_premium_active: 'Premium Active',
+  settings_premium_upgrade: 'Upgrade to Premium',
+  settings_premium_desc: 'Free plan: {current}/{limit} pets. Upgrade for unlimited pets.',
+  settings_premium_desc_active: 'You have unlimited pets and all premium features.',
+  settings_premium_badge: 'Active',
+  // Settings - Developer
+  settings_developer: 'Developer',
+  settings_admin_mode: 'Admin Test Mode',
+  settings_admin_desc: 'Simulate premium for testing purchases.',
 };
 
 const pt: Translations = {
@@ -296,6 +354,24 @@ const pt: Translations = {
   care_grooming: 'Banho/Tosa',
   care_medication: 'Medicação',
   care_vet_visit: 'Consulta Veterinária',
+  // Paywall
+  paywall_title: 'Desbloqueie o Premium',
+  paywall_subtitle: 'Cuidado ilimitado para todos os seus pets',
+  paywall_limit_reached: 'Você atingiu o limite de 2 pets gratuitos',
+  paywall_feature_unlimited: 'Pets Ilimitados',
+  paywall_feature_unlimited_desc: 'Cadastre todos os seus bichinhos',
+  paywall_feature_support: 'Suporte Prioritário',
+  paywall_feature_support_desc: 'Ajuda quando você precisar',
+  paywall_feature_lifetime: 'Acesso Vitalício',
+  paywall_feature_lifetime_desc: 'Pague uma vez, use para sempre',
+  paywall_buy_button: 'Obter Premium',
+  paywall_restore: 'Restaurar Compras',
+  paywall_one_time: 'Pagamento único',
+  paywall_close: 'Talvez Depois',
+  paywall_purchase_success: 'Bem-vindo ao Premium!',
+  paywall_restore_success: 'Compras restauradas com sucesso!',
+  paywall_restore_none: 'Nenhuma compra anterior encontrada',
+  paywall_error: 'Algo deu errado. Tente novamente.',
   // Common
   common_today: 'Hoje',
   common_tomorrow: 'Amanhã',
@@ -308,6 +384,17 @@ const pt: Translations = {
   common_select_language: 'Selecionar Idioma',
   common_select_theme: 'Selecionar Tema',
   common_system_default: 'Padrão do Sistema',
+  // Settings - Premium
+  settings_premium: 'Premium',
+  settings_premium_active: 'Premium Ativo',
+  settings_premium_upgrade: 'Assinar Premium',
+  settings_premium_desc: 'Plano gratuito: {current}/{limit} pets. Assine para pets ilimitados.',
+  settings_premium_desc_active: 'Você tem pets ilimitados e todos os recursos premium.',
+  settings_premium_badge: 'Ativo',
+  // Settings - Developer
+  settings_developer: 'Desenvolvedor',
+  settings_admin_mode: 'Modo de Teste Admin',
+  settings_admin_desc: 'Simular premium para testar compras.',
 };
 
 const es: Translations = {
@@ -392,6 +479,24 @@ const es: Translations = {
   care_grooming: 'Baño/Peluquería',
   care_medication: 'Medicación',
   care_vet_visit: 'Visita al Veterinario',
+  // Paywall
+  paywall_title: 'Desbloquea Premium',
+  paywall_subtitle: 'Cuidado ilimitado para todas tus mascotas',
+  paywall_limit_reached: 'Has alcanzado el límite de 2 mascotas gratis',
+  paywall_feature_unlimited: 'Mascotas Ilimitadas',
+  paywall_feature_unlimited_desc: 'Registra a todos tus peluditos',
+  paywall_feature_support: 'Soporte Prioritario',
+  paywall_feature_support_desc: 'Ayuda cuando la necesites',
+  paywall_feature_lifetime: 'Acceso de Por Vida',
+  paywall_feature_lifetime_desc: 'Paga una vez, úsalo siempre',
+  paywall_buy_button: 'Obtener Premium',
+  paywall_restore: 'Restaurar Compras',
+  paywall_one_time: 'Pago único',
+  paywall_close: 'Quizás Después',
+  paywall_purchase_success: '¡Bienvenido a Premium!',
+  paywall_restore_success: '¡Compras restauradas exitosamente!',
+  paywall_restore_none: 'No se encontraron compras anteriores',
+  paywall_error: 'Algo salió mal. Intenta de nuevo.',
   // Common
   common_today: 'Hoy',
   common_tomorrow: 'Mañana',
@@ -404,6 +509,17 @@ const es: Translations = {
   common_select_language: 'Seleccionar Idioma',
   common_select_theme: 'Seleccionar Tema',
   common_system_default: 'Predeterminado del Sistema',
+  // Settings - Premium
+  settings_premium: 'Premium',
+  settings_premium_active: 'Premium Activo',
+  settings_premium_upgrade: 'Actualizar a Premium',
+  settings_premium_desc: 'Plan gratuito: {current}/{limit} mascotas. Actualiza para ilimitadas.',
+  settings_premium_desc_active: 'Tienes mascotas ilimitadas y todas las funciones premium.',
+  settings_premium_badge: 'Activo',
+  // Settings - Developer
+  settings_developer: 'Desarrollador',
+  settings_admin_mode: 'Modo Admin de Prueba',
+  settings_admin_desc: 'Simular premium para probar compras.',
 };
 
 const fr: Translations = {
@@ -488,6 +604,24 @@ const fr: Translations = {
   care_grooming: 'Toilettage',
   care_medication: 'Médicament',
   care_vet_visit: 'Visite Vétérinaire',
+  // Paywall
+  paywall_title: 'Débloquez Premium',
+  paywall_subtitle: 'Soins illimités pour tous vos animaux',
+  paywall_limit_reached: 'Vous avez atteint la limite de 2 animaux gratuits',
+  paywall_feature_unlimited: 'Animaux Illimités',
+  paywall_feature_unlimited_desc: 'Enregistrez tous vos compagnons',
+  paywall_feature_support: 'Support Prioritaire',
+  paywall_feature_support_desc: 'De l\'aide quand vous en avez besoin',
+  paywall_feature_lifetime: 'Accès à Vie',
+  paywall_feature_lifetime_desc: 'Payez une fois, utilisez pour toujours',
+  paywall_buy_button: 'Obtenir Premium',
+  paywall_restore: 'Restaurer les Achats',
+  paywall_one_time: 'Paiement unique',
+  paywall_close: 'Peut-être Plus Tard',
+  paywall_purchase_success: 'Bienvenue dans Premium!',
+  paywall_restore_success: 'Achats restaurés avec succès!',
+  paywall_restore_none: 'Aucun achat précédent trouvé',
+  paywall_error: 'Quelque chose s\'est mal passé. Réessayez.',
   // Common
   common_today: 'Aujourd\'hui',
   common_tomorrow: 'Demain',
@@ -500,6 +634,17 @@ const fr: Translations = {
   common_select_language: 'Sélectionner la Langue',
   common_select_theme: 'Sélectionner le Thème',
   common_system_default: 'Par Défaut du Système',
+  // Settings - Premium
+  settings_premium: 'Premium',
+  settings_premium_active: 'Premium Actif',
+  settings_premium_upgrade: 'Passer à Premium',
+  settings_premium_desc: 'Plan gratuit: {current}/{limit} animaux. Passez pour illimité.',
+  settings_premium_desc_active: 'Vous avez des animaux illimités et toutes les fonctionnalités premium.',
+  settings_premium_badge: 'Actif',
+  // Settings - Developer
+  settings_developer: 'Développeur',
+  settings_admin_mode: 'Mode Admin Test',
+  settings_admin_desc: 'Simuler premium pour tester les achats.',
 };
 
 const zh: Translations = {
@@ -584,6 +729,24 @@ const zh: Translations = {
   care_grooming: '美容',
   care_medication: '药物',
   care_vet_visit: '兽医就诊',
+  // Paywall
+  paywall_title: '解锁高级版',
+  paywall_subtitle: '为您所有宠物提供无限护理',
+  paywall_limit_reached: '您已达到2只免费宠物的限制',
+  paywall_feature_unlimited: '无限宠物',
+  paywall_feature_unlimited_desc: '注册您所有的毛茸茸的朋友',
+  paywall_feature_support: '优先支持',
+  paywall_feature_support_desc: '需要时获得帮助',
+  paywall_feature_lifetime: '终身访问',
+  paywall_feature_lifetime_desc: '一次付费，永久使用',
+  paywall_buy_button: '获取高级版',
+  paywall_restore: '恢复购买',
+  paywall_one_time: '一次性付款',
+  paywall_close: '以后再说',
+  paywall_purchase_success: '欢迎使用高级版！',
+  paywall_restore_success: '购买恢复成功！',
+  paywall_restore_none: '未找到之前的购买记录',
+  paywall_error: '出了点问题，请重试。',
   // Common
   common_today: '今天',
   common_tomorrow: '明天',
@@ -596,6 +759,17 @@ const zh: Translations = {
   common_select_language: '选择语言',
   common_select_theme: '选择主题',
   common_system_default: '跟随系统',
+  // Settings - Premium
+  settings_premium: '高级版',
+  settings_premium_active: '高级版已激活',
+  settings_premium_upgrade: '升级到高级版',
+  settings_premium_desc: '免费版：{current}/{limit} 个宠物。升级获得无限宠物。',
+  settings_premium_desc_active: '您拥有无限宠物和所有高级功能。',
+  settings_premium_badge: '已激活',
+  // Settings - Developer
+  settings_developer: '开发者',
+  settings_admin_mode: '管理员测试模式',
+  settings_admin_desc: '模拟高级版以测试购买。',
 };
 
 export const translations: Record<Exclude<SupportedLanguage, 'system'>, Translations> = {

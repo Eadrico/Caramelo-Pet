@@ -11,6 +11,7 @@ import {
   Image,
   Platform,
   Appearance,
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -33,10 +34,14 @@ import {
   AlertTriangle,
   RotateCcw,
   Check,
+  Crown,
+  Bug,
 } from 'lucide-react-native';
 import { useSettingsStore, ThemeMode, LanguageMode } from '@/lib/settings-store';
 import { useStore } from '@/lib/store';
+import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
 import { useColors } from '@/components/design-system';
+import { PaywallScreen } from '@/components/PaywallScreen';
 import { router } from 'expo-router';
 import { useTranslation } from '@/lib/i18n';
 
@@ -622,20 +627,46 @@ export default function SettingsScreen() {
   const setLanguage = useSettingsStore((s) => s.setLanguage);
   const resetAll = useSettingsStore((s) => s.resetAll);
 
+  // Premium state
+  const isPremium = usePremiumStore((s) => s.isPremium);
+  const isAdminMode = usePremiumStore((s) => s.isAdminMode);
+  const toggleAdminMode = usePremiumStore((s) => s.toggleAdminMode);
+  const initializePremium = usePremiumStore((s) => s.initialize);
+  const isPremiumInitialized = usePremiumStore((s) => s.isInitialized);
+
   // App store for full reset
   const refreshData = useStore((s) => s.refreshData);
+  const pets = useStore((s) => s.pets);
 
   // Modal states
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const [editField, setEditField] = useState<'name' | 'email' | 'phone' | null>(null);
+
+  // Admin mode tap counter for secret access
+  const [adminTapCount, setAdminTapCount] = useState(0);
+  const [showAdminSection, setShowAdminSection] = useState(false);
 
   useEffect(() => {
     if (!isInitialized) {
       initialize();
     }
   }, [isInitialized]);
+
+  useEffect(() => {
+    if (!isPremiumInitialized) {
+      initializePremium();
+    }
+  }, [isPremiumInitialized]);
+
+  // Show admin section if already in admin mode
+  useEffect(() => {
+    if (isAdminMode) {
+      setShowAdminSection(true);
+    }
+  }, [isAdminMode]);
 
   // Apply theme
   useEffect(() => {
@@ -669,6 +700,28 @@ export default function SettingsScreen() {
     } catch (error) {
       console.error('Error resetting app:', error);
     }
+  };
+
+  // Secret admin mode activation - tap title 5 times
+  const handleTitleTap = () => {
+    const newCount = adminTapCount + 1;
+    setAdminTapCount(newCount);
+
+    if (newCount >= 5) {
+      setShowAdminSection(true);
+      setAdminTapCount(0);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else if (newCount === 3) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+    // Reset counter after 2 seconds
+    setTimeout(() => setAdminTapCount(0), 2000);
+  };
+
+  const handleToggleAdmin = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    toggleAdminMode();
   };
 
   const languageOptions: { value: LanguageMode; label: string; icon: React.ReactNode }[] = [
@@ -735,7 +788,8 @@ export default function SettingsScreen() {
 
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         {/* Header */}
-        <View
+        <Pressable
+          onPress={handleTitleTap}
           style={{
             paddingHorizontal: 20,
             paddingTop: 8,
@@ -752,7 +806,7 @@ export default function SettingsScreen() {
           >
             {t('settings_title')}
           </Text>
-        </View>
+        </Pressable>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -852,6 +906,92 @@ export default function SettingsScreen() {
             />
           </Section>
 
+          {/* Premium Section */}
+          <Section title={t('settings_premium')}>
+            <SettingRow
+              icon={<Crown size={18} color={c.accent} strokeWidth={2} />}
+              title={isPremium ? t('settings_premium_active') : t('settings_premium_upgrade')}
+              subtitle={
+                isPremium
+                  ? t('settings_premium_desc_active')
+                  : t('settings_premium_desc', { limit: FREE_PET_LIMIT_COUNT, current: pets.length })
+              }
+              onPress={isPremium ? undefined : () => setShowPaywall(true)}
+              rightContent={
+                isPremium ? (
+                  <View
+                    style={{
+                      backgroundColor: 'rgba(34, 197, 94, 0.15)',
+                      paddingHorizontal: 10,
+                      paddingVertical: 4,
+                      borderRadius: 8,
+                    }}
+                  >
+                    <Text style={{ color: '#22C55E', fontSize: 12, fontWeight: '600' }}>
+                      {t('settings_premium_badge')}
+                    </Text>
+                  </View>
+                ) : (
+                  <ChevronRight size={18} color={c.textTertiary} />
+                )
+              }
+            />
+          </Section>
+
+          {/* Admin/Developer Section - Hidden by default, shown after 5 taps on title */}
+          {showAdminSection && (
+            <Section title={t('settings_developer')}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: 14,
+                  paddingHorizontal: 16,
+                  gap: 14,
+                }}
+              >
+                <View
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    backgroundColor: 'rgba(234, 179, 8, 0.15)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Bug size={18} color="#EAB308" strokeWidth={2} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: '500',
+                      color: c.text,
+                    }}
+                  >
+                    {t('settings_admin_mode')}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: c.textSecondary,
+                      marginTop: 2,
+                    }}
+                  >
+                    {t('settings_admin_desc')}
+                  </Text>
+                </View>
+                <Switch
+                  value={isAdminMode}
+                  onValueChange={handleToggleAdmin}
+                  trackColor={{ false: c.border, true: c.accent }}
+                  thumbColor="#FFFFFF"
+                />
+              </View>
+            </Section>
+          )}
+
           {/* Danger Zone */}
           <Section title={t('settings_danger_zone')}>
             <SettingRow
@@ -908,6 +1048,12 @@ export default function SettingsScreen() {
         editText={t('settings_edit')}
         cancelText={t('settings_cancel')}
         saveText={t('settings_save')}
+      />
+
+      {/* Paywall */}
+      <PaywallScreen
+        visible={showPaywall}
+        onClose={() => setShowPaywall(false)}
       />
     </View>
   );

@@ -1,0 +1,207 @@
+// Premium Store - Manages premium subscription state
+import { create } from 'zustand';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  hasEntitlement,
+  getOfferings,
+  purchasePackage,
+  restorePurchases,
+  isRevenueCatEnabled,
+} from './revenuecatClient';
+import type { PurchasesPackage } from 'react-native-purchases';
+
+const ADMIN_MODE_KEY = 'caramelo_admin_premium_mode';
+const FREE_PET_LIMIT = 2;
+const PREMIUM_ENTITLEMENT_ID = 'premium';
+
+interface PremiumState {
+  // State
+  isPremium: boolean;
+  isAdminMode: boolean; // For testing purposes
+  isLoading: boolean;
+  isInitialized: boolean;
+  lifetimePackage: PurchasesPackage | null;
+  priceString: string | null;
+
+  // Actions
+  initialize: () => Promise<void>;
+  checkPremiumStatus: () => Promise<boolean>;
+  purchasePremium: () => Promise<{ success: boolean; error?: string }>;
+  restorePurchases: () => Promise<{ success: boolean; restored: boolean; error?: string }>;
+
+  // Admin/Test functions
+  toggleAdminMode: () => Promise<void>;
+  setAdminMode: (enabled: boolean) => Promise<void>;
+
+  // Helpers
+  canAddPet: (currentPetCount: number) => boolean;
+}
+
+export const usePremiumStore = create<PremiumState>((set, get) => ({
+  isPremium: false,
+  isAdminMode: false,
+  isLoading: false,
+  isInitialized: false,
+  lifetimePackage: null,
+  priceString: null,
+
+  initialize: async () => {
+    if (get().isInitialized) return;
+
+    set({ isLoading: true });
+
+    try {
+      // Check admin mode from storage
+      const adminMode = await AsyncStorage.getItem(ADMIN_MODE_KEY);
+      const isAdminMode = adminMode === 'true';
+
+      // Check actual premium status from RevenueCat
+      let isPremium = isAdminMode;
+
+      if (!isAdminMode && isRevenueCatEnabled()) {
+        const result = await hasEntitlement(PREMIUM_ENTITLEMENT_ID);
+        if (result.ok) {
+          isPremium = result.data;
+        }
+      }
+
+      // Load offerings to get price
+      let lifetimePackage: PurchasesPackage | null = null;
+      let priceString: string | null = null;
+
+      if (isRevenueCatEnabled()) {
+        const offeringsResult = await getOfferings();
+        if (offeringsResult.ok && offeringsResult.data.current) {
+          lifetimePackage = offeringsResult.data.current.availablePackages.find(
+            pkg => pkg.identifier === '$rc_lifetime'
+          ) ?? null;
+
+          if (lifetimePackage) {
+            priceString = lifetimePackage.product.priceString;
+          }
+        }
+      }
+
+      // Fallback price if not available from RevenueCat
+      if (!priceString) {
+        priceString = '$2.99';
+      }
+
+      set({
+        isPremium,
+        isAdminMode,
+        lifetimePackage,
+        priceString,
+        isInitialized: true,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error('[PremiumStore] Error initializing:', error);
+      set({ isInitialized: true, isLoading: false });
+    }
+  },
+
+  checkPremiumStatus: async () => {
+    const { isAdminMode } = get();
+
+    // Admin mode overrides everything
+    if (isAdminMode) {
+      set({ isPremium: true });
+      return true;
+    }
+
+    if (!isRevenueCatEnabled()) {
+      return false;
+    }
+
+    const result = await hasEntitlement(PREMIUM_ENTITLEMENT_ID);
+    if (result.ok) {
+      set({ isPremium: result.data });
+      return result.data;
+    }
+
+    return false;
+  },
+
+  purchasePremium: async () => {
+    const { lifetimePackage } = get();
+
+    if (!lifetimePackage) {
+      return { success: false, error: 'Product not available' };
+    }
+
+    set({ isLoading: true });
+
+    try {
+      const result = await purchasePackage(lifetimePackage);
+
+      if (result.ok) {
+        const hasPremium = Boolean(result.data.entitlements.active?.[PREMIUM_ENTITLEMENT_ID]);
+        set({ isPremium: hasPremium, isLoading: false });
+        return { success: hasPremium };
+      }
+
+      set({ isLoading: false });
+      return { success: false, error: result.reason };
+    } catch (error) {
+      set({ isLoading: false });
+      return { success: false, error: 'Purchase failed' };
+    }
+  },
+
+  restorePurchases: async () => {
+    set({ isLoading: true });
+
+    try {
+      const result = await restorePurchases();
+
+      if (result.ok) {
+        const hasPremium = Boolean(result.data.entitlements.active?.[PREMIUM_ENTITLEMENT_ID]);
+        set({ isPremium: hasPremium, isLoading: false });
+        return { success: true, restored: hasPremium };
+      }
+
+      set({ isLoading: false });
+      return { success: false, restored: false, error: result.reason };
+    } catch (error) {
+      set({ isLoading: false });
+      return { success: false, restored: false, error: 'Restore failed' };
+    }
+  },
+
+  toggleAdminMode: async () => {
+    const { isAdminMode } = get();
+    const newMode = !isAdminMode;
+
+    await AsyncStorage.setItem(ADMIN_MODE_KEY, newMode ? 'true' : 'false');
+    set({
+      isAdminMode: newMode,
+      isPremium: newMode ? true : get().isPremium,
+    });
+
+    // If turning off admin mode, re-check actual premium status
+    if (!newMode) {
+      get().checkPremiumStatus();
+    }
+  },
+
+  setAdminMode: async (enabled: boolean) => {
+    await AsyncStorage.setItem(ADMIN_MODE_KEY, enabled ? 'true' : 'false');
+    set({
+      isAdminMode: enabled,
+      isPremium: enabled ? true : get().isPremium,
+    });
+
+    if (!enabled) {
+      get().checkPremiumStatus();
+    }
+  },
+
+  canAddPet: (currentPetCount: number) => {
+    const { isPremium } = get();
+    return isPremium || currentPetCount < FREE_PET_LIMIT;
+  },
+}));
+
+// Export constants for use elsewhere
+export const FREE_PET_LIMIT_COUNT = FREE_PET_LIMIT;

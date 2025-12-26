@@ -1,5 +1,5 @@
 // Home Screen
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { Plus, Calendar, PawPrint } from 'lucide-react-native';
+import { Plus, Calendar, PawPrint, Crown } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
 import { CareItem } from '@/lib/types';
 import {
@@ -24,8 +24,11 @@ import {
 import { PetCard } from '@/components/home/PetCard';
 import { CareItemRow } from '@/components/home/CareItemRow';
 import { AddCareItemSheet } from '@/components/AddCareItemSheet';
+import { AddPetWizard } from '@/components/AddPetWizard';
 import { PetDetailScreen } from '@/components/PetDetailScreen';
+import { PaywallScreen } from '@/components/PaywallScreen';
 import { useTranslation } from '@/lib/i18n';
+import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
 
 export function HomeScreen() {
   const c = useColors();
@@ -37,10 +40,25 @@ export function HomeScreen() {
   const careItems = useStore((s) => s.careItems);
   const refreshData = useStore((s) => s.refreshData);
 
+  // Premium state
+  const isPremium = usePremiumStore((s) => s.isPremium);
+  const canAddPet = usePremiumStore((s) => s.canAddPet);
+  const initializePremium = usePremiumStore((s) => s.initialize);
+  const isInitialized = usePremiumStore((s) => s.isInitialized);
+
   const [showAddSheet, setShowAddSheet] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [showAddPetWizard, setShowAddPetWizard] = useState(false);
   const [editingItem, setEditingItem] = useState<CareItem | undefined>();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+
+  // Initialize premium store
+  useEffect(() => {
+    if (!isInitialized) {
+      initializePremium();
+    }
+  }, [isInitialized, initializePremium]);
 
   // Get upcoming care items (next 14 days)
   const upcomingCareItems = useMemo(() => {
@@ -85,6 +103,26 @@ export function HomeScreen() {
   const handleCloseSheet = () => {
     setShowAddSheet(false);
     setEditingItem(undefined);
+  };
+
+  // Handle add pet button press - check premium limit
+  const handleAddPetPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    // Check if user can add more pets
+    if (canAddPet(pets.length)) {
+      // User can add pet - show wizard
+      setShowAddPetWizard(true);
+    } else {
+      // User has reached free limit - show paywall
+      setShowPaywall(true);
+    }
+  };
+
+  const handleAddPetComplete = () => {
+    setShowAddPetWizard(false);
+    // Refresh data to show new pet
+    refreshData();
   };
 
   // If a pet is selected, show detail screen
@@ -189,6 +227,72 @@ export function HomeScreen() {
                   />
                 </Animated.View>
               ))}
+
+              {/* Add Pet Card */}
+              <Animated.View
+                key="add-pet"
+                entering={FadeIn.duration(300).delay(pets.length * 50)}
+              >
+                <Pressable
+                  onPress={handleAddPetPress}
+                  style={{
+                    width: 160,
+                    height: 200,
+                    borderRadius: 20,
+                    borderWidth: 2,
+                    borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
+                    borderStyle: 'dashed',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 24,
+                      backgroundColor: c.accentLight,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: 12,
+                    }}
+                  >
+                    <Plus size={24} color={c.accent} strokeWidth={2} />
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: '600',
+                      color: c.text,
+                      marginBottom: 4,
+                    }}
+                  >
+                    {t('home_add_pet')}
+                  </Text>
+                  {!isPremium && pets.length >= FREE_PET_LIMIT_COUNT && (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 4,
+                        marginTop: 4,
+                      }}
+                    >
+                      <Crown size={12} color={c.accent} strokeWidth={2} />
+                      <Text
+                        style={{
+                          fontSize: 11,
+                          color: c.accent,
+                          fontWeight: '500',
+                        }}
+                      >
+                        Premium
+                      </Text>
+                    </View>
+                  )}
+                </Pressable>
+              </Animated.View>
             </ScrollView>
           </Animated.View>
 
@@ -242,6 +346,24 @@ export function HomeScreen() {
         visible={showAddSheet}
         onClose={handleCloseSheet}
         editItem={editingItem}
+      />
+
+      {/* Add Pet Wizard */}
+      <AddPetWizard
+        visible={showAddPetWizard}
+        onClose={() => setShowAddPetWizard(false)}
+        onComplete={handleAddPetComplete}
+      />
+
+      {/* Premium Paywall */}
+      <PaywallScreen
+        visible={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        onPurchaseSuccess={() => {
+          setShowPaywall(false);
+          // After successful purchase, show add pet wizard
+          setShowAddPetWizard(true);
+        }}
       />
     </View>
   );
