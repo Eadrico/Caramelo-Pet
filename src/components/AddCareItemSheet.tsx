@@ -220,7 +220,7 @@ export function AddCareItemSheet({
                   fontWeight: '600',
                 }}
               >
-                {isSaving ? 'Saving...' : t('settings_save')}
+                {isSaving ? t('common_saving') : t('settings_save')}
               </Text>
             </Pressable>
           </View>
@@ -230,51 +230,53 @@ export function AddCareItemSheet({
             contentContainerStyle={{ padding: 20, gap: 24 }}
             keyboardShouldPersistTaps="handled"
           >
-            {/* Pet Selector - Always first, always shown */}
-            <View>
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: '600',
-                  color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
-                }}
-              >
-                {editItem ? t('care_pet_label') : t('care_select_pets')}
-              </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 8, paddingRight: 20 }}
-              >
-                {pets.map((pet) => (
-                  <PetChip
-                    key={pet.id}
-                    pet={pet}
-                    selected={selectedPetIds.includes(pet.id)}
-                    onPress={() => {
-                      if (editItem) {
-                        // Edit mode: single selection
-                        setSelectedPetIds([pet.id]);
-                      } else {
-                        // Create mode: multiple selection
-                        setSelectedPetIds((prev) => {
-                          if (prev.includes(pet.id)) {
-                            return prev.filter((id) => id !== pet.id);
-                          } else {
-                            return [...prev, pet.id];
-                          }
-                        });
-                      }
-                      Haptics.selectionAsync();
-                    }}
-                    size="medium"
-                  />
-                ))}
-              </ScrollView>
-            </View>
+            {/* Pet Selector - Only show if no preselected pet or in edit mode */}
+            {(!preselectedPetId || editItem) && (
+              <View>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '600',
+                    color: c.textTertiary,
+                    marginBottom: 8,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  {editItem ? t('care_pet_label') : t('care_select_pets')}
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 8, paddingRight: 20 }}
+                >
+                  {pets.map((pet) => (
+                    <PetChip
+                      key={pet.id}
+                      pet={pet}
+                      selected={selectedPetIds.includes(pet.id)}
+                      onPress={() => {
+                        if (editItem) {
+                          // Edit mode: single selection
+                          setSelectedPetIds([pet.id]);
+                        } else {
+                          // Create mode: multiple selection
+                          setSelectedPetIds((prev) => {
+                            if (prev.includes(pet.id)) {
+                              return prev.filter((id) => id !== pet.id);
+                            } else {
+                              return [...prev, pet.id];
+                            }
+                          });
+                        }
+                        Haptics.selectionAsync();
+                      }}
+                      size="medium"
+                    />
+                  ))}
+                </ScrollView>
+              </View>
+            )}
 
             {/* Care Type */}
             <View>
@@ -454,13 +456,13 @@ export function AddCareItemSheet({
                 }}
               >
                 <Pressable onPress={() => setShowDatePicker(false)}>
-                  <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+                  <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
                 </Pressable>
                 <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-                  Due Date
+                  {t('common_due_date')}
                 </Text>
                 <Pressable onPress={() => setShowDatePicker(false)}>
-                  <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>Done</Text>
+                  <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
                 </Pressable>
               </View>
               <DateTimePicker

@@ -423,8 +423,8 @@ export function HomeScreen() {
             ) : (
               <EmptyState
                 icon={<Calendar size={32} color={c.accent} />}
-                title="No upcoming items"
-                description="Add care items or reminders to keep track of your pets"
+                title={t('home_no_upcoming_items')}
+                description={t('home_no_upcoming_items_desc')}
                 action={{ label: t('common_add'), onPress: handleAddPressUnified }}
               />
             )}

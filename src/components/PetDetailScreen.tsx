@@ -177,10 +177,10 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   };
 
   const handleDeleteReminder = (reminderId: string) => {
-    Alert.alert('Delete Reminder', 'Are you sure you want to delete this reminder?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('common_delete_reminder'), t('common_delete_reminder_confirm'), [
+      { text: t('common_cancel'), style: 'cancel' },
       {
-        text: 'Delete',
+        text: t('common_delete'),
         style: 'destructive',
         onPress: () => deleteReminder(reminderId),
       },
@@ -387,7 +387,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 onChangeText={(text) =>
                   setEditedPet((prev) => ({ ...prev, breed: text }))
                 }
-                placeholder="Enter breed"
+                placeholder={t('pet_details_enter_breed')}
                 colors={c}
                 isDark={isDark}
               />
@@ -408,7 +408,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     weightKg: text ? parseFloat(text) : undefined,
                   }))
                 }
-                placeholder="Enter weight"
+                placeholder={t('pet_details_enter_weight')}
                 keyboardType="numeric"
                 colors={c}
                 isDark={isDark}
@@ -423,7 +423,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 onChangeText={(text) =>
                   setEditedPet((prev) => ({ ...prev, microchipId: text }))
                 }
-                placeholder="Enter microchip ID"
+                placeholder={t('pet_details_enter_microchip')}
                 colors={c}
                 isDark={isDark}
               />
@@ -437,7 +437,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 onChangeText={(text) =>
                   setEditedPet((prev) => ({ ...prev, allergies: text }))
                 }
-                placeholder="Enter allergies"
+                placeholder={t('pet_details_enter_allergies')}
                 colors={c}
                 isDark={isDark}
               />
@@ -451,7 +451,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 onChangeText={(text) =>
                   setEditedPet((prev) => ({ ...prev, vetName: text }))
                 }
-                placeholder="Enter vet name"
+                placeholder={t('pet_details_enter_vet_name')}
                 colors={c}
                 isDark={isDark}
               />
@@ -465,7 +465,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 onChangeText={(text) =>
                   setEditedPet((prev) => ({ ...prev, vetPhone: text }))
                 }
-                placeholder="Enter phone number"
+                placeholder={t('pet_details_enter_phone')}
                 keyboardType="phone-pad"
                 colors={c}
                 isDark={isDark}
@@ -480,7 +480,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 onChangeText={(text) =>
                   setEditedPet((prev) => ({ ...prev, notes: text }))
                 }
-                placeholder="Add notes"
+                placeholder={t('pet_details_add_notes')}
                 multiline
                 colors={c}
                 isDark={isDark}
@@ -711,7 +711,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               }}
             >
               <Pressable onPress={() => setShowReminderModal(false)}>
-                <Text style={{ color: c.textSecondary, fontSize: 17 }}>Cancel</Text>
+                <Text style={{ color: c.textSecondary, fontSize: 17 }}>{t('common_cancel')}</Text>
               </Pressable>
               <Text
                 style={{
@@ -720,7 +720,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                   color: c.text,
                 }}
               >
-                New Reminder
+                {t('common_new_reminder')}
               </Text>
               <Pressable onPress={handleAddReminder}>
                 <Text
@@ -730,7 +730,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     fontWeight: '600',
                   }}
                 >
-                  Add
+                  {t('common_add')}
                 </Text>
               </Pressable>
             </View>
@@ -751,14 +751,14 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     letterSpacing: 0.5,
                   }}
                 >
-                  Title
+                  {t('common_title')}
                 </Text>
                 <RNTextInput
                   value={newReminder.title}
                   onChangeText={(text) =>
                     setNewReminder((prev) => ({ ...prev, title: text }))
                   }
-                  placeholder="e.g., Give medication"
+                  placeholder={t('care_reminder_title_placeholder')}
                   placeholderTextColor={c.textTertiary}
                   style={{
                     backgroundColor: isDark
@@ -786,14 +786,14 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     letterSpacing: 0.5,
                   }}
                 >
-                  Message (optional)
+                  {t('common_message_optional')}
                 </Text>
                 <RNTextInput
                   value={newReminder.message}
                   onChangeText={(text) =>
                     setNewReminder((prev) => ({ ...prev, message: text }))
                   }
-                  placeholder="Additional details..."
+                  placeholder={t('care_message_placeholder')}
                   placeholderTextColor={c.textTertiary}
                   multiline
                   numberOfLines={3}
@@ -825,7 +825,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     letterSpacing: 0.5,
                   }}
                 >
-                  Date & Time
+                  {t('common_date_time')}
                 </Text>
                 <View style={{ flexDirection: 'row', gap: 12 }}>
                   <Pressable
@@ -880,7 +880,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     letterSpacing: 0.5,
                   }}
                 >
-                  Repeat
+                  {t('common_repeat')}
                 </Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {(['none', 'daily', 'weekly', 'monthly'] as const).map((type) => (
@@ -918,7 +918,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                         }}
                       >
                         {type === 'none'
-                          ? 'Once'
+                          ? t('common_once')
                           : type.charAt(0).toUpperCase() + type.slice(1)}
                       </Text>
                     </Pressable>

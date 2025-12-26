@@ -178,7 +178,7 @@ export function PrimaryButton({
             letterSpacing: -0.2,
           }}
         >
-          {loading ? 'Loading...' : title}
+          {loading ? '...' : title}
         </Text>
       </LinearGradient>
     </AnimatedPressable>
@@ -461,7 +461,7 @@ export function ProgressIndicator({ current, total }: ProgressIndicatorProps) {
   const c = useColors();
 
   return (
-    <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
+    <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center', paddingTop: 12 }}>
       {Array.from({ length: total }).map((_, index) => (
         <View
           key={index}

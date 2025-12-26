@@ -27,6 +27,7 @@ import {
 } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
 import { CareType, formatDate, getCareTypeLabel } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n';
 import {
   GlassCard,
   PrimaryButton,
@@ -57,6 +58,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
 
   const name = useStore((s) => s.onboardingData.name);
   const careItems = useStore((s) => s.onboardingData.careItems);
@@ -301,7 +303,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
               paddingBottom: 8,
             }}
           >
-            <PrimaryButton title="Continue" onPress={onNext} />
+            <PrimaryButton title={t('onboarding_continue')} onPress={onNext} />
           </View>
         </SafeAreaView>
       </SafeAreaView>
@@ -433,12 +435,12 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                   letterSpacing: 0.5,
                 }}
               >
-                Notes (Optional)
+                {t('care_notes_label')}
               </Text>
               <RNTextInput
                 value={editNotes}
                 onChangeText={setEditNotes}
-                placeholder="Add any notes..."
+                placeholder={t('care_notes_placeholder')}
                 placeholderTextColor={c.textTertiary}
                 multiline
                 numberOfLines={3}

@@ -28,6 +28,7 @@ import {
   getSpeciesEmoji,
   CareType,
 } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n';
 import {
   GlassCard,
   PrimaryButton,
@@ -44,6 +45,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
 
   const onboardingData = useStore((s) => s.onboardingData);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
@@ -305,7 +307,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
                       letterSpacing: 0.5,
                     }}
                   >
-                    Upcoming Care
+                    {t('pet_details_upcoming_care')}
                   </Text>
                   <View style={{ gap: 8 }}>
                     {onboardingData.careItems.map((item, index) => (
@@ -399,7 +401,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
             }}
           >
             <PrimaryButton
-              title={isSaving ? 'Saving...' : 'Save Pet'}
+              title={isSaving ? t('common_saving') : t('onboarding_save_pet')}
               onPress={handleSave}
               disabled={isSaving}
               loading={isSaving}

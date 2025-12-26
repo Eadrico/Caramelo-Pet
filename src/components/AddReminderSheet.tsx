@@ -123,12 +123,12 @@ export function AddReminderSheet({
     if (!editItem) return;
 
     Alert.alert(
-      'Delete Reminder',
-      'Are you sure you want to delete this reminder?',
+      t('common_delete_reminder'),
+      t('common_delete_reminder_confirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common_cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common_delete'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -195,10 +195,10 @@ export function AddReminderSheet({
             }}
           >
             <Pressable onPress={onClose}>
-              <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+              <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-              {editItem ? 'Edit Reminder' : 'New Reminder'}
+              {editItem ? t('common_edit_reminder') : t('common_new_reminder')}
             </Text>
             <Pressable onPress={handleSave} disabled={!isValid || isSaving}>
               <Text
@@ -208,7 +208,7 @@ export function AddReminderSheet({
                   fontWeight: '600',
                 }}
               >
-                {isSaving ? 'Saving...' : editItem ? 'Save' : 'Add'}
+                {isSaving ? t('common_saving') : editItem ? t('settings_save') : t('common_add')}
               </Text>
             </Pressable>
           </View>
@@ -276,12 +276,12 @@ export function AddReminderSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                Title
+                {t('common_title')}
               </Text>
               <RNTextInput
                 value={title}
                 onChangeText={setTitle}
-                placeholder="e.g., Give medication"
+                placeholder={t('care_reminder_title_placeholder')}
                 placeholderTextColor={c.textTertiary}
                 style={{
                   fontSize: 17,
@@ -306,12 +306,12 @@ export function AddReminderSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                Message (optional)
+                {t('common_message_optional')}
               </Text>
               <RNTextInput
                 value={message}
                 onChangeText={setMessage}
-                placeholder="Additional details..."
+                placeholder={t('care_message_placeholder')}
                 placeholderTextColor={c.textTertiary}
                 multiline
                 numberOfLines={3}
@@ -340,7 +340,7 @@ export function AddReminderSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                Date & Time
+                {t('common_date_time')}
               </Text>
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 <Pressable
@@ -403,7 +403,7 @@ export function AddReminderSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                Repeat
+                {t('common_repeat')}
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                 {(['none', 'daily', 'weekly', 'monthly'] as const).map((type) => (
@@ -435,7 +435,7 @@ export function AddReminderSheet({
                       }}
                     >
                       {type === 'none'
-                        ? 'Once'
+                        ? t('common_once')
                         : type.charAt(0).toUpperCase() + type.slice(1)}
                     </Text>
                   </Pressable>
@@ -463,7 +463,7 @@ export function AddReminderSheet({
                     color: c.destructive,
                   }}
                 >
-                  Delete Reminder
+                  {t('common_delete_reminder')}
                 </Text>
               </Pressable>
             )}
@@ -500,13 +500,13 @@ export function AddReminderSheet({
                 }}
               >
                 <Pressable onPress={() => setShowDatePicker(false)}>
-                  <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+                  <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
                 </Pressable>
                 <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-                  Date
+                  {t('common_date')}
                 </Text>
                 <Pressable onPress={() => setShowDatePicker(false)}>
-                  <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>Done</Text>
+                  <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
                 </Pressable>
               </View>
               <DateTimePicker
@@ -559,13 +559,13 @@ export function AddReminderSheet({
                 }}
               >
                 <Pressable onPress={() => setShowTimePicker(false)}>
-                  <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+                  <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
                 </Pressable>
                 <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-                  Time
+                  {t('common_time')}
                 </Text>
                 <Pressable onPress={() => setShowTimePicker(false)}>
-                  <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>Done</Text>
+                  <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
                 </Pressable>
               </View>
               <DateTimePicker

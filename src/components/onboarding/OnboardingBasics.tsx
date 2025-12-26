@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useStore } from '@/lib/store';
 import { Species } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n';
 import {
   GlassCard,
   PrimaryButton,
@@ -30,6 +31,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
 
   const name = useStore((s) => s.onboardingData.name);
   const species = useStore((s) => s.onboardingData.species);
@@ -166,7 +168,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
               style={{ paddingHorizontal: 20, paddingBottom: 8 }}
             >
               <PrimaryButton
-                title="Continue"
+                title={t('onboarding_continue')}
                 onPress={onNext}
                 disabled={!isValid}
               />

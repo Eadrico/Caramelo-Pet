@@ -26,6 +26,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
 
   const name = useStore((s) => s.onboardingData.name);
   const photoUri = useStore((s) => s.onboardingData.photoUri);
@@ -207,7 +208,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
             entering={FadeInDown.duration(400).delay(300)}
             style={{ paddingHorizontal: 20, paddingBottom: 8, gap: 12 }}
           >
-            <PrimaryButton title="Continue" onPress={onNext} />
+            <PrimaryButton title={t('onboarding_continue')} onPress={onNext} />
             {!photoUri && (
               <Pressable
                 onPress={onNext}

@@ -17,6 +17,7 @@ import * as Haptics from 'expo-haptics';
 import { Calendar, Scale } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
 import { formatDate } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n';
 import {
   GlassCard,
   PrimaryButton,
@@ -36,6 +37,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
 
   const name = useStore((s) => s.onboardingData.name);
   const birthdate = useStore((s) => s.onboardingData.birthdate);
@@ -183,7 +185,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                       fontWeight: birthdate ? '500' : '400',
                     }}
                   >
-                    {birthdate ? formatDate(birthdate) : 'Select birthdate'}
+                    {birthdate ? formatDate(birthdate) : t('onboarding_select_birthdate')}
                   </Text>
                 </Pressable>
               </View>
@@ -250,14 +252,14 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
             entering={FadeInDown.duration(400).delay(300)}
             style={{ paddingHorizontal: 20, paddingBottom: 8, gap: 12 }}
           >
-            <PrimaryButton title="Continue" onPress={onNext} />
+            <PrimaryButton title={t('onboarding_continue')} onPress={onNext} />
             {!birthdate && !weightKg && (
               <Pressable
                 onPress={onNext}
                 style={{ paddingVertical: 12, alignItems: 'center' }}
               >
                 <Text style={{ fontSize: 15, color: c.textSecondary, fontWeight: '500' }}>
-                  Skip for now
+                  {t('onboarding_skip_for_now')}
                 </Text>
               </Pressable>
             )}

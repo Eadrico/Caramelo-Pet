@@ -11,6 +11,7 @@ import { PawPrint, ChevronRight } from 'lucide-react-native';
 import { BlurView } from 'expo-blur';
 import { Pet, CareItem, formatRelativeDate, getSpeciesEmoji } from '@/lib/types';
 import { useColors } from '@/components/design-system';
+import { useTranslation } from '@/lib/i18n';
 
 interface PetCardProps {
   pet: Pet;
@@ -24,6 +25,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -114,7 +116,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
           >
             {pet.name}
           </Text>
-          {nextCareItem ? (
+          {nextCareItem && (
             <Text
               style={{
                 fontSize: 13,
@@ -123,15 +125,6 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
               numberOfLines={1}
             >
               {nextCareItem.title} • {formatRelativeDate(nextCareItem.dueDate)}
-            </Text>
-          ) : (
-            <Text
-              style={{
-                fontSize: 13,
-                color: c.textTertiary,
-              }}
-            >
-              No upcoming care
             </Text>
           )}
         </View>

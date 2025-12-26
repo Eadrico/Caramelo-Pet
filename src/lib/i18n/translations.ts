@@ -37,10 +37,20 @@ type TranslationKey =
   | 'onboarding_step1_subtitle'
   | 'onboarding_pet_name'
   | 'onboarding_pet_name_placeholder'
+  | 'onboarding_pet_name_example'
   | 'onboarding_species'
   | 'onboarding_species_dog'
   | 'onboarding_species_cat'
   | 'onboarding_species_other'
+  | 'onboarding_species_question'
+  | 'onboarding_add_pet_title'
+  | 'onboarding_add_pet_subtitle'
+  | 'onboarding_continue'
+  | 'onboarding_select_birthdate'
+  | 'onboarding_weight_placeholder'
+  | 'onboarding_key_info_title'
+  | 'onboarding_key_info_subtitle'
+  | 'onboarding_skip_for_now'
   | 'onboarding_step2_title'
   | 'onboarding_step2_subtitle'
   | 'onboarding_add_photo'
@@ -115,6 +125,14 @@ type TranslationKey =
   | 'pet_details_no_reminders'
   | 'pet_details_add_reminder'
   | 'pet_details_no_upcoming'
+  | 'pet_details_vet_phone'
+  | 'pet_details_enter_breed'
+  | 'pet_details_enter_weight'
+  | 'pet_details_enter_microchip'
+  | 'pet_details_enter_allergies'
+  | 'pet_details_enter_vet_name'
+  | 'pet_details_enter_phone'
+  | 'pet_details_add_notes'
   // Care Item Management
   | 'care_add_item'
   | 'care_edit_item'
@@ -129,6 +147,8 @@ type TranslationKey =
   | 'care_select_pets'
   | 'care_title_placeholder'
   | 'care_notes_placeholder'
+  | 'care_reminder_title_placeholder'
+  | 'care_message_placeholder'
   // Care types
   | 'care_vaccine'
   | 'care_grooming'
@@ -176,6 +196,27 @@ type TranslationKey =
   | 'common_select_language'
   | 'common_select_theme'
   | 'common_system_default'
+  | 'common_enter'
+  | 'common_saving'
+  | 'common_done'
+  | 'common_date'
+  | 'common_time'
+  | 'common_title'
+  | 'common_message'
+  | 'common_message_optional'
+  | 'common_date_time'
+  | 'common_repeat'
+  | 'common_once'
+  | 'common_new_reminder'
+  | 'common_edit_reminder'
+  | 'common_delete_reminder'
+  | 'common_delete_reminder_confirm'
+  | 'common_add_reminder'
+  | 'common_loading'
+  | 'common_due_date'
+  | 'onboarding_save_pet'
+  | 'home_no_upcoming_items'
+  | 'home_no_upcoming_items_desc'
   // Pet Details - Delete Confirmation
   | 'pet_details_delete_confirm';
 
@@ -197,7 +238,17 @@ const en: Translations = {
   onboarding_step1_subtitle: "Let's start with the basics",
   onboarding_pet_name: 'Name',
   onboarding_pet_name_placeholder: 'Enter name',
+  onboarding_pet_name_example: 'e.g., Max, Luna, Buddy',
   onboarding_species: 'Species',
+  onboarding_species_question: 'What type of pet?',
+  onboarding_add_pet_title: 'Add Your Pet',
+  onboarding_add_pet_subtitle: "Let's start with the basics.",
+  onboarding_continue: 'Continue',
+  onboarding_select_birthdate: 'Select birthdate',
+  onboarding_weight_placeholder: '0.0',
+  onboarding_key_info_title: 'Key Info',
+  onboarding_key_info_subtitle: 'Help us know {name} better. All optional.',
+  onboarding_skip_for_now: 'Skip for now',
   onboarding_species_dog: 'Dog',
   onboarding_species_cat: 'Cat',
   onboarding_species_other: 'Other',
@@ -276,6 +327,14 @@ const en: Translations = {
   pet_details_no_reminders: 'No reminders set',
   pet_details_add_reminder: 'Add Reminder',
   pet_details_no_upcoming: 'No upcoming care items',
+  pet_details_vet_phone: 'Vet Phone',
+  pet_details_enter_breed: 'Enter breed',
+  pet_details_enter_weight: 'Enter weight',
+  pet_details_enter_microchip: 'Enter microchip ID',
+  pet_details_enter_allergies: 'Enter allergies',
+  pet_details_enter_vet_name: 'Enter vet name',
+  pet_details_enter_phone: 'Enter phone number',
+  pet_details_add_notes: 'Add notes',
   // Care Item Management
   care_add_item: 'Add Care Item',
   care_edit_item: 'Edit Care Item',
@@ -290,6 +349,8 @@ const en: Translations = {
   care_select_pets: 'Select Pet(s)',
   care_title_placeholder: 'e.g., Annual vaccination',
   care_notes_placeholder: 'Add any notes...',
+  care_reminder_title_placeholder: 'e.g., Give medication',
+  care_message_placeholder: 'Additional details...',
   // Care types
   care_vaccine: 'Vaccine',
   care_grooming: 'Grooming',
@@ -326,6 +387,27 @@ const en: Translations = {
   common_select_language: 'Select Language',
   common_select_theme: 'Select Theme',
   common_system_default: 'System Default',
+  common_enter: 'Enter',
+  common_saving: 'Saving...',
+  common_done: 'Done',
+  common_date: 'Date',
+  common_time: 'Time',
+  common_title: 'Title',
+  common_message: 'Message',
+  common_message_optional: 'Message (optional)',
+  common_date_time: 'Date & Time',
+  common_repeat: 'Repeat',
+  common_once: 'Once',
+  common_new_reminder: 'New Reminder',
+  common_edit_reminder: 'Edit Reminder',
+  common_delete_reminder: 'Delete Reminder',
+  common_delete_reminder_confirm: 'Are you sure you want to delete this reminder?',
+  common_add_reminder: 'Add Reminder',
+  common_loading: 'Loading...',
+  common_due_date: 'Due Date',
+  onboarding_save_pet: 'Save Pet',
+  home_no_upcoming_items: 'No upcoming items',
+  home_no_upcoming_items_desc: 'Add care items or reminders to keep track of your pets',
   // Settings - Premium
   settings_premium: 'Premium',
   settings_premium_active: 'Premium Active',
@@ -355,7 +437,17 @@ const pt: Translations = {
   onboarding_step1_subtitle: 'Vamos começar com o básico',
   onboarding_pet_name: 'Nome',
   onboarding_pet_name_placeholder: 'Digite o nome',
+  onboarding_pet_name_example: 'Ex: Max, Luna, Buddy',
   onboarding_species: 'Espécie',
+  onboarding_species_question: 'Que tipo de pet?',
+  onboarding_add_pet_title: 'Adicione Seu Pet',
+  onboarding_add_pet_subtitle: 'Vamos começar com o básico.',
+  onboarding_continue: 'Continuar',
+  onboarding_select_birthdate: 'Selecione a data de nascimento',
+  onboarding_weight_placeholder: '0,0',
+  onboarding_key_info_title: 'Informações Principais',
+  onboarding_key_info_subtitle: 'Ajude-nos a conhecer {name} melhor. Tudo opcional.',
+  onboarding_skip_for_now: 'Pular por enquanto',
   onboarding_species_dog: 'Cachorro',
   onboarding_species_cat: 'Gato',
   onboarding_species_other: 'Outro',
@@ -434,6 +526,14 @@ const pt: Translations = {
   pet_details_no_reminders: 'Nenhum lembrete configurado',
   pet_details_add_reminder: 'Adicionar Lembrete',
   pet_details_no_upcoming: 'Nenhum cuidado agendado',
+  pet_details_vet_phone: 'Telefone do Veterinário',
+  pet_details_enter_breed: 'Digite a raça',
+  pet_details_enter_weight: 'Digite o peso',
+  pet_details_enter_microchip: 'Digite o ID do microchip',
+  pet_details_enter_allergies: 'Digite as alergias',
+  pet_details_enter_vet_name: 'Digite o nome do veterinário',
+  pet_details_enter_phone: 'Digite o número de telefone',
+  pet_details_add_notes: 'Adicionar notas',
   // Care Item Management
   care_add_item: 'Adicionar Cuidado',
   care_edit_item: 'Editar Cuidado',
@@ -448,6 +548,8 @@ const pt: Translations = {
   care_select_pets: 'Selecione Pet(s)',
   care_title_placeholder: 'Ex: Vacinação anual',
   care_notes_placeholder: 'Adicione notas...',
+  care_reminder_title_placeholder: 'Ex: Dar medicação',
+  care_message_placeholder: 'Detalhes adicionais...',
   // Care types
   care_vaccine: 'Vacina',
   care_grooming: 'Banho/Tosa',
@@ -484,6 +586,27 @@ const pt: Translations = {
   common_select_language: 'Selecionar Idioma',
   common_select_theme: 'Selecionar Tema',
   common_system_default: 'Padrão do Sistema',
+  common_enter: 'Digite',
+  common_saving: 'Salvando...',
+  common_done: 'Concluído',
+  common_date: 'Data',
+  common_time: 'Hora',
+  common_title: 'Título',
+  common_message: 'Mensagem',
+  common_message_optional: 'Mensagem (opcional)',
+  common_date_time: 'Data e Hora',
+  common_repeat: 'Repetir',
+  common_once: 'Uma vez',
+  common_new_reminder: 'Novo Lembrete',
+  common_edit_reminder: 'Editar Lembrete',
+  common_delete_reminder: 'Deletar Lembrete',
+  common_delete_reminder_confirm: 'Tem certeza que deseja deletar este lembrete?',
+  common_add_reminder: 'Adicionar Lembrete',
+  common_loading: 'Carregando...',
+  common_due_date: 'Data de Vencimento',
+  onboarding_save_pet: 'Salvar Pet',
+  home_no_upcoming_items: 'Nenhum item agendado',
+  home_no_upcoming_items_desc: 'Adicione cuidados ou lembretes para acompanhar seus pets',
   // Settings - Premium
   settings_premium: 'Premium',
   settings_premium_active: 'Premium Ativo',
@@ -513,7 +636,17 @@ const es: Translations = {
   onboarding_step1_subtitle: 'Empecemos con lo básico',
   onboarding_pet_name: 'Nombre',
   onboarding_pet_name_placeholder: 'Ingresa el nombre',
+  onboarding_pet_name_example: 'Ej: Max, Luna, Buddy',
   onboarding_species: 'Especie',
+  onboarding_species_question: '¿Qué tipo de mascota?',
+  onboarding_add_pet_title: 'Agrega Tu Mascota',
+  onboarding_add_pet_subtitle: 'Empecemos con lo básico.',
+  onboarding_continue: 'Continuar',
+  onboarding_select_birthdate: 'Selecciona la fecha de nacimiento',
+  onboarding_weight_placeholder: '0,0',
+  onboarding_key_info_title: 'Información Clave',
+  onboarding_key_info_subtitle: 'Ayúdanos a conocer mejor a {name}. Todo opcional.',
+  onboarding_skip_for_now: 'Omitir por ahora',
   onboarding_species_dog: 'Perro',
   onboarding_species_cat: 'Gato',
   onboarding_species_other: 'Otro',
@@ -592,6 +725,14 @@ const es: Translations = {
   pet_details_no_reminders: 'Sin recordatorios configurados',
   pet_details_add_reminder: 'Agregar Recordatorio',
   pet_details_no_upcoming: 'Sin cuidados próximos',
+  pet_details_vet_phone: 'Teléfono del Veterinario',
+  pet_details_enter_breed: 'Ingresa la raza',
+  pet_details_enter_weight: 'Ingresa el peso',
+  pet_details_enter_microchip: 'Ingresa el ID del microchip',
+  pet_details_enter_allergies: 'Ingresa las alergias',
+  pet_details_enter_vet_name: 'Ingresa el nombre del veterinario',
+  pet_details_enter_phone: 'Ingresa el número de teléfono',
+  pet_details_add_notes: 'Agregar notas',
   // Care Item Management
   care_add_item: 'Agregar Cuidado',
   care_edit_item: 'Editar Cuidado',
@@ -606,6 +747,8 @@ const es: Translations = {
   care_select_pets: 'Selecciona Mascota(s)',
   care_title_placeholder: 'Ej: Vacunación anual',
   care_notes_placeholder: 'Agrega notas...',
+  care_reminder_title_placeholder: 'Ej: Dar medicación',
+  care_message_placeholder: 'Detalles adicionales...',
   // Care types
   care_vaccine: 'Vacuna',
   care_grooming: 'Baño/Peluquería',
@@ -642,6 +785,27 @@ const es: Translations = {
   common_select_language: 'Seleccionar Idioma',
   common_select_theme: 'Seleccionar Tema',
   common_system_default: 'Predeterminado del Sistema',
+  common_enter: 'Ingresa',
+  common_saving: 'Guardando...',
+  common_done: 'Hecho',
+  common_date: 'Fecha',
+  common_time: 'Hora',
+  common_title: 'Título',
+  common_message: 'Mensaje',
+  common_message_optional: 'Mensaje (opcional)',
+  common_date_time: 'Fecha y Hora',
+  common_repeat: 'Repetir',
+  common_once: 'Una vez',
+  common_new_reminder: 'Nuevo Recordatorio',
+  common_edit_reminder: 'Editar Recordatorio',
+  common_delete_reminder: 'Eliminar Recordatorio',
+  common_delete_reminder_confirm: '¿Estás seguro de que quieres eliminar este recordatorio?',
+  common_add_reminder: 'Agregar Recordatorio',
+  common_loading: 'Cargando...',
+  common_due_date: 'Fecha de Vencimiento',
+  onboarding_save_pet: 'Guardar Mascota',
+  home_no_upcoming_items: 'Sin items próximos',
+  home_no_upcoming_items_desc: 'Agrega cuidados o recordatorios para llevar un registro de tus mascotas',
   // Settings - Premium
   settings_premium: 'Premium',
   settings_premium_active: 'Premium Activo',
@@ -671,7 +835,17 @@ const fr: Translations = {
   onboarding_step1_subtitle: 'Commençons par les bases',
   onboarding_pet_name: 'Nom',
   onboarding_pet_name_placeholder: 'Entrez le nom',
+  onboarding_pet_name_example: 'Ex: Max, Luna, Buddy',
   onboarding_species: 'Espèce',
+  onboarding_species_question: 'Quel type d\'animal?',
+  onboarding_add_pet_title: 'Ajoutez Votre Animal',
+  onboarding_add_pet_subtitle: 'Commençons par les bases.',
+  onboarding_continue: 'Continuer',
+  onboarding_select_birthdate: 'Sélectionnez la date de naissance',
+  onboarding_weight_placeholder: '0,0',
+  onboarding_key_info_title: 'Informations Clés',
+  onboarding_key_info_subtitle: 'Aidez-nous à mieux connaître {name}. Tout est optionnel.',
+  onboarding_skip_for_now: 'Passer pour l\'instant',
   onboarding_species_dog: 'Chien',
   onboarding_species_cat: 'Chat',
   onboarding_species_other: 'Autre',
@@ -750,6 +924,14 @@ const fr: Translations = {
   pet_details_no_reminders: 'Aucun rappel configuré',
   pet_details_add_reminder: 'Ajouter un Rappel',
   pet_details_no_upcoming: 'Aucun soin à venir',
+  pet_details_vet_phone: 'Téléphone du Vétérinaire',
+  pet_details_enter_breed: 'Entrez la race',
+  pet_details_enter_weight: 'Entrez le poids',
+  pet_details_enter_microchip: 'Entrez l\'ID de la puce',
+  pet_details_enter_allergies: 'Entrez les allergies',
+  pet_details_enter_vet_name: 'Entrez le nom du vétérinaire',
+  pet_details_enter_phone: 'Entrez le numéro de téléphone',
+  pet_details_add_notes: 'Ajouter des notes',
   // Care Item Management
   care_add_item: 'Ajouter un Soin',
   care_edit_item: 'Modifier le Soin',
@@ -764,6 +946,8 @@ const fr: Translations = {
   care_select_pets: 'Sélectionnez Animal(s)',
   care_title_placeholder: 'Ex: Vaccination annuelle',
   care_notes_placeholder: 'Ajoutez des notes...',
+  care_reminder_title_placeholder: 'Ex: Donner un médicament',
+  care_message_placeholder: 'Détails supplémentaires...',
   // Care types
   care_vaccine: 'Vaccin',
   care_grooming: 'Toilettage',
@@ -800,6 +984,27 @@ const fr: Translations = {
   common_select_language: 'Sélectionner la Langue',
   common_select_theme: 'Sélectionner le Thème',
   common_system_default: 'Par Défaut du Système',
+  common_enter: 'Entrez',
+  common_saving: 'Enregistrement...',
+  common_done: 'Terminé',
+  common_date: 'Date',
+  common_time: 'Heure',
+  common_title: 'Titre',
+  common_message: 'Message',
+  common_message_optional: 'Message (optionnel)',
+  common_date_time: 'Date et Heure',
+  common_repeat: 'Répéter',
+  common_once: 'Une fois',
+  common_new_reminder: 'Nouveau Rappel',
+  common_edit_reminder: 'Modifier le Rappel',
+  common_delete_reminder: 'Supprimer le Rappel',
+  common_delete_reminder_confirm: 'Êtes-vous sûr de vouloir supprimer ce rappel?',
+  common_add_reminder: 'Ajouter un Rappel',
+  common_loading: 'Chargement...',
+  common_due_date: 'Date d\'Expiration',
+  onboarding_save_pet: 'Enregistrer l\'Animal',
+  home_no_upcoming_items: 'Aucun élément à venir',
+  home_no_upcoming_items_desc: 'Ajoutez des soins ou des rappels pour suivre vos animaux',
   // Settings - Premium
   settings_premium: 'Premium',
   settings_premium_active: 'Premium Actif',
@@ -829,7 +1034,17 @@ const zh: Translations = {
   onboarding_step1_subtitle: '让我们从基本信息开始',
   onboarding_pet_name: '名字',
   onboarding_pet_name_placeholder: '输入名字',
+  onboarding_pet_name_example: '例如：Max, Luna, Buddy',
   onboarding_species: '种类',
+  onboarding_species_question: '什么类型的宠物？',
+  onboarding_add_pet_title: '添加您的宠物',
+  onboarding_add_pet_subtitle: '让我们从基本信息开始。',
+  onboarding_continue: '继续',
+  onboarding_select_birthdate: '选择出生日期',
+  onboarding_weight_placeholder: '0.0',
+  onboarding_key_info_title: '关键信息',
+  onboarding_key_info_subtitle: '帮助我们更好地了解{name}。所有信息都是可选的。',
+  onboarding_skip_for_now: '暂时跳过',
   onboarding_species_dog: '狗',
   onboarding_species_cat: '猫',
   onboarding_species_other: '其他',
@@ -908,6 +1123,14 @@ const zh: Translations = {
   pet_details_no_reminders: '未设置提醒',
   pet_details_add_reminder: '添加提醒',
   pet_details_no_upcoming: '无即将护理项目',
+  pet_details_vet_phone: '兽医电话',
+  pet_details_enter_breed: '输入品种',
+  pet_details_enter_weight: '输入体重',
+  pet_details_enter_microchip: '输入芯片ID',
+  pet_details_enter_allergies: '输入过敏症',
+  pet_details_enter_vet_name: '输入兽医姓名',
+  pet_details_enter_phone: '输入电话号码',
+  pet_details_add_notes: '添加备注',
   // Care Item Management
   care_add_item: '添加护理',
   care_edit_item: '编辑护理',
@@ -922,6 +1145,8 @@ const zh: Translations = {
   care_select_pets: '选择宠物',
   care_title_placeholder: '例如：年度接种',
   care_notes_placeholder: '添加备注...',
+  care_reminder_title_placeholder: '例如：给药',
+  care_message_placeholder: '其他详细信息...',
   // Care types
   care_vaccine: '疫苗',
   care_grooming: '美容',
@@ -958,6 +1183,27 @@ const zh: Translations = {
   common_select_language: '选择语言',
   common_select_theme: '选择主题',
   common_system_default: '跟随系统',
+  common_enter: '输入',
+  common_saving: '保存中...',
+  common_done: '完成',
+  common_date: '日期',
+  common_time: '时间',
+  common_title: '标题',
+  common_message: '消息',
+  common_message_optional: '消息（可选）',
+  common_date_time: '日期和时间',
+  common_repeat: '重复',
+  common_once: '一次',
+  common_new_reminder: '新提醒',
+  common_edit_reminder: '编辑提醒',
+  common_delete_reminder: '删除提醒',
+  common_delete_reminder_confirm: '您确定要删除此提醒吗？',
+  common_add_reminder: '添加提醒',
+  common_loading: '加载中...',
+  common_due_date: '截止日期',
+  onboarding_save_pet: '保存宠物',
+  home_no_upcoming_items: '无即将到来的项目',
+  home_no_upcoming_items_desc: '添加护理项目或提醒来追踪您的宠物',
   // Settings - Premium
   settings_premium: '高级版',
   settings_premium_active: '高级版已激活',
