@@ -296,10 +296,11 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
           <LinearGradient
             colors={
               isDark
-                ? ['transparent', 'rgba(12, 10, 9, 0.9)', '#0C0A09']
-                : ['transparent', 'rgba(245, 242, 238, 0.9)', '#F5F2EE']
+                ? ['transparent', '#0C0A09']
+                : ['transparent', '#F5F2EE']
             }
-            style={{ paddingTop: 40, paddingHorizontal: 20, paddingBottom: 8 }}
+            locations={[0, 0.3]}
+            style={{ paddingTop: 60, paddingHorizontal: 20, paddingBottom: 8 }}
           >
             <PrimaryButton title="Continue" onPress={onNext} />
           </LinearGradient>
