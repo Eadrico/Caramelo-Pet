@@ -1,13 +1,13 @@
 // IntroView - Welcome splash screen
 import React from 'react';
-import { View, Text, useColorScheme } from 'react-native';
+import { View, Text, useColorScheme, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   FadeInDown,
   FadeInUp,
 } from 'react-native-reanimated';
-import { Heart, PawPrint, Bell, Calendar } from 'lucide-react-native';
+import { PawPrint, Bell, Calendar } from 'lucide-react-native';
 import { useColors, PrimaryButton } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';
 
@@ -66,20 +66,17 @@ export function IntroView({ onContinue }: IntroViewProps) {
                 width: 120,
                 height: 120,
                 borderRadius: 36,
-                backgroundColor: c.accentLight,
-                alignItems: 'center',
-                justifyContent: 'center',
+                overflow: 'hidden',
                 shadowColor: c.accent,
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.2,
                 shadowRadius: 24,
               }}
             >
-              <Heart
-                size={56}
-                color={c.accent}
-                strokeWidth={1.5}
-                fill={c.accent}
+              <Image
+                source={require('../../assets/loki.png')}
+                style={{ width: 120, height: 120 }}
+                resizeMode="cover"
               />
             </View>
           </Animated.View>
