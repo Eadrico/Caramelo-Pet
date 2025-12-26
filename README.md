@@ -4,6 +4,10 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
 
 ## Features (Release 1 - MVP)
 
+- **Tab Navigation**: Clean bottom navigation with two main sections
+  - Home tab (house icon): Pet list and care management
+  - Settings tab (gear icon): User preferences and profile
+
 - **First Pet Onboarding**: A beautiful 5-step wizard to add your first pet
   - Pet basics (name + species)
   - Photo (optional)
@@ -22,6 +26,17 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
   - Set reminders with notifications
   - View upcoming care items for this pet
   - Delete pet with confirmation
+
+- **Settings Screen**: User preferences and profile management
+  - **User Profile Section**
+    - Profile photo (tap to change)
+    - Name, email, phone (optional fields with edit modals)
+  - **Preferences Section**
+    - Language picker (System default, Portuguese, English)
+    - Theme picker (System, Light, Dark)
+  - **Danger Zone**
+    - Reset app button with confirmation modal
+    - Clears all data and returns to onboarding
 
 - **Reminders & Notifications**
   - Create reminders for pet care tasks
@@ -50,7 +65,10 @@ The app uses a refined Liquid Glass aesthetic with:
 src/
 ├── app/
 │   ├── _layout.tsx       # Root layout with providers
-│   ├── index.tsx         # Main entry - routes between onboarding/home
+│   ├── (tabs)/
+│   │   ├── _layout.tsx   # Tab navigation layout
+│   │   ├── index.tsx     # Home tab - pet list
+│   │   └── settings.tsx  # Settings tab
 │   └── +not-found.tsx    # 404 screen
 ├── components/
 │   ├── design-system.tsx # Core UI components (GlassCard, PrimaryButton, etc.)
@@ -71,6 +89,7 @@ src/
     ├── types.ts          # TypeScript types (Pet, CareItem, Reminder, etc.)
     ├── storage.ts        # AsyncStorage persistence + notifications
     ├── store.ts          # Zustand state management
+    ├── settings-store.ts # Settings/preferences state (theme, language, profile)
     └── cn.ts             # Classname utility
 ```
 

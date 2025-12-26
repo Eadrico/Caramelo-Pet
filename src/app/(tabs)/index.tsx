@@ -1,4 +1,4 @@
-// Main App Screen - Routes between Onboarding and Home
+// Home Tab - Pet List
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, useColorScheme } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,7 +8,7 @@ import { OnboardingWizard } from '@/components/OnboardingWizard';
 import { HomeScreen } from '@/components/HomeScreen';
 import { useColors } from '@/components/design-system';
 
-export default function AppScreen() {
+export default function HomeTab() {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
