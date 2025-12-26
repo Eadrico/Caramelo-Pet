@@ -29,7 +29,6 @@ import {
   User,
   Mail,
   Phone,
-  Camera,
   Globe,
   Moon,
   Sun,
@@ -774,24 +773,6 @@ export default function SettingsScreen() {
                 ) : (
                   <User size={36} color={c.accent} strokeWidth={1.5} />
                 )}
-              </View>
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 16,
-                  right: '50%',
-                  marginRight: -44,
-                  width: 28,
-                  height: 28,
-                  borderRadius: 14,
-                  backgroundColor: c.accent,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderWidth: 2,
-                  borderColor: c.surface,
-                }}
-              >
-                <Camera size={14} color="#FFFFFF" strokeWidth={2} />
               </View>
               <Text
                 style={{
