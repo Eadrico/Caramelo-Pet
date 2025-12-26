@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
+  Image,
   ScrollView,
   Pressable,
   useColorScheme,
@@ -237,16 +238,27 @@ export function HomeScreen() {
           }}
         >
           <View>
-            <Text
-              style={{
-                fontSize: 34,
-                fontWeight: '700',
-                color: c.text,
-                letterSpacing: -0.8,
-              }}
-            >
-              Caramelo
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image
+                source={require('../../assets/Loki_log.png')}
+                style={{
+                  width: 34,
+                  height: 34,
+                  marginRight: 8,
+                  resizeMode: 'contain',
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: 34,
+                  fontWeight: '700',
+                  color: c.text,
+                  letterSpacing: -0.8,
+                }}
+              >
+                Caramelo
+              </Text>
+            </View>
             <Text
               style={{
                 fontSize: 15,
