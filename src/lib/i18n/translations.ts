@@ -85,6 +85,7 @@ type TranslationKey =
   | 'home_add_care_desc'
   | 'home_pets_count'
   | 'home_upcoming_count'
+  | 'home_premium_badge'
   | 'common_add'
   // Settings
   | 'settings_title'
@@ -133,6 +134,10 @@ type TranslationKey =
   | 'pet_details_enter_vet_name'
   | 'pet_details_enter_phone'
   | 'pet_details_add_notes'
+  | 'pet_details_not_found'
+  | 'pet_species_dog'
+  | 'pet_species_cat'
+  | 'pet_species_other'
   // Care Item Management
   | 'care_add_item'
   | 'care_edit_item'
@@ -286,6 +291,7 @@ const en: Translations = {
   home_add_care_desc: 'Schedule vaccines, vet visits, and more',
   home_pets_count: '{count} pet(s)',
   home_upcoming_count: '{count} upcoming',
+  home_premium_badge: 'Premium',
   common_add: 'Add',
   // Settings
   settings_title: 'Settings',
@@ -335,6 +341,10 @@ const en: Translations = {
   pet_details_enter_vet_name: 'Enter vet name',
   pet_details_enter_phone: 'Enter phone number',
   pet_details_add_notes: 'Add notes',
+  pet_details_not_found: 'Pet not found',
+  pet_species_dog: 'Dog',
+  pet_species_cat: 'Cat',
+  pet_species_other: 'Pet',
   // Care Item Management
   care_add_item: 'Add Care Item',
   care_edit_item: 'Edit Care Item',
@@ -485,6 +495,7 @@ const pt: Translations = {
   home_add_care_desc: 'Agende vacinas, consultas e mais',
   home_pets_count: '{count} pet(s)',
   home_upcoming_count: '{count} agendados',
+  home_premium_badge: 'Premium',
   common_add: 'Adicionar',
   // Settings
   settings_title: 'Configurações',
@@ -534,6 +545,10 @@ const pt: Translations = {
   pet_details_enter_vet_name: 'Digite o nome do veterinário',
   pet_details_enter_phone: 'Digite o número de telefone',
   pet_details_add_notes: 'Adicionar notas',
+  pet_details_not_found: 'Pet não encontrado',
+  pet_species_dog: 'Cachorro',
+  pet_species_cat: 'Gato',
+  pet_species_other: 'Pet',
   // Care Item Management
   care_add_item: 'Adicionar Cuidado',
   care_edit_item: 'Editar Cuidado',
@@ -684,6 +699,7 @@ const es: Translations = {
   home_add_care_desc: 'Programa vacunas, citas y más',
   home_pets_count: '{count} mascota(s)',
   home_upcoming_count: '{count} programados',
+  home_premium_badge: 'Premium',
   common_add: 'Agregar',
   // Settings
   settings_title: 'Ajustes',
@@ -733,6 +749,10 @@ const es: Translations = {
   pet_details_enter_vet_name: 'Ingresa el nombre del veterinario',
   pet_details_enter_phone: 'Ingresa el número de teléfono',
   pet_details_add_notes: 'Agregar notas',
+  pet_details_not_found: 'Mascota no encontrada',
+  pet_species_dog: 'Perro',
+  pet_species_cat: 'Gato',
+  pet_species_other: 'Mascota',
   // Care Item Management
   care_add_item: 'Agregar Cuidado',
   care_edit_item: 'Editar Cuidado',
@@ -883,6 +903,7 @@ const fr: Translations = {
   home_add_care_desc: 'Planifier vaccins, visites et plus',
   home_pets_count: '{count} animal(aux)',
   home_upcoming_count: '{count} à venir',
+  home_premium_badge: 'Premium',
   common_add: 'Ajouter',
   // Settings
   settings_title: 'Paramètres',
@@ -932,6 +953,10 @@ const fr: Translations = {
   pet_details_enter_vet_name: 'Entrez le nom du vétérinaire',
   pet_details_enter_phone: 'Entrez le numéro de téléphone',
   pet_details_add_notes: 'Ajouter des notes',
+  pet_details_not_found: 'Animal non trouvé',
+  pet_species_dog: 'Chien',
+  pet_species_cat: 'Chat',
+  pet_species_other: 'Animal',
   // Care Item Management
   care_add_item: 'Ajouter un Soin',
   care_edit_item: 'Modifier le Soin',
@@ -1082,6 +1107,7 @@ const zh: Translations = {
   home_add_care_desc: '安排疫苗、就诊等',
   home_pets_count: '{count}只宠物',
   home_upcoming_count: '{count}项待办',
+  home_premium_badge: '高级版',
   common_add: '添加',
   // Settings
   settings_title: '设置',
@@ -1131,6 +1157,10 @@ const zh: Translations = {
   pet_details_enter_vet_name: '输入兽医姓名',
   pet_details_enter_phone: '输入电话号码',
   pet_details_add_notes: '添加备注',
+  pet_details_not_found: '未找到宠物',
+  pet_species_dog: '狗',
+  pet_species_cat: '猫',
+  pet_species_other: '宠物',
   // Care Item Management
   care_add_item: '添加护理',
   care_edit_item: '编辑护理',

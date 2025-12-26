@@ -95,7 +95,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   if (!pet) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: c.text }}>Pet not found</Text>
+        <Text style={{ color: c.text }}>{t('pet_details_not_found')}</Text>
       </View>
     );
   }
@@ -331,10 +331,10 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                   }}
                 >
                   {pet.species === 'dog'
-                    ? 'Dog'
+                    ? t('pet_species_dog')
                     : pet.species === 'cat'
-                    ? 'Cat'
-                    : 'Pet'}
+                    ? t('pet_species_cat')
+                    : t('pet_species_other')}
                   {pet.breed ? ` • ${isEditing ? '' : pet.breed}` : ''}
                 </Text>
 
@@ -1012,6 +1012,8 @@ function InfoRow({
   isDark,
   isLast = false,
 }: InfoRowProps) {
+  const { t } = useTranslation();
+
   return (
     <View
       style={{
@@ -1059,7 +1061,7 @@ function InfoRow({
               color: value ? c.text : c.textTertiary,
             }}
           >
-            {value || 'Not set'}
+            {value || t('settings_not_set')}
           </Text>
         )}
       </View>

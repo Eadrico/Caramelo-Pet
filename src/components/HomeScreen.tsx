@@ -377,7 +377,7 @@ export function HomeScreen() {
                           fontWeight: '500',
                         }}
                       >
-                        Premium
+                        {t('home_premium_badge')}
                       </Text>
                     </View>
                   )}
@@ -392,7 +392,7 @@ export function HomeScreen() {
             style={{ marginTop: 32, paddingHorizontal: 20 }}
           >
             <SectionHeader
-              title="Upcoming"
+              title={t('home_upcoming_care')}
               action={
                 unifiedItems.length > 0
                   ? { label: t('common_add'), onPress: handleAddPressUnified }
@@ -592,7 +592,7 @@ export function HomeScreen() {
                         fontWeight: '600',
                       }}
                     >
-                      Premium
+                      {t('home_premium_badge')}
                     </Text>
                   </View>
                 )}
