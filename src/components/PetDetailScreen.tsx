@@ -240,7 +240,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
 
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 40 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >
           {/* Pet Header Card */}
