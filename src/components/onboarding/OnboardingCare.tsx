@@ -293,17 +293,16 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
 
         {/* Bottom Button */}
         <SafeAreaView edges={['bottom']} style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-          <LinearGradient
-            colors={
-              isDark
-                ? ['transparent', '#0C0A09']
-                : ['transparent', '#F5F2EE']
-            }
-            locations={[0, 0.3]}
-            style={{ paddingTop: 60, paddingHorizontal: 20, paddingBottom: 8 }}
+          <View
+            style={{
+              backgroundColor: isDark ? '#0C0A09' : '#F5F2EE',
+              paddingTop: 16,
+              paddingHorizontal: 20,
+              paddingBottom: 8,
+            }}
           >
             <PrimaryButton title="Continue" onPress={onNext} />
-          </LinearGradient>
+          </View>
         </SafeAreaView>
       </SafeAreaView>
 
