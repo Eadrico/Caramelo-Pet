@@ -1028,9 +1028,10 @@ export default function SettingsScreen() {
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.15,
                   shadowRadius: 4,
-                  elevation: 3,
+                  elevation: 6,
                   borderWidth: 2,
                   borderColor: '#FFFFFF',
+                  zIndex: 3,
                 }}
               >
                 <Image
@@ -1053,10 +1054,10 @@ export default function SettingsScreen() {
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.15,
                   shadowRadius: 4,
-                  elevation: 4,
+                  elevation: 5,
                   borderWidth: 2,
                   borderColor: '#FFFFFF',
-                  zIndex: 1,
+                  zIndex: 2,
                 }}
               >
                 <Image
@@ -1079,10 +1080,10 @@ export default function SettingsScreen() {
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.15,
                   shadowRadius: 4,
-                  elevation: 5,
+                  elevation: 4,
                   borderWidth: 2,
                   borderColor: '#FFFFFF',
-                  zIndex: 2,
+                  zIndex: 1,
                 }}
               >
                 <Image
@@ -1105,10 +1106,9 @@ export default function SettingsScreen() {
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.15,
                   shadowRadius: 4,
-                  elevation: 6,
+                  elevation: 3,
                   borderWidth: 2,
                   borderColor: '#FFFFFF',
-                  zIndex: 3,
                 }}
               >
                 <Image
