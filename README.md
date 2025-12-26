@@ -4,6 +4,11 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
 
 ## Features (Release 1 - MVP)
 
+- **Entry Flow**: Smart routing based on onboarding state
+  - IntroView: Welcome splash screen with app features
+  - OnboardingWizard: Step-by-step pet setup
+  - Automatic redirect to main app after completing onboarding
+
 - **Tab Navigation**: Clean bottom navigation with two main sections
   - Home tab (house icon): Pet list and care management
   - Settings tab (gear icon): User preferences and profile
@@ -36,7 +41,7 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
     - Theme picker (System, Light, Dark)
   - **Danger Zone**
     - Reset app button with confirmation modal
-    - Clears all data and returns to onboarding
+    - Clears all data and returns to IntroView
 
 - **Reminders & Notifications**
   - Create reminders for pet care tasks
@@ -64,7 +69,8 @@ The app uses a refined Liquid Glass aesthetic with:
 ```
 src/
 ├── app/
-│   ├── _layout.tsx       # Root layout with providers
+│   ├── _layout.tsx       # Root layout with providers and routing logic
+│   ├── onboarding.tsx    # Onboarding entry point (full screen, no tabs)
 │   ├── (tabs)/
 │   │   ├── _layout.tsx   # Tab navigation layout
 │   │   ├── index.tsx     # Home tab - pet list
@@ -72,6 +78,8 @@ src/
 │   └── +not-found.tsx    # 404 screen
 ├── components/
 │   ├── design-system.tsx # Core UI components (GlassCard, PrimaryButton, etc.)
+│   ├── IntroView.tsx     # Welcome splash screen
+│   ├── OnboardingFlow.tsx # Intro + Wizard wrapper
 │   ├── HomeScreen.tsx    # Main home screen
 │   ├── PetDetailScreen.tsx # Pet detail screen with reminders
 │   ├── OnboardingWizard.tsx # Onboarding container
@@ -89,7 +97,7 @@ src/
     ├── types.ts          # TypeScript types (Pet, CareItem, Reminder, etc.)
     ├── storage.ts        # AsyncStorage persistence + notifications
     ├── store.ts          # Zustand state management
-    ├── settings-store.ts # Settings/preferences state (theme, language, profile)
+    ├── settings-store.ts # Settings/preferences + onboarding state
     └── cn.ts             # Classname utility
 ```
 

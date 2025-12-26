@@ -1,11 +1,14 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Stack, router, useRootNavigationState } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { useEffect, useState } from 'react';
+import { useSettingsStore } from '@/lib/settings-store';
+import { useStore } from '@/lib/store';
 
 import '../../global.css';
 
@@ -44,10 +47,46 @@ const CarameloDarkTheme = {
 };
 
 function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null | undefined }) {
+  // Initialize stores
+  const settingsInitialized = useSettingsStore((s) => s.isInitialized);
+  const hasCompletedOnboarding = useSettingsStore((s) => s.hasCompletedOnboarding);
+  const initializeSettings = useSettingsStore((s) => s.initialize);
+
+  const appInitialized = useStore((s) => s.isInitialized);
+  const initializeApp = useStore((s) => s.initialize);
+
+  // Track if we've already navigated
+  const [hasNavigated, setHasNavigated] = useState(false);
+
+  // Check if navigation is ready
+  const rootNavigationState = useRootNavigationState();
+  const isNavigationReady = rootNavigationState?.key != null;
+
+  // Initialize on mount
+  useEffect(() => {
+    initializeSettings();
+    initializeApp();
+  }, []);
+
+  // Handle navigation based on onboarding state - only after navigation is ready
+  useEffect(() => {
+    if (settingsInitialized && appInitialized && isNavigationReady && !hasNavigated) {
+      SplashScreen.hideAsync();
+      setHasNavigated(true);
+
+      if (hasCompletedOnboarding) {
+        router.replace('/(tabs)');
+      } else {
+        router.replace('/onboarding');
+      }
+    }
+  }, [settingsInitialized, appInitialized, hasCompletedOnboarding, isNavigationReady, hasNavigated]);
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? CarameloDarkTheme : CarameloLightTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
+      <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
+        <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

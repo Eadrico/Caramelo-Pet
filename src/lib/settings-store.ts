@@ -13,6 +13,9 @@ export interface UserProfile {
 }
 
 interface SettingsState {
+  // Onboarding state
+  hasCompletedOnboarding: boolean;
+
   // User profile
   profile: UserProfile;
 
@@ -25,6 +28,7 @@ interface SettingsState {
 
   // Actions
   initialize: () => Promise<void>;
+  completeOnboarding: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
   setTheme: (theme: ThemeMode) => Promise<void>;
   setLanguage: (language: LanguageMode) => Promise<void>;
@@ -33,6 +37,7 @@ interface SettingsState {
 
 const SETTINGS_KEY = 'caramelo_settings';
 const PROFILE_KEY = 'caramelo_user_profile';
+const ONBOARDING_KEY = 'caramelo_has_completed_onboarding';
 
 const defaultProfile: UserProfile = {
   name: '',
@@ -47,6 +52,7 @@ const defaultSettings = {
 };
 
 export const useSettingsStore = create<SettingsState>((set, get) => ({
+  hasCompletedOnboarding: false,
   profile: { ...defaultProfile },
   theme: 'system',
   language: 'system',
@@ -54,23 +60,35 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   initialize: async () => {
     try {
-      const [settingsData, profileData] = await Promise.all([
+      const [settingsData, profileData, onboardingData] = await Promise.all([
         AsyncStorage.getItem(SETTINGS_KEY),
         AsyncStorage.getItem(PROFILE_KEY),
+        AsyncStorage.getItem(ONBOARDING_KEY),
       ]);
 
       const settings = settingsData ? JSON.parse(settingsData) : defaultSettings;
       const profile = profileData ? JSON.parse(profileData) : defaultProfile;
+      const hasCompletedOnboarding = onboardingData === 'true';
 
       set({
         theme: settings.theme ?? 'system',
         language: settings.language ?? 'system',
         profile,
+        hasCompletedOnboarding,
         isInitialized: true,
       });
     } catch (error) {
       console.error('Error initializing settings:', error);
       set({ isInitialized: true });
+    }
+  },
+
+  completeOnboarding: async () => {
+    try {
+      await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
+      set({ hasCompletedOnboarding: true });
+    } catch (error) {
+      console.error('Error completing onboarding:', error);
     }
   },
 
@@ -115,8 +133,9 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       const keys = await AsyncStorage.getAllKeys();
       await AsyncStorage.multiRemove(keys);
 
-      // Reset state
+      // Reset state - including hasCompletedOnboarding to false
       set({
+        hasCompletedOnboarding: false,
         profile: { ...defaultProfile },
         theme: 'system',
         language: 'system',

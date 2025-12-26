@@ -664,8 +664,8 @@ export default function SettingsScreen() {
       await resetAll();
       await refreshData();
       setShowResetModal(false);
-      // Navigate to home which will show onboarding
-      router.replace('/');
+      // Navigate to onboarding - resetAll sets hasCompletedOnboarding to false
+      router.replace('/onboarding');
     } catch (error) {
       console.error('Error resetting app:', error);
     }
