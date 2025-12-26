@@ -100,6 +100,21 @@ type TranslationKey =
   | 'settings_cancel'
   | 'settings_save'
   | 'settings_edit'
+  // Pet Details
+  | 'pet_details_title'
+  | 'pet_details_information'
+  | 'pet_details_breed'
+  | 'pet_details_weight'
+  | 'pet_details_microchip'
+  | 'pet_details_allergies'
+  | 'pet_details_veterinarian'
+  | 'pet_details_notes'
+  | 'pet_details_reminders'
+  | 'pet_details_upcoming_care'
+  | 'pet_details_delete'
+  | 'pet_details_no_reminders'
+  | 'pet_details_add_reminder'
+  | 'pet_details_no_upcoming'
   // Care types
   | 'care_vaccine'
   | 'care_grooming'
@@ -143,9 +158,12 @@ type TranslationKey =
   | 'common_delete'
   | 'common_edit'
   | 'common_confirm'
+  | 'common_cancel'
   | 'common_select_language'
   | 'common_select_theme'
-  | 'common_system_default';
+  | 'common_system_default'
+  // Pet Details - Delete Confirmation
+  | 'pet_details_delete_confirm';
 
 type Translations = Record<TranslationKey, string>;
 
@@ -228,6 +246,22 @@ const en: Translations = {
   settings_cancel: 'Cancel',
   settings_save: 'Save',
   settings_edit: 'Edit',
+  // Pet Details
+  pet_details_title: 'Pet Details',
+  pet_details_information: 'Pet Information',
+  pet_details_breed: 'Breed',
+  pet_details_weight: 'Weight (kg)',
+  pet_details_microchip: 'Microchip ID',
+  pet_details_allergies: 'Allergies',
+  pet_details_veterinarian: 'Veterinarian',
+  pet_details_notes: 'Notes',
+  pet_details_reminders: 'Reminders',
+  pet_details_upcoming_care: 'Upcoming Care',
+  pet_details_delete: 'Delete Pet',
+  pet_details_delete_confirm: 'Are you sure you want to delete {name}? This action cannot be undone.',
+  pet_details_no_reminders: 'No reminders set',
+  pet_details_add_reminder: 'Add Reminder',
+  pet_details_no_upcoming: 'No upcoming care items',
   // Care types
   care_vaccine: 'Vaccine',
   care_grooming: 'Grooming',
@@ -260,6 +294,7 @@ const en: Translations = {
   common_delete: 'Delete',
   common_edit: 'Edit',
   common_confirm: 'Confirm',
+  common_cancel: 'Cancel',
   common_select_language: 'Select Language',
   common_select_theme: 'Select Theme',
   common_system_default: 'System Default',
@@ -355,6 +390,22 @@ const pt: Translations = {
   settings_cancel: 'Cancelar',
   settings_save: 'Salvar',
   settings_edit: 'Editar',
+  // Pet Details
+  pet_details_title: 'Detalhes do Pet',
+  pet_details_information: 'Informações do Pet',
+  pet_details_breed: 'Raça',
+  pet_details_weight: 'Peso (kg)',
+  pet_details_microchip: 'ID do Microchip',
+  pet_details_allergies: 'Alergias',
+  pet_details_veterinarian: 'Veterinário',
+  pet_details_notes: 'Notas',
+  pet_details_reminders: 'Lembretes',
+  pet_details_upcoming_care: 'Próximos Cuidados',
+  pet_details_delete: 'Deletar Pet',
+  pet_details_delete_confirm: 'Tem certeza que deseja deletar {name}? Esta ação não pode ser desfeita.',
+  pet_details_no_reminders: 'Nenhum lembrete configurado',
+  pet_details_add_reminder: 'Adicionar Lembrete',
+  pet_details_no_upcoming: 'Nenhum cuidado agendado',
   // Care types
   care_vaccine: 'Vacina',
   care_grooming: 'Banho/Tosa',
@@ -387,6 +438,7 @@ const pt: Translations = {
   common_delete: 'Excluir',
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
+  common_cancel: 'Cancelar',
   common_select_language: 'Selecionar Idioma',
   common_select_theme: 'Selecionar Tema',
   common_system_default: 'Padrão do Sistema',
@@ -482,6 +534,22 @@ const es: Translations = {
   settings_cancel: 'Cancelar',
   settings_save: 'Guardar',
   settings_edit: 'Editar',
+  // Pet Details
+  pet_details_title: 'Detalles de la Mascota',
+  pet_details_information: 'Información de la Mascota',
+  pet_details_breed: 'Raza',
+  pet_details_weight: 'Peso (kg)',
+  pet_details_microchip: 'ID del Microchip',
+  pet_details_allergies: 'Alergias',
+  pet_details_veterinarian: 'Veterinario',
+  pet_details_notes: 'Notas',
+  pet_details_reminders: 'Recordatorios',
+  pet_details_upcoming_care: 'Próximos Cuidados',
+  pet_details_delete: 'Eliminar Mascota',
+  pet_details_delete_confirm: '¿Estás seguro de que quieres eliminar {name}? Esta acción no se puede deshacer.',
+  pet_details_no_reminders: 'Sin recordatorios configurados',
+  pet_details_add_reminder: 'Agregar Recordatorio',
+  pet_details_no_upcoming: 'Sin cuidados próximos',
   // Care types
   care_vaccine: 'Vacuna',
   care_grooming: 'Baño/Peluquería',
@@ -514,6 +582,7 @@ const es: Translations = {
   common_delete: 'Eliminar',
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
+  common_cancel: 'Cancelar',
   common_select_language: 'Seleccionar Idioma',
   common_select_theme: 'Seleccionar Tema',
   common_system_default: 'Predeterminado del Sistema',
@@ -609,6 +678,22 @@ const fr: Translations = {
   settings_cancel: 'Annuler',
   settings_save: 'Enregistrer',
   settings_edit: 'Modifier',
+  // Pet Details
+  pet_details_title: 'Détails de l\'Animal',
+  pet_details_information: 'Informations de l\'Animal',
+  pet_details_breed: 'Race',
+  pet_details_weight: 'Poids (kg)',
+  pet_details_microchip: 'ID Microchip',
+  pet_details_allergies: 'Allergies',
+  pet_details_veterinarian: 'Vétérinaire',
+  pet_details_notes: 'Notes',
+  pet_details_reminders: 'Rappels',
+  pet_details_upcoming_care: 'Soins à Venir',
+  pet_details_delete: 'Supprimer l\'Animal',
+  pet_details_delete_confirm: 'Êtes-vous sûr de vouloir supprimer {name}? Cette action ne peut pas être annulée.',
+  pet_details_no_reminders: 'Aucun rappel configuré',
+  pet_details_add_reminder: 'Ajouter un Rappel',
+  pet_details_no_upcoming: 'Aucun soin à venir',
   // Care types
   care_vaccine: 'Vaccin',
   care_grooming: 'Toilettage',
@@ -641,6 +726,7 @@ const fr: Translations = {
   common_delete: 'Supprimer',
   common_edit: 'Modifier',
   common_confirm: 'Confirmer',
+  common_cancel: 'Annuler',
   common_select_language: 'Sélectionner la Langue',
   common_select_theme: 'Sélectionner le Thème',
   common_system_default: 'Par Défaut du Système',
@@ -736,6 +822,22 @@ const zh: Translations = {
   settings_cancel: '取消',
   settings_save: '保存',
   settings_edit: '编辑',
+  // Pet Details
+  pet_details_title: '宠物详情',
+  pet_details_information: '宠物信息',
+  pet_details_breed: '品种',
+  pet_details_weight: '体重 (kg)',
+  pet_details_microchip: '芯片ID',
+  pet_details_allergies: '过敏症',
+  pet_details_veterinarian: '兽医',
+  pet_details_notes: '备注',
+  pet_details_reminders: '提醒',
+  pet_details_upcoming_care: '即将护理',
+  pet_details_delete: '删除宠物',
+  pet_details_delete_confirm: '您确定要删除{name}吗？此操作无法撤销。',
+  pet_details_no_reminders: '未设置提醒',
+  pet_details_add_reminder: '添加提醒',
+  pet_details_no_upcoming: '无即将护理项目',
   // Care types
   care_vaccine: '疫苗',
   care_grooming: '美容',
@@ -768,6 +870,7 @@ const zh: Translations = {
   common_delete: '删除',
   common_edit: '编辑',
   common_confirm: '确认',
+  common_cancel: '取消',
   common_select_language: '选择语言',
   common_select_theme: '选择主题',
   common_system_default: '跟随系统',

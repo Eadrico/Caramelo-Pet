@@ -53,6 +53,7 @@ import {
   SecondaryButton,
   SectionHeader,
 } from '@/components/design-system';
+import { useTranslation } from '@/lib/i18n';
 
 interface PetDetailScreenProps {
   petId: string;
@@ -63,6 +64,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
 
   const pets = useStore((s) => s.pets);
   const careItems = useStore((s) => s.careItems);
@@ -125,12 +127,12 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
 
   const handleDeletePet = () => {
     Alert.alert(
-      'Delete Pet',
-      `Are you sure you want to delete ${pet.name}? This action cannot be undone.`,
+      t('pet_details_delete'),
+      t('pet_details_delete_confirm', { name: pet.name }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common_cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('pet_details_delete'),
           style: 'destructive',
           onPress: async () => {
             await deletePet(petId);
@@ -219,7 +221,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
             }}
           >
             <ChevronLeft size={24} color={c.accent} />
-            <Text style={{ color: c.accent, fontSize: 17 }}>Back</Text>
+            <Text style={{ color: c.accent, fontSize: 17 }}>{t('onboarding_back')}</Text>
           </Pressable>
 
           {isEditing ? (
@@ -342,7 +344,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
             entering={FadeInDown.duration(400).delay(100)}
             style={{ paddingHorizontal: 20, marginBottom: 24 }}
           >
-            <SectionHeader title="Pet Information" />
+            <SectionHeader title={t('pet_details_information')} />
             <View
               style={{
                 backgroundColor: isDark
@@ -359,7 +361,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               {/* Breed */}
               <InfoRow
                 icon={<Tag size={18} color={c.accent} />}
-                label="Breed"
+                label={t('pet_details_breed')}
                 value={isEditing ? editedPet.breed : pet.breed}
                 isEditing={isEditing}
                 onChangeText={(text) =>
@@ -373,7 +375,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               {/* Weight */}
               <InfoRow
                 icon={<Weight size={18} color={c.accent} />}
-                label="Weight (kg)"
+                label={t('pet_details_weight')}
                 value={
                   isEditing
                     ? editedPet.weightKg?.toString()
@@ -395,7 +397,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               {/* Microchip */}
               <InfoRow
                 icon={<Tag size={18} color={c.accent} />}
-                label="Microchip ID"
+                label={t('pet_details_microchip')}
                 value={isEditing ? editedPet.microchipId : pet.microchipId}
                 isEditing={isEditing}
                 onChangeText={(text) =>
@@ -409,7 +411,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               {/* Allergies */}
               <InfoRow
                 icon={<AlertCircle size={18} color={c.accent} />}
-                label="Allergies"
+                label={t('pet_details_allergies')}
                 value={isEditing ? editedPet.allergies : pet.allergies}
                 isEditing={isEditing}
                 onChangeText={(text) =>
@@ -423,7 +425,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               {/* Vet Name */}
               <InfoRow
                 icon={<Stethoscope size={18} color={c.accent} />}
-                label="Veterinarian"
+                label={t('pet_details_veterinarian')}
                 value={isEditing ? editedPet.vetName : pet.vetName}
                 isEditing={isEditing}
                 onChangeText={(text) =>
@@ -452,7 +454,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               {/* Notes */}
               <InfoRow
                 icon={<FileText size={18} color={c.accent} />}
-                label="Notes"
+                label={t('pet_details_notes')}
                 value={isEditing ? editedPet.notes : pet.notes}
                 isEditing={isEditing}
                 onChangeText={(text) =>
@@ -473,8 +475,8 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
             style={{ paddingHorizontal: 20, marginBottom: 24 }}
           >
             <SectionHeader
-              title="Reminders"
-              action={{ label: 'Add', onPress: () => setShowReminderModal(true) }}
+              title={t('pet_details_reminders')}
+              action={{ label: t('common_add'), onPress: () => setShowReminderModal(true) }}
             />
 
             {petReminders.length > 0 ? (
@@ -514,14 +516,14 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     textAlign: 'center',
                   }}
                 >
-                  No reminders set
+                  {t('pet_details_no_reminders')}
                 </Text>
                 <Pressable
                   onPress={() => setShowReminderModal(true)}
                   style={{ marginTop: 16 }}
                 >
                   <Text style={{ color: c.accent, fontSize: 15, fontWeight: '500' }}>
-                    Add Reminder
+                    {t('pet_details_add_reminder')}
                   </Text>
                 </Pressable>
               </View>
@@ -533,7 +535,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
             entering={FadeInDown.duration(400).delay(200)}
             style={{ paddingHorizontal: 20, marginBottom: 24 }}
           >
-            <SectionHeader title="Upcoming Care" />
+            <SectionHeader title={t('pet_details_upcoming_care')} />
 
             {upcomingCareItems.length > 0 ? (
               <View style={{ gap: 10 }}>
@@ -614,7 +616,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     textAlign: 'center',
                   }}
                 >
-                  No upcoming care items
+                  {t('pet_details_no_upcoming')}
                 </Text>
               </View>
             )}
@@ -643,7 +645,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                   fontWeight: '500',
                 }}
               >
-                Delete Pet
+                {t('pet_details_delete')}
               </Text>
             </Pressable>
           </Animated.View>
