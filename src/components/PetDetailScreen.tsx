@@ -8,7 +8,6 @@ import {
   Image,
   useColorScheme,
   TextInput as RNTextInput,
-  Switch,
   Alert,
   Modal,
 } from 'react-native';
@@ -74,7 +73,6 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   const deletePet = useStore((s) => s.deletePet);
   const addReminder = useStore((s) => s.addReminder);
   const deleteReminder = useStore((s) => s.deleteReminder);
-  const toggleReminder = useStore((s) => s.toggleReminder);
 
   const pet = pets.find((p) => p.id === petId);
   const petCareItems = careItems.filter((c) => c.petId === petId);
@@ -169,11 +167,6 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
       repeatType: 'none',
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-  };
-
-  const handleToggleReminder = async (reminderId: string) => {
-    await toggleReminder(reminderId);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const handleDeleteReminder = (reminderId: string) => {
@@ -514,7 +507,6 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                   <ReminderRow
                     key={reminder.id}
                     reminder={reminder}
-                    onToggle={() => handleToggleReminder(reminder.id)}
                     onDelete={() => handleDeleteReminder(reminder.id)}
                     colors={c}
                     isDark={isDark}
@@ -1077,7 +1069,6 @@ function InfoRow({
 
 interface ReminderRowProps {
   reminder: Reminder;
-  onToggle: () => void;
   onDelete: () => void;
   colors: ReturnType<typeof useColors>;
   isDark: boolean;
@@ -1085,7 +1076,6 @@ interface ReminderRowProps {
 
 function ReminderRow({
   reminder,
-  onToggle,
   onDelete,
   colors: c,
   isDark,
@@ -1145,20 +1135,12 @@ function ReminderRow({
           {reminder.repeatType !== 'none' && ` • ${getRepeatLabel(reminder.repeatType)}`}
         </Text>
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <Switch
-          value={reminder.isEnabled}
-          onValueChange={onToggle}
-          trackColor={{ false: c.border, true: c.accent }}
-          thumbColor="#FFFFFF"
-        />
-        <Pressable
-          onPress={onDelete}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Trash2 size={18} color={c.textTertiary} />
-        </Pressable>
-      </View>
+      <Pressable
+        onPress={onDelete}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      >
+        <Trash2 size={18} color={c.textTertiary} />
+      </Pressable>
     </View>
   );
 }
