@@ -25,6 +25,7 @@ import {
 } from 'lucide-react-native';
 import { CareItem, CareType, Pet, formatDate, getCareTypeLabel } from '@/lib/types';
 import { useStore } from '@/lib/store';
+import { useTranslation } from '@/lib/i18n';
 import { useColors, PrimaryButton, SegmentedControl } from '@/components/design-system';
 
 interface AddCareItemSheetProps {
@@ -55,6 +56,7 @@ export function AddCareItemSheet({
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
 
   const pets = useStore((s) => s.pets);
   const addCareItem = useStore((s) => s.addCareItem);
@@ -139,12 +141,12 @@ export function AddCareItemSheet({
     if (!editItem) return;
 
     Alert.alert(
-      'Delete Care Item',
-      `Are you sure you want to delete "${editItem.title}"?`,
+      t('care_delete_item'),
+      t('care_delete_confirm', { title: editItem.title }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common_cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common_delete'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -200,10 +202,10 @@ export function AddCareItemSheet({
             }}
           >
             <Pressable onPress={onClose}>
-              <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+              <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-              {editItem ? 'Edit Care Item' : 'Add Care Item'}
+              {editItem ? t('care_edit_item') : t('care_add_item')}
             </Text>
             <Pressable onPress={handleSave} disabled={!isValid || isSaving}>
               <Text
@@ -213,7 +215,7 @@ export function AddCareItemSheet({
                   fontWeight: '600',
                 }}
               >
-                {isSaving ? 'Saving...' : 'Save'}
+                {isSaving ? 'Saving...' : t('settings_save')}
               </Text>
             </Pressable>
           </View>
@@ -236,7 +238,7 @@ export function AddCareItemSheet({
                     letterSpacing: 0.5,
                   }}
                 >
-                  Pet
+                  {t('care_pet_label')}
                 </Text>
                 <Pressable
                   onPress={() => setShowPetPicker(true)}
@@ -251,7 +253,7 @@ export function AddCareItemSheet({
                   }}
                 >
                   <Text style={{ fontSize: 17, color: c.text }}>
-                    {selectedPet?.name || 'Select a pet'}
+                    {selectedPet?.name || t('care_select_pet')}
                   </Text>
                   <ChevronDown size={20} color={c.textSecondary} />
                 </Pressable>
@@ -270,7 +272,7 @@ export function AddCareItemSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                Type
+                {t('care_type_label')}
               </Text>
               <SegmentedControl
                 options={typeOptions}
@@ -291,12 +293,12 @@ export function AddCareItemSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                Title
+                {t('care_title_label')}
               </Text>
               <RNTextInput
                 value={title}
                 onChangeText={setTitle}
-                placeholder="e.g., Annual vaccination"
+                placeholder={t('care_title_placeholder')}
                 placeholderTextColor={c.textTertiary}
                 style={{
                   fontSize: 17,
@@ -321,7 +323,7 @@ export function AddCareItemSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                Due Date
+                {t('care_due_date_label')}
               </Text>
               <Pressable
                 onPress={() => {
@@ -357,12 +359,12 @@ export function AddCareItemSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                Notes (Optional)
+                {t('care_notes_label')}
               </Text>
               <RNTextInput
                 value={notes}
                 onChangeText={setNotes}
-                placeholder="Add any notes..."
+                placeholder={t('care_notes_placeholder')}
                 placeholderTextColor={c.textTertiary}
                 multiline
                 numberOfLines={3}
@@ -399,7 +401,7 @@ export function AddCareItemSheet({
                     color: c.destructive,
                   }}
                 >
-                  Delete Care Item
+                  {t('care_delete_item')}
                 </Text>
               </Pressable>
             )}

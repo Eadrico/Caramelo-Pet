@@ -47,7 +47,7 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
   - 5 languages: English, Portuguese, Spanish, French, Chinese
   - System language auto-detection
   - Instant language switching without app restart
-  - All UI strings localized (IntroView, Onboarding, Settings, Tabs, Pet Details)
+  - All UI strings localized (IntroView, Onboarding, Settings, Tabs, Pet Details, Care Item Management)
 
 - **Reminders & Notifications**
   - Create reminders for pet care tasks
