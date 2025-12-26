@@ -7,12 +7,13 @@ import {
   Pressable,
   useColorScheme,
   RefreshControl,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { Plus, Calendar, PawPrint, Crown } from 'lucide-react-native';
+import { Plus, Calendar, PawPrint, Crown, Stethoscope } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
 import { CareItem } from '@/lib/types';
 import {
@@ -49,6 +50,7 @@ export function HomeScreen() {
   const [showAddSheet, setShowAddSheet] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [showAddPetWizard, setShowAddPetWizard] = useState(false);
+  const [showAddMenu, setShowAddMenu] = useState(false);
   const [editingItem, setEditingItem] = useState<CareItem | undefined>();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
@@ -91,6 +93,11 @@ export function HomeScreen() {
 
   const handleAddPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setShowAddMenu(true);
+  };
+
+  const handleAddCarePress = () => {
+    setShowAddMenu(false);
     setEditingItem(undefined);
     setShowAddSheet(true);
   };
@@ -107,6 +114,7 @@ export function HomeScreen() {
 
   // Handle add pet button press - check premium limit
   const handleAddPetPress = () => {
+    setShowAddMenu(false);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     // Check if user can add more pets
@@ -365,6 +373,170 @@ export function HomeScreen() {
           setShowAddPetWizard(true);
         }}
       />
+
+      {/* Add Menu Modal */}
+      <Modal
+        visible={showAddMenu}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowAddMenu(false)}
+      >
+        <Pressable
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            justifyContent: 'flex-end',
+          }}
+          onPress={() => setShowAddMenu(false)}
+        >
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: c.surface,
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              paddingBottom: 40,
+            }}
+          >
+            {/* Handle */}
+            <View
+              style={{
+                alignItems: 'center',
+                paddingTop: 12,
+                paddingBottom: 16,
+              }}
+            >
+              <View
+                style={{
+                  width: 40,
+                  height: 4,
+                  borderRadius: 2,
+                  backgroundColor: c.border,
+                }}
+              />
+            </View>
+
+            {/* Menu Options */}
+            <View style={{ paddingHorizontal: 20, gap: 8 }}>
+              {/* Add Pet Option */}
+              <Pressable
+                onPress={handleAddPetPress}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  padding: 16,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  borderRadius: 16,
+                  gap: 14,
+                }}
+              >
+                <View
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    backgroundColor: c.accentLight,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <PawPrint size={22} color={c.accent} strokeWidth={2} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      fontWeight: '600',
+                      color: c.text,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {t('home_add_pet')}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: c.textSecondary,
+                    }}
+                  >
+                    {t('home_add_pet_desc')}
+                  </Text>
+                </View>
+                {!isPremium && pets.length >= FREE_PET_LIMIT_COUNT && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 4,
+                      backgroundColor: 'rgba(180, 140, 80, 0.15)',
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      borderRadius: 8,
+                    }}
+                  >
+                    <Crown size={12} color={c.accent} strokeWidth={2} />
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        color: c.accent,
+                        fontWeight: '600',
+                      }}
+                    >
+                      Premium
+                    </Text>
+                  </View>
+                )}
+              </Pressable>
+
+              {/* Add Care Item Option */}
+              <Pressable
+                onPress={handleAddCarePress}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  padding: 16,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  borderRadius: 16,
+                  gap: 14,
+                }}
+              >
+                <View
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    backgroundColor: c.accentLight,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Stethoscope size={22} color={c.accent} strokeWidth={2} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      fontWeight: '600',
+                      color: c.text,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {t('home_add_care_item')}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: c.textSecondary,
+                    }}
+                  >
+                    {t('home_add_care_desc')}
+                  </Text>
+                </View>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
