@@ -204,10 +204,19 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
     setEditingCareItem(undefined);
   };
 
-  const upcomingCareItems = petCareItems
-    .filter((item) => new Date(item.dueDate) >= new Date())
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-    .slice(0, 5);
+  const upcomingCareItems = useMemo(() => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    return petCareItems
+      .filter((item) => {
+        const itemDate = new Date(item.dueDate);
+        const itemDateOnly = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
+        return itemDateOnly.getTime() >= today.getTime();
+      })
+      .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+      .slice(0, 5);
+  }, [petCareItems]);
 
   return (
     <View style={{ flex: 1 }}>
