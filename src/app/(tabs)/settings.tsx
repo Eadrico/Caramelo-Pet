@@ -1002,6 +1002,136 @@ export default function SettingsScreen() {
               destructive
             />
           </Section>
+
+          {/* Footer with Pet Photos */}
+          <View style={{ alignItems: 'center', marginTop: 24, marginBottom: 16 }}>
+            {/* Fan-style photo cards */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: 80,
+                marginBottom: 16,
+              }}
+            >
+              {/* Brownie - leftmost card */}
+              <View
+                style={{
+                  width: 56,
+                  height: 72,
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  backgroundColor: '#F5A623',
+                  transform: [{ rotate: '-15deg' }, { translateX: 24 }],
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 4,
+                  elevation: 3,
+                  borderWidth: 2,
+                  borderColor: '#FFFFFF',
+                }}
+              >
+                <Image
+                  source={require('../../../assets/brownie-1766763191626-1.png')}
+                  style={{ width: 56, height: 72 }}
+                  resizeMode="cover"
+                />
+              </View>
+
+              {/* Fuba */}
+              <View
+                style={{
+                  width: 56,
+                  height: 72,
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  backgroundColor: '#87CEEB',
+                  transform: [{ rotate: '-5deg' }, { translateX: 8 }],
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 4,
+                  elevation: 4,
+                  borderWidth: 2,
+                  borderColor: '#FFFFFF',
+                  zIndex: 1,
+                }}
+              >
+                <Image
+                  source={require('../../../assets/fuba-1766763191626-2.png')}
+                  style={{ width: 56, height: 72 }}
+                  resizeMode="cover"
+                />
+              </View>
+
+              {/* Baunilia */}
+              <View
+                style={{
+                  width: 56,
+                  height: 72,
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  backgroundColor: '#D4A574',
+                  transform: [{ rotate: '5deg' }, { translateX: -8 }],
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 4,
+                  elevation: 5,
+                  borderWidth: 2,
+                  borderColor: '#FFFFFF',
+                  zIndex: 2,
+                }}
+              >
+                <Image
+                  source={require('../../../assets/Baunilia-1766763191626-0.png')}
+                  style={{ width: 56, height: 72 }}
+                  resizeMode="cover"
+                />
+              </View>
+
+              {/* Loki - rightmost card */}
+              <View
+                style={{
+                  width: 56,
+                  height: 72,
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  backgroundColor: '#F5A623',
+                  transform: [{ rotate: '15deg' }, { translateX: -24 }],
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 4,
+                  elevation: 6,
+                  borderWidth: 2,
+                  borderColor: '#FFFFFF',
+                  zIndex: 3,
+                }}
+              >
+                <Image
+                  source={require('../../../assets/loki.png')}
+                  style={{ width: 56, height: 72 }}
+                  resizeMode="cover"
+                />
+              </View>
+            </View>
+
+            {/* Footer text */}
+            <Text
+              style={{
+                fontSize: 13,
+                color: c.textTertiary,
+                textAlign: 'center',
+                fontStyle: 'italic',
+                paddingHorizontal: 24,
+              }}
+            >
+              Feito pensando no Loki, Brownie, Fuba e Baunilia.
+            </Text>
+          </View>
         </ScrollView>
       </SafeAreaView>
 
