@@ -25,11 +25,13 @@ import { PetCard } from '@/components/home/PetCard';
 import { CareItemRow } from '@/components/home/CareItemRow';
 import { AddCareItemSheet } from '@/components/AddCareItemSheet';
 import { PetDetailScreen } from '@/components/PetDetailScreen';
+import { useTranslation } from '@/lib/i18n';
 
 export function HomeScreen() {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const { t } = useTranslation();
 
   const pets = useStore((s) => s.pets);
   const careItems = useStore((s) => s.careItems);
@@ -136,7 +138,7 @@ export function HomeScreen() {
                 marginTop: 2,
               }}
             >
-              {pets.length} pet{pets.length !== 1 ? 's' : ''} • {upcomingCareItems.length} upcoming
+              {t('home_pets_count', { count: pets.length })} • {t('home_upcoming_count', { count: upcomingCareItems.length })}
             </Text>
           </View>
           <IconButton
@@ -164,7 +166,7 @@ export function HomeScreen() {
             style={{ marginTop: 8 }}
           >
             <View style={{ paddingHorizontal: 20 }}>
-              <SectionHeader title="Your Pets" />
+              <SectionHeader title={t('home_your_pets')} />
             </View>
             <ScrollView
               horizontal
@@ -196,10 +198,10 @@ export function HomeScreen() {
             style={{ marginTop: 32, paddingHorizontal: 20 }}
           >
             <SectionHeader
-              title="Upcoming Care"
+              title={t('home_upcoming_care')}
               action={
                 upcomingCareItems.length > 0
-                  ? { label: 'Add', onPress: handleAddPress }
+                  ? { label: t('common_add'), onPress: handleAddPress }
                   : undefined
               }
             />
@@ -226,9 +228,9 @@ export function HomeScreen() {
             ) : (
               <EmptyState
                 icon={<Calendar size={32} color={c.accent} />}
-                title="No Upcoming Care"
-                description="Add care items to keep track of vaccines, vet visits, grooming, and more."
-                action={{ label: 'Add Care Item', onPress: handleAddPress }}
+                title={t('home_no_care')}
+                description={t('home_no_care_desc')}
+                action={{ label: t('home_add_care_item'), onPress: handleAddPress }}
               />
             )}
           </Animated.View>

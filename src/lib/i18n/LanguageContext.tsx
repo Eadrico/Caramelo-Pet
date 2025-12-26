@@ -58,10 +58,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Map stored language to SupportedLanguage type
   const language: SupportedLanguage = useMemo(() => {
-    if (storedLanguage === 'system') return 'system';
-    if (storedLanguage === 'pt') return 'pt';
-    if (storedLanguage === 'en') return 'en';
-    // Default to system for any unmapped values
+    // All valid LanguageMode values are also valid SupportedLanguage values
+    if (['system', 'en', 'pt', 'es', 'fr', 'zh'].includes(storedLanguage)) {
+      return storedLanguage as SupportedLanguage;
+    }
     return 'system';
   }, [storedLanguage]);
 
@@ -79,18 +79,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Set language
   const setLanguage = useCallback(async (lang: SupportedLanguage) => {
-    // Map to LanguageMode type from settings store
-    if (lang === 'system') {
-      await setStoredLanguage('system');
-    } else if (lang === 'pt') {
-      await setStoredLanguage('pt');
-    } else if (lang === 'en') {
-      await setStoredLanguage('en');
-    } else {
-      // For es, fr, zh - we need to extend the settings store
-      // For now, store as the lang directly by extending
-      await setStoredLanguage(lang as any);
-    }
+    // All SupportedLanguage values are valid LanguageMode values
+    await setStoredLanguage(lang as any);
   }, [setStoredLanguage]);
 
   // Translation function

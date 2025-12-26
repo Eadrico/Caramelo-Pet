@@ -64,10 +64,16 @@ type TranslationKey =
   // Home
   | 'home_title'
   | 'home_my_pets'
+  | 'home_your_pets'
   | 'home_upcoming_care'
   | 'home_add_pet'
   | 'home_no_pets'
   | 'home_no_care'
+  | 'home_no_care_desc'
+  | 'home_add_care_item'
+  | 'home_pets_count'
+  | 'home_upcoming_count'
+  | 'common_add'
   // Settings
   | 'settings_title'
   | 'settings_profile'
@@ -155,10 +161,16 @@ const en: Translations = {
   // Home
   home_title: 'My Pets',
   home_my_pets: 'My Pets',
+  home_your_pets: 'Your Pets',
   home_upcoming_care: 'Upcoming Care',
   home_add_pet: 'Add Pet',
   home_no_pets: 'No pets yet',
-  home_no_care: 'No upcoming care items',
+  home_no_care: 'No Upcoming Care',
+  home_no_care_desc: 'Add care items to keep track of vaccines, vet visits, grooming, and more.',
+  home_add_care_item: 'Add Care Item',
+  home_pets_count: '{count} pet(s)',
+  home_upcoming_count: '{count} upcoming',
+  common_add: 'Add',
   // Settings
   settings_title: 'Settings',
   settings_profile: 'User Profile',
@@ -245,10 +257,16 @@ const pt: Translations = {
   // Home
   home_title: 'Meus Pets',
   home_my_pets: 'Meus Pets',
+  home_your_pets: 'Seus Pets',
   home_upcoming_care: 'Próximos Cuidados',
   home_add_pet: 'Adicionar Pet',
   home_no_pets: 'Nenhum pet ainda',
-  home_no_care: 'Nenhum cuidado agendado',
+  home_no_care: 'Nenhum Cuidado Agendado',
+  home_no_care_desc: 'Adicione cuidados para acompanhar vacinas, consultas, banhos e mais.',
+  home_add_care_item: 'Adicionar Cuidado',
+  home_pets_count: '{count} pet(s)',
+  home_upcoming_count: '{count} agendados',
+  common_add: 'Adicionar',
   // Settings
   settings_title: 'Configurações',
   settings_profile: 'Perfil do Usuário',
@@ -335,10 +353,16 @@ const es: Translations = {
   // Home
   home_title: 'Mis Mascotas',
   home_my_pets: 'Mis Mascotas',
+  home_your_pets: 'Tus Mascotas',
   home_upcoming_care: 'Próximos Cuidados',
   home_add_pet: 'Agregar Mascota',
   home_no_pets: 'Sin mascotas aún',
-  home_no_care: 'Sin cuidados programados',
+  home_no_care: 'Sin Cuidados Programados',
+  home_no_care_desc: 'Agrega cuidados para llevar un registro de vacunas, citas, baños y más.',
+  home_add_care_item: 'Agregar Cuidado',
+  home_pets_count: '{count} mascota(s)',
+  home_upcoming_count: '{count} programados',
+  common_add: 'Agregar',
   // Settings
   settings_title: 'Ajustes',
   settings_profile: 'Perfil de Usuario',
@@ -425,10 +449,16 @@ const fr: Translations = {
   // Home
   home_title: 'Mes Animaux',
   home_my_pets: 'Mes Animaux',
+  home_your_pets: 'Vos Animaux',
   home_upcoming_care: 'Soins à Venir',
   home_add_pet: 'Ajouter Animal',
   home_no_pets: 'Pas encore d\'animaux',
-  home_no_care: 'Aucun soin prévu',
+  home_no_care: 'Aucun Soin Prévu',
+  home_no_care_desc: 'Ajoutez des soins pour suivre les vaccins, visites vétérinaires, toilettage et plus.',
+  home_add_care_item: 'Ajouter un Soin',
+  home_pets_count: '{count} animal(aux)',
+  home_upcoming_count: '{count} à venir',
+  common_add: 'Ajouter',
   // Settings
   settings_title: 'Paramètres',
   settings_profile: 'Profil Utilisateur',
@@ -515,10 +545,16 @@ const zh: Translations = {
   // Home
   home_title: '我的宠物',
   home_my_pets: '我的宠物',
+  home_your_pets: '您的宠物',
   home_upcoming_care: '即将到来的护理',
   home_add_pet: '添加宠物',
   home_no_pets: '还没有宠物',
   home_no_care: '没有安排的护理',
+  home_no_care_desc: '添加护理项目来追踪疫苗、兽医就诊、美容等。',
+  home_add_care_item: '添加护理项目',
+  home_pets_count: '{count}只宠物',
+  home_upcoming_count: '{count}项待办',
+  common_add: '添加',
   // Settings
   settings_title: '设置',
   settings_profile: '用户资料',
