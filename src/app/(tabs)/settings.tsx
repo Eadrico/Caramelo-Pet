@@ -1036,7 +1036,6 @@ export default function SettingsScreen() {
               >
                 <Image
                   source={require('../../../assets/loki.png')}
-                  defaultSource={require('../../../assets/loki.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1063,7 +1062,6 @@ export default function SettingsScreen() {
               >
                 <Image
                   source={require('../../../assets/brownie-1766763191626-1.png')}
-                  defaultSource={require('../../../assets/brownie-1766763191626-1.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1090,7 +1088,6 @@ export default function SettingsScreen() {
               >
                 <Image
                   source={require('../../../assets/fuba-1766763191626-2.png')}
-                  defaultSource={require('../../../assets/fuba-1766763191626-2.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1116,7 +1113,6 @@ export default function SettingsScreen() {
               >
                 <Image
                   source={require('../../../assets/Baunilia-1766763191626-0.png')}
-                  defaultSource={require('../../../assets/Baunilia-1766763191626-0.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />

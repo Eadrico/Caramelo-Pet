@@ -67,6 +67,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
                 height: 120,
                 borderRadius: 36,
                 overflow: 'hidden',
+                backgroundColor: c.surface,
                 shadowColor: c.accent,
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.2,
@@ -77,7 +78,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
                 source={require('../../assets/loki.png')}
                 style={{ width: 120, height: 120 }}
                 resizeMode="cover"
-                defaultSource={require('../../assets/loki.png')}
+                onError={(e) => console.log('Image load error:', e.nativeEvent.error)}
               />
             </View>
           </Animated.View>
