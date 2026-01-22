@@ -8,6 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
 import { Camera, ImagePlus, X } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
+import { useTranslation } from '@/lib/i18n';
 import {
   GlassCard,
   PrimaryButton,

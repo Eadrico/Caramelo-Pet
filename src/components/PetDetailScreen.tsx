@@ -92,6 +92,20 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   const [showAddCareSheet, setShowAddCareSheet] = useState(false);
   const [editingCareItem, setEditingCareItem] = useState<CareItem | undefined>();
 
+  const upcomingCareItems = useMemo(() => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    return petCareItems
+      .filter((item) => {
+        const itemDate = new Date(item.dueDate);
+        const itemDateOnly = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
+        return itemDateOnly.getTime() >= today.getTime();
+      })
+      .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+      .slice(0, 5);
+  }, [petCareItems]);
+
   if (!pet) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -196,20 +210,6 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
     setShowAddCareSheet(false);
     setEditingCareItem(undefined);
   };
-
-  const upcomingCareItems = useMemo(() => {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
-    return petCareItems
-      .filter((item) => {
-        const itemDate = new Date(item.dueDate);
-        const itemDateOnly = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
-        return itemDateOnly.getTime() >= today.getTime();
-      })
-      .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-      .slice(0, 5);
-  }, [petCareItems]);
 
   return (
     <View style={{ flex: 1 }}>
