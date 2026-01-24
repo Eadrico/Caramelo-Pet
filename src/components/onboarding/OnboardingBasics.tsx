@@ -41,9 +41,9 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
   const isValid = name.trim().length >= 1;
 
   const speciesOptions: { value: Species; label: string }[] = [
-    { value: 'dog', label: 'Dog' },
-    { value: 'cat', label: 'Cat' },
-    { value: 'other', label: 'Other' },
+    { value: 'dog', label: t('onboarding_species_dog') },
+    { value: 'cat', label: t('onboarding_species_cat') },
+    { value: 'other', label: t('onboarding_species_other') },
   ];
 
   return (
@@ -79,7 +79,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
                     letterSpacing: -0.8,
                   }}
                 >
-                  Add Your Pet
+                  {t('onboarding_add_pet_title')}
                 </Text>
                 <Text
                   style={{
@@ -89,7 +89,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
                     lineHeight: 24,
                   }}
                 >
-                  Let's start with the basics.
+                  {t('onboarding_add_pet_subtitle')}
                 </Text>
               </Animated.View>
             </View>
@@ -112,12 +112,12 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
                       letterSpacing: 0.5,
                     }}
                   >
-                    Pet Name
+                    {t('onboarding_pet_name')}
                   </Text>
                   <RNTextInput
                     value={name}
                     onChangeText={setName}
-                    placeholder="e.g., Max, Luna, Buddy"
+                    placeholder={t('onboarding_pet_name_example')}
                     placeholderTextColor={c.textTertiary}
                     autoFocus
                     autoCapitalize="words"
@@ -147,7 +147,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
                       letterSpacing: 0.5,
                     }}
                   >
-                    What type of pet?
+                    {t('onboarding_species_question')}
                   </Text>
                   <SegmentedControl
                     options={speciesOptions}

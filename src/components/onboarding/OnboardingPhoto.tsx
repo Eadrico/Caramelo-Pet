@@ -37,8 +37,8 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert(
-        'Permission needed',
-        'Please allow access to your photo library to add a pet photo.'
+        t('permission_photos_title'),
+        t('permission_photos_message')
       );
       return;
     }
@@ -60,8 +60,8 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert(
-        'Permission needed',
-        'Please allow camera access to take a pet photo.'
+        t('permission_camera_title'),
+        t('permission_camera_message')
       );
       return;
     }
@@ -103,7 +103,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Text style={{ fontSize: 15, color: c.accent, fontWeight: '500' }}>
-                Back
+                {t('onboarding_back')}
               </Text>
             </Pressable>
           </View>
@@ -117,7 +117,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
                 letterSpacing: -0.8,
               }}
             >
-              Add a Photo
+              {t('onboarding_step2_title')}
             </Text>
             <Text
               style={{
@@ -127,7 +127,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
                 lineHeight: 24,
               }}
             >
-              Give {name} a face. This is optional.
+              {t('onboarding_step2_subtitle')}
             </Text>
           </Animated.View>
         </View>
@@ -188,12 +188,12 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
                 {/* Action Buttons */}
                 <View style={{ gap: 12, width: '100%' }}>
                   <SecondaryButton
-                    title="Choose from Library"
+                    title={t('photo_choose_library')}
                     onPress={pickImage}
                     icon={<ImagePlus size={20} color={c.text} />}
                   />
                   <SecondaryButton
-                    title="Take a Photo"
+                    title={t('photo_take_photo')}
                     onPress={takePhoto}
                     icon={<Camera size={20} color={c.text} />}
                   />
@@ -216,7 +216,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
                 style={{ paddingVertical: 12, alignItems: 'center' }}
               >
                 <Text style={{ fontSize: 15, color: c.textSecondary, fontWeight: '500' }}>
-                  Skip for now
+                  {t('onboarding_skip_for_now')}
                 </Text>
               </Pressable>
             )}

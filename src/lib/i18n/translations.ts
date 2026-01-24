@@ -223,7 +223,15 @@ type TranslationKey =
   | 'home_no_upcoming_items'
   | 'home_no_upcoming_items_desc'
   // Pet Details - Delete Confirmation
-  | 'pet_details_delete_confirm';
+  | 'pet_details_delete_confirm'
+  // Permissions
+  | 'permission_camera_title'
+  | 'permission_camera_message'
+  | 'permission_photos_title'
+  | 'permission_photos_message'
+  // Photo actions
+  | 'photo_choose_library'
+  | 'photo_take_photo';
 
 type Translations = Record<TranslationKey, string>;
 
@@ -429,6 +437,14 @@ const en: Translations = {
   settings_developer: 'Developer',
   settings_admin_mode: 'Admin Test Mode',
   settings_admin_desc: 'Simulate premium for testing purchases.',
+  // Permissions
+  permission_camera_title: 'Permission needed',
+  permission_camera_message: 'Please allow camera access to take a pet photo.',
+  permission_photos_title: 'Permission needed',
+  permission_photos_message: 'Please allow access to your photo library to add a pet photo.',
+  // Photo actions
+  photo_choose_library: 'Choose from Library',
+  photo_take_photo: 'Take a Photo',
 };
 
 const pt: Translations = {
@@ -633,6 +649,14 @@ const pt: Translations = {
   settings_developer: 'Desenvolvedor',
   settings_admin_mode: 'Modo de Teste Admin',
   settings_admin_desc: 'Simular premium para testar compras.',
+  // Permissions
+  permission_camera_title: 'Permissão necessária',
+  permission_camera_message: 'Por favor, permita o acesso à câmera para tirar uma foto do pet.',
+  permission_photos_title: 'Permissão necessária',
+  permission_photos_message: 'Por favor, permita o acesso à sua biblioteca de fotos para adicionar uma foto do pet.',
+  // Photo actions
+  photo_choose_library: 'Escolher da Biblioteca',
+  photo_take_photo: 'Tirar Foto',
 };
 
 const es: Translations = {
@@ -837,6 +861,14 @@ const es: Translations = {
   settings_developer: 'Desarrollador',
   settings_admin_mode: 'Modo Admin de Prueba',
   settings_admin_desc: 'Simular premium para probar compras.',
+  // Permissions
+  permission_camera_title: 'Permiso necesario',
+  permission_camera_message: 'Por favor, permite el acceso a la cámara para tomar una foto de la mascota.',
+  permission_photos_title: 'Permiso necesario',
+  permission_photos_message: 'Por favor, permite el acceso a tu biblioteca de fotos para agregar una foto de la mascota.',
+  // Photo actions
+  photo_choose_library: 'Elegir de la Biblioteca',
+  photo_take_photo: 'Tomar una Foto',
 };
 
 const fr: Translations = {
@@ -1041,6 +1073,14 @@ const fr: Translations = {
   settings_developer: 'Développeur',
   settings_admin_mode: 'Mode Admin Test',
   settings_admin_desc: 'Simuler premium pour tester les achats.',
+  // Permissions
+  permission_camera_title: 'Permission nécessaire',
+  permission_camera_message: 'Veuillez autoriser l\'accès à la caméra pour prendre une photo de l\'animal.',
+  permission_photos_title: 'Permission nécessaire',
+  permission_photos_message: 'Veuillez autoriser l\'accès à votre bibliothèque de photos pour ajouter une photo de l\'animal.',
+  // Photo actions
+  photo_choose_library: 'Choisir dans la Bibliothèque',
+  photo_take_photo: 'Prendre une Photo',
 };
 
 const zh: Translations = {
@@ -1245,6 +1285,14 @@ const zh: Translations = {
   settings_developer: '开发者',
   settings_admin_mode: '管理员测试模式',
   settings_admin_desc: '模拟高级版以测试购买。',
+  // Permissions
+  permission_camera_title: '需要权限',
+  permission_camera_message: '请允许访问相机以拍摄宠物照片。',
+  permission_photos_title: '需要权限',
+  permission_photos_message: '请允许访问您的照片库以添加宠物照片。',
+  // Photo actions
+  photo_choose_library: '从图库选择',
+  photo_take_photo: '拍照',
 };
 
 export const translations: Record<Exclude<SupportedLanguage, 'system'>, Translations> = {

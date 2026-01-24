@@ -115,7 +115,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Text style={{ fontSize: 15, color: c.accent, fontWeight: '500' }}>
-                Back
+                {t('onboarding_back')}
               </Text>
             </Pressable>
           </View>
@@ -129,7 +129,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                 letterSpacing: -0.8,
               }}
             >
-              Key Info
+              {t('onboarding_key_info_title')}
             </Text>
             <Text
               style={{
@@ -139,7 +139,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                 lineHeight: 24,
               }}
             >
-              Help us know {name} better. All optional.
+              {t('onboarding_key_info_subtitle', { name })}
             </Text>
           </Animated.View>
         </View>
@@ -160,7 +160,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                     letterSpacing: 0.5,
                   }}
                 >
-                  Birthdate
+                  {t('onboarding_birthdate')}
                 </Text>
                 <Pressable
                   onPress={() => {
@@ -202,7 +202,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                     letterSpacing: 0.5,
                   }}
                 >
-                  Weight
+                  {t('onboarding_weight')}
                 </Text>
                 <View style={{ flexDirection: 'row', gap: 12 }}>
                   <View
@@ -221,7 +221,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                     <RNTextInput
                       value={weightInput}
                       onChangeText={handleWeightChange}
-                      placeholder="0.0"
+                      placeholder={t('onboarding_weight_placeholder')}
                       placeholderTextColor={c.textTertiary}
                       keyboardType="decimal-pad"
                       returnKeyType="done"
@@ -297,13 +297,13 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
               }}
             >
               <Pressable onPress={() => setShowDatePicker(false)}>
-                <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+                <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
               </Pressable>
               <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-                Birthdate
+                {t('onboarding_birthdate')}
               </Text>
               <Pressable onPress={() => setShowDatePicker(false)}>
-                <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>Done</Text>
+                <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
               </Pressable>
             </View>
             <DateTimePicker

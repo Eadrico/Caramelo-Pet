@@ -48,10 +48,10 @@ const careTypeConfig: {
   icon: React.ComponentType<{ size: number; color: string }>;
   defaultTitle: string;
 }[] = [
-  { type: 'vaccine', label: 'Vaccine', icon: Syringe, defaultTitle: 'Vaccination' },
-  { type: 'grooming', label: 'Grooming', icon: Scissors, defaultTitle: 'Grooming appointment' },
-  { type: 'medication', label: 'Medication', icon: Pill, defaultTitle: 'Medication refill' },
-  { type: 'vet_visit', label: 'Vet Visit', icon: Stethoscope, defaultTitle: 'Vet checkup' },
+  { type: 'vaccine', label: '', icon: Syringe, defaultTitle: 'Vaccination' },
+  { type: 'grooming', label: '', icon: Scissors, defaultTitle: 'Grooming appointment' },
+  { type: 'medication', label: '', icon: Pill, defaultTitle: 'Medication refill' },
+  { type: 'vet_visit', label: '', icon: Stethoscope, defaultTitle: 'Vet checkup' },
 ];
 
 export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
@@ -59,6 +59,12 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+
+  // Get translated care type config
+  const translatedCareTypeConfig = careTypeConfig.map(config => ({
+    ...config,
+    label: t(`care_${config.type}` as any),
+  }));
 
   const name = useStore((s) => s.onboardingData.name);
   const careItems = useStore((s) => s.onboardingData.careItems);
@@ -73,7 +79,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const openAddModal = (type: CareType) => {
-    const config = careTypeConfig.find((c) => c.type === type);
+    const config = translatedCareTypeConfig.find((c) => c.type === type);
     setSelectedType(type);
     setEditTitle(config?.defaultTitle || '');
     setEditDate(new Date());
@@ -138,7 +144,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Text style={{ fontSize: 15, color: c.accent, fontWeight: '500' }}>
-                Back
+                {t('onboarding_back')}
               </Text>
             </Pressable>
           </View>
@@ -152,7 +158,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                 letterSpacing: -0.8,
               }}
             >
-              Care Schedule
+              {t('onboarding_step4_title')}
             </Text>
             <Text
               style={{
@@ -162,7 +168,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                 lineHeight: 24,
               }}
             >
-              Add upcoming care for {name}.
+              {t('onboarding_step4_subtitle')}
             </Text>
           </Animated.View>
         </View>
@@ -186,10 +192,10 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                   letterSpacing: 0.5,
                 }}
               >
-                Add Care Item
+                {t('care_add_item')}
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-                {careTypeConfig.map(({ type, label, icon: Icon }) => (
+                {translatedCareTypeConfig.map(({ type, label, icon: Icon }) => (
                   <Pressable
                     key={type}
                     onPress={() => openAddModal(type)}
@@ -230,7 +236,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                   letterSpacing: 0.5,
                 }}
               >
-                Added ({careItems.length})
+                {t('care_add_item')} ({careItems.length})
               </Text>
               <View style={{ gap: 8 }}>
                 {careItems.map((item, index) => (
@@ -339,10 +345,10 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
             }}
           >
             <Pressable onPress={() => setShowAddModal(false)}>
-              <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+              <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-              Add {selectedType ? getCareTypeLabel(selectedType) : 'Item'}
+              {t('care_add_item')}
             </Text>
             <Pressable onPress={handleSaveItem} disabled={!editTitle.trim()}>
               <Text
@@ -352,7 +358,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                   fontWeight: '600',
                 }}
               >
-                Save
+                {t('settings_save')}
               </Text>
             </Pressable>
           </View>
@@ -371,12 +377,12 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                   letterSpacing: 0.5,
                 }}
               >
-                Title
+                {t('care_title_label')}
               </Text>
               <RNTextInput
                 value={editTitle}
                 onChangeText={setEditTitle}
-                placeholder="e.g., Annual vaccination"
+                placeholder={t('care_title_placeholder')}
                 placeholderTextColor={c.textTertiary}
                 autoFocus
                 style={{
@@ -402,7 +408,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                   letterSpacing: 0.5,
                 }}
               >
-                Due Date
+                {t('care_due_date_label')}
               </Text>
               <Pressable
                 onPress={() => setShowDatePicker(true)}
@@ -481,10 +487,10 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
               }}
             >
               <Pressable onPress={() => setShowDatePicker(false)}>
-                <Text style={{ fontSize: 17, color: c.textSecondary }}>Cancel</Text>
+                <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
               </Pressable>
               <Pressable onPress={() => setShowDatePicker(false)}>
-                <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>Done</Text>
+                <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
               </Pressable>
             </View>
             <DateTimePicker
