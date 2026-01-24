@@ -1,5 +1,5 @@
 // Home Screen
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -35,6 +35,7 @@ import { PaywallScreen } from '@/components/PaywallScreen';
 import { useTranslation } from '@/lib/i18n';
 import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
 import { Reminder } from '@/lib/types';
+import { useFocusEffect } from 'expo-router';
 
 export function HomeScreen() {
   const c = useColors();
@@ -63,6 +64,30 @@ export function HomeScreen() {
   const [editingReminder, setEditingReminder] = useState<Reminder | undefined>();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+
+  // Scroll ref for scrolling to top
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // Reset all modals and scroll to top when screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      // Close all modals
+      setSelectedPetId(null);
+      setShowAddSheet(false);
+      setShowAddReminderSheet(false);
+      setShowItemSelector(false);
+      setShowPaywall(false);
+      setShowAddPetWizard(false);
+      setShowAddMenu(false);
+      setEditingItem(undefined);
+      setEditingReminder(undefined);
+
+      // Scroll to top after a small delay to ensure layout is ready
+      setTimeout(() => {
+        scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+      }, 100);
+    }, [])
+  );
 
   // Initialize premium store
   useEffect(() => {
@@ -277,6 +302,7 @@ export function HomeScreen() {
         </Animated.View>
 
         <ScrollView
+          ref={scrollViewRef}
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}

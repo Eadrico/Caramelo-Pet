@@ -11,6 +11,7 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
 
 - **Tab Navigation**: Clean bottom navigation with two main sections
   - Home tab (house icon): Pet list and care management
+    - Tapping the home icon always resets to the main view (closes modals, scrolls to top)
   - Settings tab (gear icon): User preferences and profile
 
 - **First Pet Onboarding**: A beautiful 5-step wizard to add your first pet

@@ -1,16 +1,19 @@
 // Tabs navigation layout for Caramelo
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter, usePathname } from 'expo-router';
 import { useColorScheme, Platform } from 'react-native';
 import { Home, Settings } from 'lucide-react-native';
 import { colors } from '@/components/design-system';
 import { BlurView } from 'expo-blur';
 import { useTranslation } from '@/lib/i18n';
+import * as Haptics from 'expo-haptics';
 
 export default function TabsLayout() {
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const c = isDark ? colors.dark : colors.light;
   const { t } = useTranslation();
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <Tabs
@@ -57,6 +60,16 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <Home size={size} color={color} strokeWidth={2} />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            // If already on home tab, trigger a reset by navigating to it again
+            if (pathname === '/') {
+              e.preventDefault();
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.replace('/');
+            }
+          },
         }}
       />
       <Tabs.Screen
