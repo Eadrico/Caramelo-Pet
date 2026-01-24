@@ -254,9 +254,6 @@ export function HomeScreen() {
         <Animated.View
           entering={FadeInDown.duration(400)}
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
             paddingHorizontal: 20,
             paddingTop: 8,
             paddingBottom: 16,
@@ -294,11 +291,6 @@ export function HomeScreen() {
               {t('home_pets_count', { count: pets.length })} • {t('home_upcoming_count', { count: upcomingCareItems.length })}
             </Text>
           </View>
-          <IconButton
-            icon={<Plus size={22} color={c.text} strokeWidth={2.5} />}
-            onPress={handleAddPress}
-            variant="filled"
-          />
         </Animated.View>
 
         <ScrollView
