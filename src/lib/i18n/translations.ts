@@ -221,6 +221,9 @@ type TranslationKey =
   | 'common_date_time'
   | 'common_repeat'
   | 'common_once'
+  | 'common_daily'
+  | 'common_weekly'
+  | 'common_monthly'
   | 'common_new_reminder'
   | 'common_edit_reminder'
   | 'common_delete_reminder'
@@ -434,6 +437,9 @@ const en: Translations = {
   common_date_time: 'Date & Time',
   common_repeat: 'Repeat',
   common_once: 'Once',
+  common_daily: 'Daily',
+  common_weekly: 'Weekly',
+  common_monthly: 'Monthly',
   common_new_reminder: 'New Reminder',
   common_edit_reminder: 'Edit Reminder',
   common_delete_reminder: 'Delete Reminder',
@@ -655,6 +661,9 @@ const pt: Translations = {
   common_date_time: 'Data e Hora',
   common_repeat: 'Repetir',
   common_once: 'Uma vez',
+  common_daily: 'Diariamente',
+  common_weekly: 'Semanalmente',
+  common_monthly: 'Mensalmente',
   common_new_reminder: 'Novo Lembrete',
   common_edit_reminder: 'Editar Lembrete',
   common_delete_reminder: 'Deletar Lembrete',
@@ -876,6 +885,9 @@ const es: Translations = {
   common_date_time: 'Fecha y Hora',
   common_repeat: 'Repetir',
   common_once: 'Una vez',
+  common_daily: 'Diariamente',
+  common_weekly: 'Semanalmente',
+  common_monthly: 'Mensualmente',
   common_new_reminder: 'Nuevo Recordatorio',
   common_edit_reminder: 'Editar Recordatorio',
   common_delete_reminder: 'Eliminar Recordatorio',
@@ -1097,6 +1109,9 @@ const fr: Translations = {
   common_date_time: 'Date et Heure',
   common_repeat: 'Répéter',
   common_once: 'Une fois',
+  common_daily: 'Quotidien',
+  common_weekly: 'Hebdomadaire',
+  common_monthly: 'Mensuel',
   common_new_reminder: 'Nouveau Rappel',
   common_edit_reminder: 'Modifier le Rappel',
   common_delete_reminder: 'Supprimer le Rappel',
@@ -1318,6 +1333,9 @@ const zh: Translations = {
   common_date_time: '日期和时间',
   common_repeat: '重复',
   common_once: '一次',
+  common_daily: '每天',
+  common_weekly: '每周',
+  common_monthly: '每月',
   common_new_reminder: '新提醒',
   common_edit_reminder: '编辑提醒',
   common_delete_reminder: '删除提醒',

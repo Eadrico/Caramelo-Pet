@@ -436,7 +436,11 @@ export function AddReminderSheet({
                     >
                       {type === 'none'
                         ? t('common_once')
-                        : type.charAt(0).toUpperCase() + type.slice(1)}
+                        : type === 'daily'
+                        ? t('common_daily')
+                        : type === 'weekly'
+                        ? t('common_weekly')
+                        : t('common_monthly')}
                     </Text>
                   </Pressable>
                 ))}

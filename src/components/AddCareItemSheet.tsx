@@ -38,18 +38,6 @@ interface AddCareItemSheetProps {
   preselectedPetId?: string;
 }
 
-const careTypeConfig: {
-  type: CareType;
-  label: string;
-  icon: React.ComponentType<{ size: number; color: string }>;
-  defaultTitle: string;
-}[] = [
-  { type: 'vaccine', label: 'Vaccine', icon: Syringe, defaultTitle: 'Vaccination' },
-  { type: 'grooming', label: 'Grooming', icon: Scissors, defaultTitle: 'Grooming appointment' },
-  { type: 'medication', label: 'Medication', icon: Pill, defaultTitle: 'Medication refill' },
-  { type: 'vet_visit', label: 'Vet Visit', icon: Stethoscope, defaultTitle: 'Vet checkup' },
-];
-
 export function AddCareItemSheet({
   visible,
   onClose,
@@ -60,6 +48,18 @@ export function AddCareItemSheet({
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+
+  const careTypeConfig: {
+    type: CareType;
+    label: string;
+    icon: React.ComponentType<{ size: number; color: string }>;
+    defaultTitle: string;
+  }[] = [
+    { type: 'vaccine', label: t('care_vaccine'), icon: Syringe, defaultTitle: t('care_vaccine') },
+    { type: 'grooming', label: t('care_grooming'), icon: Scissors, defaultTitle: t('care_grooming') },
+    { type: 'medication', label: t('care_medication'), icon: Pill, defaultTitle: t('care_medication') },
+    { type: 'vet_visit', label: t('care_vet_visit'), icon: Stethoscope, defaultTitle: t('care_vet_visit') },
+  ];
 
   const pets = useStore((s) => s.pets);
   const addCareItem = useStore((s) => s.addCareItem);
