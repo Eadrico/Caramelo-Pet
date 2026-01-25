@@ -109,7 +109,7 @@ export function ReminderRow({ reminder, pet, onPress }: ReminderRowProps) {
               color: c.textSecondary,
             }}
           >
-            {pet.name} • {formatRelativeDate(reminder.dateTime)}
+            {pet.name} • {formatRelativeDate(reminder.dateTime, t)}
             {reminder.repeatType !== 'none' && ` • ${getRepeatLabel(reminder.repeatType, t)}`}
           </Text>
         </View>
@@ -133,7 +133,7 @@ export function ReminderRow({ reminder, pet, onPress }: ReminderRowProps) {
                 color: c.accent,
               }}
             >
-              Today
+              {t('common_today')}
             </Text>
           </View>
         )}

@@ -66,16 +66,16 @@ export function formatDate(dateString: string): string {
   });
 }
 
-export function formatRelativeDate(dateString: string): string {
+export function formatRelativeDate(dateString: string, t: (key: any) => string): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Tomorrow';
-  if (diffDays === -1) return 'Yesterday';
-  if (diffDays > 0 && diffDays <= 7) return `In ${diffDays} days`;
-  if (diffDays < 0 && diffDays >= -7) return `${Math.abs(diffDays)} days ago`;
+  if (diffDays === 0) return t('common_today');
+  if (diffDays === 1) return t('common_tomorrow');
+  if (diffDays === -1) return t('common_yesterday');
+  if (diffDays > 0 && diffDays <= 7) return t('common_in_days').replace('{days}', String(diffDays));
+  if (diffDays < 0 && diffDays >= -7) return `${Math.abs(diffDays)} ${t('common_days_ago')}`;
 
   return formatDate(dateString);
 }

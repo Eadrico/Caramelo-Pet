@@ -18,6 +18,7 @@ import {
 } from 'lucide-react-native';
 import { CareItem, Pet, formatRelativeDate, CareType } from '@/lib/types';
 import { useColors } from '@/components/design-system';
+import { useTranslation } from '@/lib/i18n';
 
 interface CareItemRowProps {
   item: CareItem;
@@ -29,6 +30,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function CareItemRow({ item, pet, onPress }: CareItemRowProps) {
   const c = useColors();
+  const { t } = useTranslation();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const scale = useSharedValue(1);
@@ -137,7 +139,7 @@ export function CareItemRow({ item, pet, onPress }: CareItemRowProps) {
               color: c.textSecondary,
             }}
           >
-            {pet.name} • {formatRelativeDate(item.dueDate)}
+            {pet.name} • {formatRelativeDate(item.dueDate, t)}
           </Text>
         </View>
 
@@ -164,7 +166,7 @@ export function CareItemRow({ item, pet, onPress }: CareItemRowProps) {
                 color: isOverdue ? c.destructive : c.accent,
               }}
             >
-              {isOverdue ? 'Overdue' : 'Soon'}
+              {isOverdue ? t('common_overdue') : t('common_soon')}
             </Text>
           </View>
         )}

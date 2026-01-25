@@ -124,7 +124,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
               }}
               numberOfLines={1}
             >
-              {nextCareItem.title} • {formatRelativeDate(nextCareItem.dueDate)}
+              {nextCareItem.title} • {formatRelativeDate(nextCareItem.dueDate, t)}
             </Text>
           )}
         </View>

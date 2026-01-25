@@ -202,6 +202,8 @@ type TranslationKey =
   | 'common_yesterday'
   | 'common_days_ago'
   | 'common_in_days'
+  | 'common_soon'
+  | 'common_overdue'
   | 'common_months'
   | 'common_month'
   | 'common_years'
@@ -426,6 +428,8 @@ const en: Translations = {
   common_yesterday: 'Yesterday',
   common_days_ago: 'days ago',
   common_in_days: 'In {days} days',
+  common_soon: 'Soon',
+  common_overdue: 'Overdue',
   common_months: 'months',
   common_month: 'month',
   common_years: 'years',
@@ -658,6 +662,8 @@ const pt: Translations = {
   common_yesterday: 'Ontem',
   common_days_ago: 'dias atrás',
   common_in_days: 'Em {days} dias',
+  common_soon: 'Em breve',
+  common_overdue: 'Atrasado',
   common_months: 'meses',
   common_month: 'mês',
   common_years: 'anos',
@@ -890,6 +896,8 @@ const es: Translations = {
   common_yesterday: 'Ayer',
   common_days_ago: 'días atrás',
   common_in_days: 'En {days} días',
+  common_soon: 'Pronto',
+  common_overdue: 'Vencido',
   common_months: 'meses',
   common_month: 'mes',
   common_years: 'años',
@@ -1122,6 +1130,8 @@ const fr: Translations = {
   common_yesterday: 'Hier',
   common_days_ago: 'jours passés',
   common_in_days: 'Dans {days} jours',
+  common_soon: 'Bientôt',
+  common_overdue: 'En retard',
   common_months: 'mois',
   common_month: 'mois',
   common_years: 'ans',
@@ -1354,6 +1364,8 @@ const zh: Translations = {
   common_yesterday: '昨天',
   common_days_ago: '天前',
   common_in_days: '{days}天后',
+  common_soon: '即将到期',
+  common_overdue: '已逾期',
   common_months: '个月',
   common_month: '个月',
   common_years: '年',
