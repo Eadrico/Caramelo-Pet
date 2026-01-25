@@ -14,11 +14,10 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
     - Tapping the home icon always resets to the main view (closes modals, scrolls to top)
   - Settings tab (gear icon): User preferences and profile
 
-- **First Pet Onboarding**: A beautiful 5-step wizard to add your first pet
+- **First Pet Onboarding**: A beautiful 4-step wizard to add your first pet
   - Pet basics (name + species)
   - Photo (optional)
   - Key info (birthdate + weight, optional)
-  - Initial care schedule setup
   - Review & save
 
 - **Home Screen**: View your pets and upcoming care items

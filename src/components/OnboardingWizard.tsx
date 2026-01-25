@@ -6,7 +6,6 @@ import {
   OnboardingBasics,
   OnboardingPhoto,
   OnboardingInfo,
-  OnboardingCare,
   OnboardingReview,
 } from '@/components/onboarding';
 
@@ -14,9 +13,9 @@ interface OnboardingWizardProps {
   onComplete: () => void;
 }
 
-type Step = 'basics' | 'photo' | 'info' | 'care' | 'review';
+type Step = 'basics' | 'photo' | 'info' | 'review';
 
-const steps: Step[] = ['basics', 'photo', 'info', 'care', 'review'];
+const steps: Step[] = ['basics', 'photo', 'info', 'review'];
 
 export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const [currentStep, setCurrentStep] = useState<Step>('basics');
@@ -43,8 +42,6 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         return <OnboardingPhoto onNext={goNext} onBack={goBack} />;
       case 'info':
         return <OnboardingInfo onNext={goNext} onBack={goBack} />;
-      case 'care':
-        return <OnboardingCare onNext={goNext} onBack={goBack} />;
       case 'review':
         return <OnboardingReview onComplete={onComplete} onBack={goBack} />;
       default:
