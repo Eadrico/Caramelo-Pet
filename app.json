@@ -1,17 +1,42 @@
 {
   "expo": {
-    "name": "vibecode",
-    "slug": "vibecode",
-    "scheme": "vibecode",
+    "name": "Caramelo",
+    "slug": "caramelo-pet-care",
+    "scheme": "caramelo",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "backgroundColor": "#F5F2EE",
+      "resizeMode": "contain"
+    },
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.caramelo.petcare",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Caramelo needs access to your photo library so you can add photos of your pets to their profiles.",
+        "NSPhotoLibraryAddUsageDescription": "Caramelo needs permission to save photos of your pets to your photo library.",
+        "NSCameraUsageDescription": "Caramelo needs access to your camera so you can take photos of your pets.",
+        "NSUserNotificationsUsageDescription": "Caramelo needs permission to send you reminders about your pet's care schedule, such as vaccinations and vet appointments.",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false
+        }
+      }
     },
     "android": {
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.caramelo.petcare",
+      "adaptiveIcon": {
+        "backgroundColor": "#F5F2EE"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.POST_NOTIFICATIONS"
+      ]
     },
     "plugins": ["expo-router"],
     "experiments": {

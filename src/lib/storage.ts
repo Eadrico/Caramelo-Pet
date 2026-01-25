@@ -23,7 +23,7 @@ export async function getPets(): Promise<Pet[]> {
     const data = await AsyncStorage.getItem(PETS_KEY);
     return data ? JSON.parse(data) : [];
   } catch (error) {
-    console.error('Error getting pets:', error);
+    // Silent fail - return empty array
     return [];
   }
 }
@@ -40,7 +40,6 @@ export async function savePet(pet: Omit<Pet, 'id' | 'createdAt'>): Promise<Pet> 
     await AsyncStorage.setItem(PETS_KEY, JSON.stringify(pets));
     return newPet;
   } catch (error) {
-    console.error('Error saving pet:', error);
     throw error;
   }
 }
@@ -55,7 +54,6 @@ export async function updatePet(petId: string, updates: Partial<Pet>): Promise<P
     await AsyncStorage.setItem(PETS_KEY, JSON.stringify(pets));
     return pets[index];
   } catch (error) {
-    console.error('Error updating pet:', error);
     throw error;
   }
 }
@@ -79,7 +77,6 @@ export async function deletePet(petId: string): Promise<void> {
     const filteredCareItems = careItems.filter(c => c.petId !== petId);
     await AsyncStorage.setItem(CARE_ITEMS_KEY, JSON.stringify(filteredCareItems));
   } catch (error) {
-    console.error('Error deleting pet:', error);
     throw error;
   }
 }
@@ -90,7 +87,7 @@ export async function getCareItems(): Promise<CareItem[]> {
     const data = await AsyncStorage.getItem(CARE_ITEMS_KEY);
     return data ? JSON.parse(data) : [];
   } catch (error) {
-    console.error('Error getting care items:', error);
+    
     return [];
   }
 }
@@ -126,7 +123,7 @@ export async function saveCareItem(item: Omit<CareItem, 'id' | 'createdAt'>): Pr
     await AsyncStorage.setItem(CARE_ITEMS_KEY, JSON.stringify(items));
     return newItem;
   } catch (error) {
-    console.error('Error saving care item:', error);
+    
     throw error;
   }
 }
@@ -141,7 +138,7 @@ export async function updateCareItem(itemId: string, updates: Partial<CareItem>)
     await AsyncStorage.setItem(CARE_ITEMS_KEY, JSON.stringify(items));
     return items[index];
   } catch (error) {
-    console.error('Error updating care item:', error);
+    
     throw error;
   }
 }
@@ -152,7 +149,7 @@ export async function deleteCareItem(itemId: string): Promise<void> {
     const filteredItems = items.filter(i => i.id !== itemId);
     await AsyncStorage.setItem(CARE_ITEMS_KEY, JSON.stringify(filteredItems));
   } catch (error) {
-    console.error('Error deleting care item:', error);
+    
     throw error;
   }
 }
@@ -166,7 +163,7 @@ export async function savePhoto(uri: string): Promise<string> {
     await FileSystem.copyAsync({ from: uri, to: newUri });
     return newUri;
   } catch (error) {
-    console.error('Error saving photo:', error);
+    
     throw error;
   }
 }
@@ -175,7 +172,7 @@ export async function deletePhoto(uri: string): Promise<void> {
   try {
     await FileSystem.deleteAsync(uri, { idempotent: true });
   } catch (error) {
-    console.error('Error deleting photo:', error);
+    
   }
 }
 
@@ -200,7 +197,7 @@ export async function savePetWithCareItems(
 
     return { pet, careItems: savedCareItems };
   } catch (error) {
-    console.error('Error saving pet with care items:', error);
+    
     throw error;
   }
 }
@@ -217,7 +214,7 @@ export async function getReminders(): Promise<Reminder[]> {
     const data = await AsyncStorage.getItem(REMINDERS_KEY);
     return data ? JSON.parse(data) : [];
   } catch (error) {
-    console.error('Error getting reminders:', error);
+    
     return [];
   }
 }
@@ -256,7 +253,7 @@ async function scheduleNotification(reminder: Reminder): Promise<string | undefi
 
     return notificationId;
   } catch (error) {
-    console.error('Error scheduling notification:', error);
+    
     return undefined;
   }
 }
@@ -265,7 +262,7 @@ async function cancelNotification(notificationId: string): Promise<void> {
   try {
     await Notifications.cancelScheduledNotificationAsync(notificationId);
   } catch (error) {
-    console.error('Error canceling notification:', error);
+    
   }
 }
 
@@ -290,7 +287,7 @@ export async function saveReminder(
     await AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders));
     return newReminder;
   } catch (error) {
-    console.error('Error saving reminder:', error);
+    
     throw error;
   }
 }
@@ -325,7 +322,7 @@ export async function updateReminder(
     await AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders));
     return updatedReminder;
   } catch (error) {
-    console.error('Error updating reminder:', error);
+    
     throw error;
   }
 }
@@ -343,7 +340,7 @@ export async function deleteReminder(reminderId: string): Promise<void> {
     const filteredReminders = reminders.filter((r) => r.id !== reminderId);
     await AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(filteredReminders));
   } catch (error) {
-    console.error('Error deleting reminder:', error);
+    
     throw error;
   }
 }
