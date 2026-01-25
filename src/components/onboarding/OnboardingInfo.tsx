@@ -312,7 +312,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
               display="spinner"
               onChange={handleDateChange}
               maximumDate={new Date()}
-              style={{ height: 200 }}
+              style={{ height: 200, alignSelf: 'center' }}
             />
           </View>
         </Modal>

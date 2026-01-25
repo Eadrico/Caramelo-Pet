@@ -470,7 +470,7 @@ export function AddCareItemSheet({
                 mode="date"
                 display="spinner"
                 onChange={handleDateChange}
-                style={{ height: 200 }}
+                style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
           </Modal>

@@ -514,7 +514,7 @@ export function AddReminderSheet({
                 mode="date"
                 display="spinner"
                 onChange={handleDateChange}
-                style={{ height: 200 }}
+                style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
           </Modal>
@@ -573,7 +573,7 @@ export function AddReminderSheet({
                 mode="time"
                 display="spinner"
                 onChange={handleTimeChange}
-                style={{ height: 200 }}
+                style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
           </Modal>

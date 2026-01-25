@@ -499,7 +499,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
               display="spinner"
               onChange={handleDateChange}
               minimumDate={new Date()}
-              style={{ height: 200 }}
+              style={{ height: 200, alignSelf: 'center' }}
             />
           </View>
         )}

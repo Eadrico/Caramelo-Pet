@@ -947,6 +947,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                   }
                 }}
                 minimumDate={new Date()}
+                style={{ alignSelf: 'center' }}
               />
             )}
 
@@ -967,6 +968,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     });
                   }
                 }}
+                style={{ alignSelf: 'center' }}
               />
             )}
           </SafeAreaView>
