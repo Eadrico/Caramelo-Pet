@@ -384,7 +384,6 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
                 onChangeText={setEditTitle}
                 placeholder={t('care_title_placeholder')}
                 placeholderTextColor={c.textTertiary}
-                autoFocus
                 style={{
                   fontSize: 17,
                   color: c.text,
