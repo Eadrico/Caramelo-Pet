@@ -262,13 +262,13 @@ export function HomeScreen() {
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&h=100&fit=crop' }}
+                source={require('../../assets/Loki_log.png')}
                 style={{
                   width: 34,
                   height: 34,
                   marginRight: 8,
-                  borderRadius: 17,
                 }}
+                resizeMode="contain"
               />
               <Text
                 style={{
