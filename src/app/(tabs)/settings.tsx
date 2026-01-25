@@ -1035,7 +1035,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/loki.png')}
+                  source={{ uri: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=300&fit=crop' }}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1061,7 +1061,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/brownie-1766763191626-1.png')}
+                  source={{ uri: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=200&h=300&fit=crop' }}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1087,7 +1087,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/fuba-1766763191626-2.png')}
+                  source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&h=300&fit=crop' }}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1112,7 +1112,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/Baunilia-1766763191626-0.png')}
+                  source={{ uri: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&h=300&fit=crop' }}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
