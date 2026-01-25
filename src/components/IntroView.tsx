@@ -1,6 +1,6 @@
 // IntroView - Welcome splash screen
 import React from 'react';
-import { View, Text, useColorScheme, Image } from 'react-native';
+import { View, Text, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
@@ -72,14 +72,11 @@ export function IntroView({ onContinue }: IntroViewProps) {
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.2,
                 shadowRadius: 24,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              <Image
-                source={require('../../assets/loki.png')}
-                style={{ width: 120, height: 120 }}
-                resizeMode="cover"
-                onError={(e) => console.log('Image load error:', e.nativeEvent.error)}
-              />
+              <PawPrint size={56} color={c.accent} strokeWidth={1.5} />
             </View>
           </Animated.View>
 
