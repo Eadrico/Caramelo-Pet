@@ -243,7 +243,12 @@ type TranslationKey =
   | 'permission_photos_message'
   // Photo actions
   | 'photo_choose_library'
-  | 'photo_take_photo';
+  | 'photo_take_photo'
+  // Repeat labels
+  | 'repeat_does_not_repeat'
+  | 'repeat_every_day'
+  | 'repeat_every_week'
+  | 'repeat_every_month';
 
 type Translations = Record<TranslationKey, string>;
 
@@ -469,6 +474,11 @@ const en: Translations = {
   // Photo actions
   photo_choose_library: 'Choose from Library',
   photo_take_photo: 'Take a Photo',
+  // Repeat labels
+  repeat_does_not_repeat: 'Does not repeat',
+  repeat_every_day: 'Every day',
+  repeat_every_week: 'Every week',
+  repeat_every_month: 'Every month',
 };
 
 const pt: Translations = {
@@ -693,6 +703,11 @@ const pt: Translations = {
   // Photo actions
   photo_choose_library: 'Escolher da Biblioteca',
   photo_take_photo: 'Tirar Foto',
+  // Repeat labels
+  repeat_does_not_repeat: 'Não se repete',
+  repeat_every_day: 'Todo dia',
+  repeat_every_week: 'Toda semana',
+  repeat_every_month: 'Todo mês',
 };
 
 const es: Translations = {
@@ -917,6 +932,11 @@ const es: Translations = {
   // Photo actions
   photo_choose_library: 'Elegir de la Biblioteca',
   photo_take_photo: 'Tomar una Foto',
+  // Repeat labels
+  repeat_does_not_repeat: 'No se repite',
+  repeat_every_day: 'Todos los días',
+  repeat_every_week: 'Cada semana',
+  repeat_every_month: 'Cada mes',
 };
 
 const fr: Translations = {
@@ -1141,6 +1161,11 @@ const fr: Translations = {
   // Photo actions
   photo_choose_library: 'Choisir dans la Bibliothèque',
   photo_take_photo: 'Prendre une Photo',
+  // Repeat labels
+  repeat_does_not_repeat: 'Ne se répète pas',
+  repeat_every_day: 'Tous les jours',
+  repeat_every_week: 'Chaque semaine',
+  repeat_every_month: 'Chaque mois',
 };
 
 const zh: Translations = {
@@ -1365,6 +1390,11 @@ const zh: Translations = {
   // Photo actions
   photo_choose_library: '从图库选择',
   photo_take_photo: '拍照',
+  // Repeat labels
+  repeat_does_not_repeat: '不重复',
+  repeat_every_day: '每天',
+  repeat_every_week: '每周',
+  repeat_every_month: '每月',
 };
 
 export const translations: Record<Exclude<SupportedLanguage, 'system'>, Translations> = {

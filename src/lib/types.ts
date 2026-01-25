@@ -108,12 +108,12 @@ export function getSpeciesEmoji(species: Species): string {
   }
 }
 
-export function getRepeatLabel(repeatType: Reminder['repeatType']): string {
+export function getRepeatLabel(repeatType: Reminder['repeatType'], t: (key: any) => string): string {
   switch (repeatType) {
-    case 'none': return 'Does not repeat';
-    case 'daily': return 'Every day';
-    case 'weekly': return 'Every week';
-    case 'monthly': return 'Every month';
+    case 'none': return t('repeat_does_not_repeat');
+    case 'daily': return t('repeat_every_day');
+    case 'weekly': return t('repeat_every_week');
+    case 'monthly': return t('repeat_every_month');
   }
 }
 

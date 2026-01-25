@@ -461,7 +461,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               {/* Vet Phone */}
               <InfoRow
                 icon={<Phone size={18} color={c.accent} />}
-                label="Vet Phone"
+                label={t('pet_details_vet_phone')}
                 value={isEditing ? editedPet.vetPhone : pet.vetPhone}
                 isEditing={isEditing}
                 onChangeText={(text) =>
@@ -510,6 +510,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     onDelete={() => handleDeleteReminder(reminder.id)}
                     colors={c}
                     isDark={isDark}
+                    t={t}
                   />
                 ))}
               </View>
@@ -1076,6 +1077,7 @@ interface ReminderRowProps {
   onDelete: () => void;
   colors: ReturnType<typeof useColors>;
   isDark: boolean;
+  t: (key: any) => string;
 }
 
 function ReminderRow({
@@ -1083,6 +1085,7 @@ function ReminderRow({
   onDelete,
   colors: c,
   isDark,
+  t,
 }: ReminderRowProps) {
   const reminderDate = new Date(reminder.dateTime);
 
@@ -1136,7 +1139,7 @@ function ReminderRow({
             hour: '2-digit',
             minute: '2-digit',
           })}
-          {reminder.repeatType !== 'none' && ` • ${getRepeatLabel(reminder.repeatType)}`}
+          {reminder.repeatType !== 'none' && ` • ${getRepeatLabel(reminder.repeatType, t)}`}
         </Text>
       </View>
       <Pressable

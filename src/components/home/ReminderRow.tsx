@@ -11,6 +11,7 @@ import * as Haptics from 'expo-haptics';
 import { Bell, ChevronRight } from 'lucide-react-native';
 import { Reminder, Pet, formatRelativeDate, getRepeatLabel } from '@/lib/types';
 import { useColors } from '@/components/design-system';
+import { useTranslation } from '@/lib/i18n';
 
 interface ReminderRowProps {
   reminder: Reminder;
@@ -25,6 +26,7 @@ export function ReminderRow({ reminder, pet, onPress }: ReminderRowProps) {
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const scale = useSharedValue(1);
+  const { t } = useTranslation();
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -108,7 +110,7 @@ export function ReminderRow({ reminder, pet, onPress }: ReminderRowProps) {
             }}
           >
             {pet.name} • {formatRelativeDate(reminder.dateTime)}
-            {reminder.repeatType !== 'none' && ` • ${getRepeatLabel(reminder.repeatType)}`}
+            {reminder.repeatType !== 'none' && ` • ${getRepeatLabel(reminder.repeatType, t)}`}
           </Text>
         </View>
 
