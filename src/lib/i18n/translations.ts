@@ -88,6 +88,9 @@ type TranslationKey =
   | 'home_no_care_desc'
   | 'home_add_care_item'
   | 'home_add_care_desc'
+  | 'home_add_reminder'
+  | 'home_add_reminder_desc'
+  | 'home_choose_what_to_add'
   | 'home_pets_count'
   | 'home_upcoming_count'
   | 'home_premium_badge'
@@ -319,6 +322,9 @@ const en: Translations = {
   home_no_care_desc: 'Add care items to keep track of vaccines, vet visits, grooming, and more.',
   home_add_care_item: 'Add Care Item',
   home_add_care_desc: 'Schedule vaccines, vet visits, and more',
+  home_add_reminder: 'Add Reminder',
+  home_add_reminder_desc: 'Set a reminder for your pet',
+  home_choose_what_to_add: 'Choose what you want to add',
   home_pets_count: '{count} pet(s)',
   home_upcoming_count: '{count} upcoming',
   home_premium_badge: 'Premium',
@@ -548,6 +554,9 @@ const pt: Translations = {
   home_no_care_desc: 'Adicione cuidados para acompanhar vacinas, consultas, banhos e mais.',
   home_add_care_item: 'Adicionar Cuidado',
   home_add_care_desc: 'Agende vacinas, consultas e mais',
+  home_add_reminder: 'Adicionar Lembrete',
+  home_add_reminder_desc: 'Configure um lembrete para seu pet',
+  home_choose_what_to_add: 'Escolha o que deseja adicionar',
   home_pets_count: '{count} pet(s)',
   home_upcoming_count: '{count} agendados',
   home_premium_badge: 'Premium',
@@ -777,6 +786,9 @@ const es: Translations = {
   home_no_care_desc: 'Agrega cuidados para llevar un registro de vacunas, citas, baños y más.',
   home_add_care_item: 'Agregar Cuidado',
   home_add_care_desc: 'Programa vacunas, citas y más',
+  home_add_reminder: 'Agregar Recordatorio',
+  home_add_reminder_desc: 'Configura un recordatorio para tu mascota',
+  home_choose_what_to_add: 'Elige qué quieres agregar',
   home_pets_count: '{count} mascota(s)',
   home_upcoming_count: '{count} programados',
   home_premium_badge: 'Premium',
@@ -1006,6 +1018,9 @@ const fr: Translations = {
   home_no_care_desc: 'Ajoutez des soins pour suivre les vaccins, visites vétérinaires, toilettage et plus.',
   home_add_care_item: 'Ajouter un Soin',
   home_add_care_desc: 'Planifier vaccins, visites et plus',
+  home_add_reminder: 'Ajouter un Rappel',
+  home_add_reminder_desc: 'Définir un rappel pour votre animal',
+  home_choose_what_to_add: 'Choisissez ce que vous voulez ajouter',
   home_pets_count: '{count} animal(aux)',
   home_upcoming_count: '{count} à venir',
   home_premium_badge: 'Premium',
@@ -1235,6 +1250,9 @@ const zh: Translations = {
   home_no_care_desc: '添加护理项目来追踪疫苗、兽医就诊、美容等。',
   home_add_care_item: '添加护理项目',
   home_add_care_desc: '安排疫苗、就诊等',
+  home_add_reminder: '添加提醒',
+  home_add_reminder_desc: '为您的宠物设置提醒',
+  home_choose_what_to_add: '选择您要添加的内容',
   home_pets_count: '{count}只宠物',
   home_upcoming_count: '{count}项待办',
   home_premium_badge: '高级版',

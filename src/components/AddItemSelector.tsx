@@ -97,7 +97,7 @@ export function AddItemSelector({
                 color: c.textSecondary,
               }}
             >
-              Choose what you want to add
+              {t('home_choose_what_to_add')}
             </Text>
           </View>
 
@@ -182,7 +182,7 @@ export function AddItemSelector({
                     marginBottom: 2,
                   }}
                 >
-                  Add Reminder
+                  {t('home_add_reminder')}
                 </Text>
                 <Text
                   style={{
@@ -190,7 +190,7 @@ export function AddItemSelector({
                     color: c.textSecondary,
                   }}
                 >
-                  Set a reminder for your pet
+                  {t('home_add_reminder_desc')}
                 </Text>
               </View>
             </Pressable>
