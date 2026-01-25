@@ -12,15 +12,16 @@
       "backgroundColor": "#F5F2EE",
       "resizeMode": "contain"
     },
+    "privacy": "public",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.caramelo.petcare",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Caramelo needs access to your photo library so you can add photos of your pets to their profiles.",
-        "NSPhotoLibraryAddUsageDescription": "Caramelo needs permission to save photos of your pets to your photo library.",
-        "NSCameraUsageDescription": "Caramelo needs access to your camera so you can take photos of your pets.",
-        "NSUserNotificationsUsageDescription": "Caramelo needs permission to send you reminders about your pet's care schedule, such as vaccinations and vet appointments.",
+        "NSPhotoLibraryUsageDescription": "O Caramelo precisa de acesso à sua biblioteca de fotos para que você possa adicionar fotos dos seus pets aos perfis deles.",
+        "NSPhotoLibraryAddUsageDescription": "O Caramelo precisa de permissão para salvar fotos dos seus pets na sua biblioteca de fotos.",
+        "NSCameraUsageDescription": "O Caramelo precisa de acesso à sua câmera para que você possa tirar fotos dos seus pets.",
+        "NSUserNotificationsUsageDescription": "O Caramelo precisa de permissão para enviar lembretes sobre os cuidados dos seus pets, como vacinas e consultas veterinárias.",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": false
         }
@@ -30,6 +31,7 @@
       "edgeToEdgeEnabled": true,
       "package": "com.caramelo.petcare",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F5F2EE"
       },
       "permissions": [
