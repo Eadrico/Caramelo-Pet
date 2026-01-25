@@ -10,6 +10,9 @@ import {
   ScrollView,
   Platform,
   Alert,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -192,44 +195,51 @@ export function AddCareItemSheet({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View style={{ flex: 1, backgroundColor: c.background }}>
-        <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-          {/* Header */}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingHorizontal: 20,
-              paddingVertical: 16,
-              borderBottomWidth: 1,
-              borderBottomColor: c.border,
-            }}
-          >
-            <Pressable onPress={onClose}>
-              <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
-            </Pressable>
-            <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-              {editItem ? t('care_edit_item') : t('care_add_item')}
-            </Text>
-            <Pressable onPress={handleSave} disabled={!isValid || isSaving}>
-              <Text
+      <KeyboardAvoidingView
+        style={{ flex: 1, backgroundColor: c.background }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={0}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+              {/* Header */}
+              <View
                 style={{
-                  fontSize: 17,
-                  color: isValid && !isSaving ? c.accent : c.textTertiary,
-                  fontWeight: '600',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingHorizontal: 20,
+                  paddingVertical: 16,
+                  borderBottomWidth: 1,
+                  borderBottomColor: c.border,
                 }}
               >
-                {isSaving ? t('common_saving') : t('settings_save')}
-              </Text>
-            </Pressable>
-          </View>
+                <Pressable onPress={onClose}>
+                  <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
+                </Pressable>
+                <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
+                  {editItem ? t('care_edit_item') : t('care_add_item')}
+                </Text>
+                <Pressable onPress={handleSave} disabled={!isValid || isSaving}>
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      color: isValid && !isSaving ? c.accent : c.textTertiary,
+                      fontWeight: '600',
+                    }}
+                  >
+                    {isSaving ? t('common_saving') : t('settings_save')}
+                  </Text>
+                </Pressable>
+              </View>
 
-          <ScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={{ padding: 20, gap: 24 }}
-            keyboardShouldPersistTaps="handled"
-          >
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{ padding: 20, gap: 24, paddingBottom: 40 }}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+              >
             {/* Pet Selector - Only show if no preselected pet or in edit mode */}
             {(!preselectedPetId || editItem) && (
               <View>
@@ -484,7 +494,9 @@ export function AddCareItemSheet({
             />
           )
         )}
-      </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
