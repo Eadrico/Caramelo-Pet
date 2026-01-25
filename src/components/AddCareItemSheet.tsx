@@ -305,11 +305,54 @@ export function AddCareItemSheet({
               >
                 {t('care_type_label')}
               </Text>
-              <SegmentedControl
-                options={typeOptions}
-                selected={selectedType}
-                onSelect={setSelectedType}
-              />
+              <Pressable
+                onPress={() => {
+                  Keyboard.dismiss();
+                  // Cycle through care types
+                  const currentIndex = careTypeConfig.findIndex((c) => c.type === selectedType);
+                  const nextIndex = (currentIndex + 1) % careTypeConfig.length;
+                  setSelectedType(careTypeConfig[nextIndex].type);
+                  Haptics.selectionAsync();
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingVertical: 14,
+                  paddingHorizontal: 16,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  borderRadius: 12,
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+                  {(() => {
+                    const config = careTypeConfig.find((c) => c.type === selectedType);
+                    const Icon = config?.icon || Syringe;
+                    return (
+                      <>
+                        <View
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: 8,
+                            backgroundColor: c.accentLight,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Icon size={18} color={c.accent} />
+                        </View>
+                        <Text style={{ fontSize: 17, color: c.text, flex: 1 }}>
+                          {config?.label || selectedType}
+                        </Text>
+                      </>
+                    );
+                  })()}
+                </View>
+                <View style={{ transform: [{ rotate: '90deg' }] }}>
+                  <Text style={{ fontSize: 18, color: c.textSecondary }}>›</Text>
+                </View>
+              </Pressable>
             </View>
 
             {/* Title */}
