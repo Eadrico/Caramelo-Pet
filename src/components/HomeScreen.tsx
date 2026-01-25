@@ -267,6 +267,7 @@ export function HomeScreen() {
                   width: 34,
                   height: 34,
                   marginRight: 8,
+                  borderRadius: 8,
                 }}
                 resizeMode="contain"
               />
