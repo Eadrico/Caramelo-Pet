@@ -81,6 +81,9 @@ export function AddCareItemSheet({
   // Reset form when opening
   useEffect(() => {
     if (visible) {
+      // Dismiss keyboard when modal opens
+      Keyboard.dismiss();
+
       if (editItem) {
         // Edit mode: only one pet
         setSelectedPetIds([editItem.petId]);
@@ -328,6 +331,7 @@ export function AddCareItemSheet({
                 onChangeText={setTitle}
                 placeholder={t('care_title_placeholder')}
                 placeholderTextColor={c.textTertiary}
+                autoFocus={false}
                 style={{
                   fontSize: 17,
                   color: c.text,
@@ -396,6 +400,7 @@ export function AddCareItemSheet({
                 placeholderTextColor={c.textTertiary}
                 multiline
                 numberOfLines={3}
+                autoFocus={false}
                 style={{
                   fontSize: 17,
                   color: c.text,
