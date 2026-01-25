@@ -82,12 +82,14 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
     const months = now.getMonth() - birth.getMonth();
 
     if (years === 0) {
-      return `${Math.max(0, months)} months`;
+      const monthCount = Math.max(0, months);
+      return `${monthCount} ${monthCount === 1 ? t('common_month') : t('common_months')}`;
     }
     if (years === 1 && months < 0) {
-      return `${12 + months} months`;
+      const monthCount = 12 + months;
+      return `${monthCount} ${monthCount === 1 ? t('common_month') : t('common_months')}`;
     }
-    return `${years} year${years !== 1 ? 's' : ''}`;
+    return `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
   };
 
   return (
@@ -104,13 +106,13 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
         {/* Header */}
         <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <ProgressIndicator current={5} total={5} />
+            <ProgressIndicator current={4} total={4} />
             <Pressable
               onPress={onBack}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Text style={{ fontSize: 15, color: c.accent, fontWeight: '500' }}>
-                Back
+                {t('onboarding_back')}
               </Text>
             </Pressable>
           </View>
@@ -124,7 +126,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
                 letterSpacing: -0.8,
               }}
             >
-              Review
+              {t('onboarding_review_title')}
             </Text>
             <Text
               style={{
@@ -134,7 +136,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
                 lineHeight: 24,
               }}
             >
-              Everything look good?
+              {t('onboarding_review_subtitle')}
             </Text>
           </Animated.View>
         </View>
@@ -238,7 +240,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
                             letterSpacing: 0.5,
                           }}
                         >
-                          Age
+                          {t('onboarding_review_age')}
                         </Text>
                       </View>
                       <Text
@@ -271,7 +273,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
                             letterSpacing: 0.5,
                           }}
                         >
-                          Weight
+                          {t('onboarding_review_weight')}
                         </Text>
                       </View>
                       <Text
@@ -385,7 +387,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
                 lineHeight: 22,
               }}
             >
-              {onboardingData.name} is ready to be added to Caramelo!
+              {t('onboarding_review_ready_message').replace('{name}', onboardingData.name)}
             </Text>
           </Animated.View>
         </ScrollView>

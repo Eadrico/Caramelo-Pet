@@ -48,7 +48,7 @@ A premium iOS pet care app built with React Native Expo, following Apple Human I
   - System language auto-detection
   - Instant language switching without app restart
   - All UI strings localized including:
-    - IntroView and Onboarding wizard (all 5 steps)
+    - IntroView and Onboarding wizard (all 4 steps)
     - Settings, Tabs, and Pet Details
     - Care Item Management
     - Permission dialogs

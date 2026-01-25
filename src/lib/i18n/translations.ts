@@ -68,6 +68,11 @@ type TranslationKey =
   | 'onboarding_finish'
   | 'onboarding_next'
   | 'onboarding_back'
+  | 'onboarding_review_title'
+  | 'onboarding_review_subtitle'
+  | 'onboarding_review_age'
+  | 'onboarding_review_weight'
+  | 'onboarding_review_ready_message'
   // Tabs
   | 'tab_home'
   | 'tab_settings'
@@ -194,6 +199,10 @@ type TranslationKey =
   | 'common_yesterday'
   | 'common_days_ago'
   | 'common_in_days'
+  | 'common_months'
+  | 'common_month'
+  | 'common_years'
+  | 'common_year'
   | 'common_delete'
   | 'common_edit'
   | 'common_confirm'
@@ -282,6 +291,11 @@ const en: Translations = {
   onboarding_finish: 'Get Started',
   onboarding_next: 'Next',
   onboarding_back: 'Back',
+  onboarding_review_title: 'Review',
+  onboarding_review_subtitle: 'Everything look good?',
+  onboarding_review_age: 'Age',
+  onboarding_review_weight: 'Weight',
+  onboarding_review_ready_message: '{name} is ready to be added to Caramelo!',
   // Tabs
   tab_home: 'Home',
   tab_settings: 'Settings',
@@ -398,6 +412,10 @@ const en: Translations = {
   common_yesterday: 'Yesterday',
   common_days_ago: 'days ago',
   common_in_days: 'In {days} days',
+  common_months: 'months',
+  common_month: 'month',
+  common_years: 'years',
+  common_year: 'year',
   common_delete: 'Delete',
   common_edit: 'Edit',
   common_confirm: 'Confirm',
@@ -494,6 +512,11 @@ const pt: Translations = {
   onboarding_finish: 'Começar a usar',
   onboarding_next: 'Próximo',
   onboarding_back: 'Voltar',
+  onboarding_review_title: 'Revisar',
+  onboarding_review_subtitle: 'Tudo certo?',
+  onboarding_review_age: 'Idade',
+  onboarding_review_weight: 'Peso',
+  onboarding_review_ready_message: '{name} está pronto para ser adicionado ao Caramelo!',
   // Tabs
   tab_home: 'Início',
   tab_settings: 'Configurações',
@@ -610,6 +633,10 @@ const pt: Translations = {
   common_yesterday: 'Ontem',
   common_days_ago: 'dias atrás',
   common_in_days: 'Em {days} dias',
+  common_months: 'meses',
+  common_month: 'mês',
+  common_years: 'anos',
+  common_year: 'ano',
   common_delete: 'Excluir',
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
@@ -706,6 +733,11 @@ const es: Translations = {
   onboarding_finish: 'Comenzar',
   onboarding_next: 'Siguiente',
   onboarding_back: 'Atrás',
+  onboarding_review_title: 'Revisar',
+  onboarding_review_subtitle: '¿Todo bien?',
+  onboarding_review_age: 'Edad',
+  onboarding_review_weight: 'Peso',
+  onboarding_review_ready_message: '¡{name} está listo para ser agregado a Caramelo!',
   // Tabs
   tab_home: 'Inicio',
   tab_settings: 'Ajustes',
@@ -822,6 +854,10 @@ const es: Translations = {
   common_yesterday: 'Ayer',
   common_days_ago: 'días atrás',
   common_in_days: 'En {days} días',
+  common_months: 'meses',
+  common_month: 'mes',
+  common_years: 'años',
+  common_year: 'año',
   common_delete: 'Eliminar',
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
@@ -918,6 +954,11 @@ const fr: Translations = {
   onboarding_finish: 'Commencer',
   onboarding_next: 'Suivant',
   onboarding_back: 'Retour',
+  onboarding_review_title: 'Vérifier',
+  onboarding_review_subtitle: 'Tout est bon?',
+  onboarding_review_age: 'Âge',
+  onboarding_review_weight: 'Poids',
+  onboarding_review_ready_message: '{name} est prêt à être ajouté à Caramelo!',
   // Tabs
   tab_home: 'Accueil',
   tab_settings: 'Paramètres',
@@ -1034,6 +1075,10 @@ const fr: Translations = {
   common_yesterday: 'Hier',
   common_days_ago: 'jours passés',
   common_in_days: 'Dans {days} jours',
+  common_months: 'mois',
+  common_month: 'mois',
+  common_years: 'ans',
+  common_year: 'an',
   common_delete: 'Supprimer',
   common_edit: 'Modifier',
   common_confirm: 'Confirmer',
@@ -1130,6 +1175,11 @@ const zh: Translations = {
   onboarding_finish: '开始使用',
   onboarding_next: '下一步',
   onboarding_back: '返回',
+  onboarding_review_title: '查看',
+  onboarding_review_subtitle: '一切都好吗？',
+  onboarding_review_age: '年龄',
+  onboarding_review_weight: '体重',
+  onboarding_review_ready_message: '{name}已准备好添加到Caramelo！',
   // Tabs
   tab_home: '首页',
   tab_settings: '设置',
@@ -1246,6 +1296,10 @@ const zh: Translations = {
   common_yesterday: '昨天',
   common_days_ago: '天前',
   common_in_days: '{days}天后',
+  common_months: '个月',
+  common_month: '个月',
+  common_years: '年',
+  common_year: '年',
   common_delete: '删除',
   common_edit: '编辑',
   common_confirm: '确认',
