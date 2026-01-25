@@ -4,8 +4,10 @@
     "slug": "caramelo-pet-care",
     "scheme": "caramelo",
     "version": "1.0.0",
+    "description": "Organize a vida dos seus pets com facilidade! Gerencie perfis, agende lembretes de vacinas e consultas, e acompanhe o crescimento dos seus amigos de quatro patas.",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "primaryColor": "#D4A574",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -17,6 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.caramelo.petcare",
+      "buildNumber": "1",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "O Caramelo precisa de acesso à sua biblioteca de fotos para que você possa adicionar fotos dos seus pets aos perfis deles.",
         "NSPhotoLibraryAddUsageDescription": "O Caramelo precisa de permissão para salvar fotos dos seus pets na sua biblioteca de fotos.",
@@ -30,6 +33,7 @@
     "android": {
       "edgeToEdgeEnabled": true,
       "package": "com.caramelo.petcare",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F5F2EE"

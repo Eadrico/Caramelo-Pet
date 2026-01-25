@@ -344,6 +344,9 @@ export function HomeScreen() {
               >
                 <Pressable
                   onPress={handleAddPetPress}
+                  accessible={true}
+                  accessibilityLabel="Adicionar novo pet"
+                  accessibilityHint="Toque para adicionar um novo pet ao seu perfil"
                   style={{
                     width: 160,
                     height: 200,
@@ -550,6 +553,9 @@ export function HomeScreen() {
               {/* Add Pet Option */}
               <Pressable
                 onPress={handleAddPetPress}
+                accessible={true}
+                accessibilityLabel="Adicionar pet"
+                accessibilityHint="Adicionar um novo pet"
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -620,6 +626,9 @@ export function HomeScreen() {
               {/* Add Care Item Option */}
               <Pressable
                 onPress={handleAddCarePress}
+                accessible={true}
+                accessibilityLabel="Adicionar cuidado"
+                accessibilityHint="Adicionar vacina, consulta ou medicamento"
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',

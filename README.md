@@ -1,6 +1,36 @@
 # Caramelo - Pet Care App
 
-A premium iOS pet care app built with React Native Expo, following Apple Human Interface Guidelines (HIG) with a Liquid Glass aesthetic.
+Um aplicativo premium de cuidados com pets para iOS e Android, construído com React Native Expo, seguindo as Apple Human Interface Guidelines (HIG) com estética moderna e intuitiva.
+
+## 📱 Sobre o App
+
+Caramelo é a solução perfeita para tutores que querem organizar a vida dos seus pets. Gerencie perfis completos, agende lembretes de vacinas e consultas, e nunca mais esqueça dos cuidados importantes dos seus amiguinhos!
+
+### ✨ Principais Recursos
+
+- **Perfis Completos**: Adicione fotos, informações e acompanhe o crescimento dos seus pets
+- **Lembretes Inteligentes**: Notificações de vacinas, consultas e medicamentos
+- **Histórico de Cuidados**: Acompanhe todo o histórico veterinário
+- **Multi-idioma**: Português, Inglês, Espanhol, Francês e Chinês
+- **Temas**: Suporte a modo claro e escuro
+- **Privacidade**: Todos os dados armazenados localmente no dispositivo
+
+## 🚀 Versão Atual
+
+**Versão**: 1.0.0
+**Build**: 1
+**Status**: Pronto para submissão à App Store e Google Play
+
+## 📞 Contato e Suporte
+
+- **Email de Suporte**: support@caramelo.app
+- **Email de Privacidade**: privacy@caramelo.app
+- **Website**: https://caramelo.app (a ser criado)
+- **Política de Privacidade**: Veja [PRIVACY_POLICY.md](./PRIVACY_POLICY.md)
+
+## 🏪 Informações para Lojas
+
+Para informações completas sobre submissão à App Store e Google Play, incluindo descrições, keywords, screenshots e categorias, consulte [STORE_LISTING.md](./STORE_LISTING.md).
 
 ## Features (Release 1 - MVP)
 
