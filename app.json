@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Caramelo",
-    "slug": "caramelo-pet-care",
+    "name": "Caramelo Pets",
+    "slug": "caramelo",
     "scheme": "caramelo",
     "version": "1.0.0",
     "description": "Organize a vida dos seus pets com facilidade! Gerencie perfis, agende lembretes de vacinas e consultas, e acompanhe o crescimento dos seus amigos de quatro patas.",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "primaryColor": "#D4A574",
-    "icon": "./assets/icon.png",
+    "icon": "./icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "backgroundColor": "#F5F2EE",
@@ -17,17 +17,15 @@
     "privacy": "public",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.caramelo.petcare",
+      "supportsTablet": false,
+      "bundleIdentifier": "com.vibecode.caramelopets.n2p4b1",
       "buildNumber": "1",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "O Caramelo precisa de acesso à sua biblioteca de fotos para que você possa adicionar fotos dos seus pets aos perfis deles.",
-        "NSPhotoLibraryAddUsageDescription": "O Caramelo precisa de permissão para salvar fotos dos seus pets na sua biblioteca de fotos.",
-        "NSCameraUsageDescription": "O Caramelo precisa de acesso à sua câmera para que você possa tirar fotos dos seus pets.",
-        "NSUserNotificationsUsageDescription": "O Caramelo precisa de permissão para enviar lembretes sobre os cuidados dos seus pets, como vacinas e consultas veterinárias.",
-        "NSAppTransportSecurity": {
-          "NSAllowsArbitraryLoads": false
-        }
+        "NSCameraUsageDescription": "Caramelo Pets uses the camera to capture photos inside the app before you publish them.",
+        "NSPhotoLibraryUsageDescription": "Caramelo Pets accesses your photo library to let you choose media that appears in the app.",
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       }
     },
     "android": {
@@ -45,7 +43,9 @@
         "android.permission.POST_NOTIFICATIONS"
       ]
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
     }
