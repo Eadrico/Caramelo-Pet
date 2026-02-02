@@ -1,3 +1,4 @@
+
 # Caramelo - Pet Care App
 
 Um aplicativo premium de cuidados com pets para iOS e Android, construído com React Native Expo, seguindo as Apple Human Interface Guidelines (HIG) com estética moderna e intuitiva.
@@ -170,3 +171,6 @@ All data is persisted locally using:
 - AsyncStorage for pets, care items, and reminders
 - FileSystem for pet photos
 - expo-notifications for scheduled notifications
+
+# Caramelo-Pet
+
