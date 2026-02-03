@@ -1,17 +1,36 @@
 // Language Context - Global language management with React Context
 import React, { createContext, useContext, useCallback, useMemo, useEffect, useState } from 'react';
-import * as Localization from 'expo-localization';
+import { Platform, NativeModules } from 'react-native';
 import { translations, SupportedLanguage, TranslationKey, languageNames, languageFlags } from './translations';
 import { useSettingsStore } from '../settings-store';
 
-// Get device language
+// Get device language using React Native's built-in approach
 function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
   try {
-    // Get device locale from expo-localization
-    const deviceLocale = Localization.getLocales()[0];
-    const languageCode = deviceLocale?.languageCode?.toLowerCase() || 'en';
+    let locale = 'en';
 
-    console.log('[i18n] Device locale detected:', deviceLocale);
+    if (Platform.OS === 'ios') {
+      // iOS: Try multiple approaches
+      const settings = NativeModules.SettingsManager?.settings;
+      locale = settings?.AppleLocale ||
+               settings?.AppleLanguages?.[0] ||
+               'en';
+    } else if (Platform.OS === 'android') {
+      // Android: Use I18nManager or NativeModules
+      locale = NativeModules.I18nManager?.localeIdentifier ||
+               NativeModules.DeviceInfo?.locale ||
+               'en';
+    } else if (Platform.OS === 'web') {
+      // Web: Use navigator
+      locale = typeof navigator !== 'undefined'
+        ? (navigator.language || (navigator as any).userLanguage || 'en')
+        : 'en';
+    }
+
+    // Extract language code (first 2 characters)
+    const languageCode = locale.substring(0, 2).toLowerCase();
+
+    console.log('[i18n] Device locale detected:', locale);
     console.log('[i18n] Language code:', languageCode);
 
     // Map to supported languages
