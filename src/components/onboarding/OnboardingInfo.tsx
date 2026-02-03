@@ -1,5 +1,5 @@
 // Onboarding Step 3: Key Info (Birthdate + Weight)
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,14 @@ import {
   Pressable,
   useColorScheme,
   Modal,
-  Platform,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
-import { Calendar, Scale } from 'lucide-react-native';
+import { Calendar, Scale, Check } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
-import { formatDate } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n';
 import {
   GlassCard,
@@ -32,6 +30,218 @@ interface OnboardingInfoProps {
 }
 
 type WeightUnit = 'kg' | 'lb';
+
+// Month/Year picker component
+function MonthYearPicker({
+  selectedMonth,
+  selectedYear,
+  onSelect,
+  onClose,
+}: {
+  selectedMonth: number;
+  selectedYear: number;
+  onSelect: (month: number, year: number) => void;
+  onClose: () => void;
+}) {
+  const c = useColors();
+  const scheme = useColorScheme();
+  const isDark = scheme === 'dark';
+  const { t } = useTranslation();
+
+  const [tempMonth, setTempMonth] = useState(selectedMonth);
+  const [tempYear, setTempYear] = useState(selectedYear);
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+
+  // Generate years (last 30 years)
+  const years = useMemo(() => {
+    const arr: number[] = [];
+    for (let y = currentYear; y >= currentYear - 30; y--) {
+      arr.push(y);
+    }
+    return arr;
+  }, [currentYear]);
+
+  // Month names
+  const months = useMemo(() => {
+    const formatter = new Intl.DateTimeFormat(undefined, { month: 'long' });
+    return Array.from({ length: 12 }, (_, i) => {
+      const date = new Date(2024, i, 1);
+      return formatter.format(date);
+    });
+  }, []);
+
+  const handleConfirm = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onSelect(tempMonth, tempYear);
+    onClose();
+  };
+
+  const isMonthDisabled = (month: number) => {
+    // Disable future months in current year
+    return tempYear === currentYear && month > currentMonth;
+  };
+
+  return (
+    <Modal visible transparent animationType="slide">
+      <Pressable
+        style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
+        onPress={onClose}
+      />
+      <View
+        style={{
+          backgroundColor: c.surface,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          paddingBottom: 34,
+          maxHeight: '70%',
+        }}
+      >
+        {/* Header */}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 16,
+            borderBottomWidth: 1,
+            borderBottomColor: c.border,
+          }}
+        >
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onClose();
+            }}
+          >
+            <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
+          </Pressable>
+          <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
+            {t('onboarding_birthdate')}
+          </Text>
+          <Pressable onPress={handleConfirm}>
+            <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
+          </Pressable>
+        </View>
+
+        {/* Picker Content */}
+        <View style={{ flexDirection: 'row', height: 300 }}>
+          {/* Month Picker */}
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{ paddingVertical: 8 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {months.map((month, index) => {
+              const isSelected = index === tempMonth;
+              const disabled = isMonthDisabled(index);
+              return (
+                <Pressable
+                  key={index}
+                  onPress={() => {
+                    if (!disabled) {
+                      Haptics.selectionAsync();
+                      setTempMonth(index);
+                    }
+                  }}
+                  style={{
+                    paddingVertical: 14,
+                    paddingHorizontal: 20,
+                    backgroundColor: isSelected
+                      ? isDark
+                        ? 'rgba(196, 167, 125, 0.2)'
+                        : 'rgba(196, 167, 125, 0.15)'
+                      : 'transparent',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    opacity: disabled ? 0.4 : 1,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      color: isSelected ? c.accent : c.text,
+                      fontWeight: isSelected ? '600' : '400',
+                      textTransform: 'capitalize',
+                    }}
+                  >
+                    {month}
+                  </Text>
+                  {isSelected && <Check size={20} color={c.accent} strokeWidth={2.5} />}
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          {/* Divider */}
+          <View
+            style={{
+              width: 1,
+              backgroundColor: c.border,
+              marginVertical: 8,
+            }}
+          />
+
+          {/* Year Picker */}
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{ paddingVertical: 8 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {years.map((year) => {
+              const isSelected = year === tempYear;
+              return (
+                <Pressable
+                  key={year}
+                  onPress={() => {
+                    Haptics.selectionAsync();
+                    setTempYear(year);
+                    // If selecting current year and month is in future, reset to current month
+                    if (year === currentYear && tempMonth > currentMonth) {
+                      setTempMonth(currentMonth);
+                    }
+                  }}
+                  style={{
+                    paddingVertical: 14,
+                    paddingHorizontal: 20,
+                    backgroundColor: isSelected
+                      ? isDark
+                        ? 'rgba(196, 167, 125, 0.2)'
+                        : 'rgba(196, 167, 125, 0.15)'
+                      : 'transparent',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      color: isSelected ? c.accent : c.text,
+                      fontWeight: isSelected ? '600' : '400',
+                    }}
+                  >
+                    {year}
+                  </Text>
+                  {isSelected && <Check size={20} color={c.accent} strokeWidth={2.5} />}
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+// Format month/year for display
+function formatMonthYear(dateString: string): string {
+  const date = new Date(dateString);
+  const formatter = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
+  return formatter.format(date);
+}
 
 export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
   const c = useColors();
@@ -51,14 +261,16 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
     weightKg ? (weightUnit === 'kg' ? weightKg.toString() : (weightKg * 2.205).toFixed(1)) : ''
   );
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    if (Platform.OS === 'android') {
-      setShowDatePicker(false);
-    }
-    if (selectedDate) {
-      Haptics.selectionAsync();
-      setBirthdate(selectedDate.toISOString());
-    }
+  // Get current month/year from birthdate or use current date
+  const currentDate = birthdate ? new Date(birthdate) : new Date();
+  const selectedMonth = currentDate.getMonth();
+  const selectedYear = currentDate.getFullYear();
+
+  const handleMonthYearSelect = (month: number, year: number) => {
+    Haptics.selectionAsync();
+    // Set to first day of the month
+    const date = new Date(year, month, 1);
+    setBirthdate(date.toISOString());
   };
 
   const handleWeightChange = (text: string) => {
@@ -186,9 +398,10 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                       fontSize: 17,
                       color: birthdate ? c.text : c.textTertiary,
                       fontWeight: birthdate ? '500' : '400',
+                      textTransform: 'capitalize',
                     }}
                   >
-                    {birthdate ? formatDate(birthdate) : t('onboarding_select_birthdate')}
+                    {birthdate ? formatMonthYear(birthdate) : t('onboarding_select_birthdate')}
                   </Text>
                 </Pressable>
               </View>
@@ -273,75 +486,14 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
         </SafeAreaView>
       </SafeAreaView>
 
-      {/* Date Picker Modal */}
-      {Platform.OS === 'ios' ? (
-        <Modal
-          visible={showDatePicker}
-          transparent
-          animationType="slide"
-        >
-          <Pressable
-            style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
-            onPress={() => setShowDatePicker(false)}
-          />
-          <View
-            style={{
-              backgroundColor: c.surface,
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              paddingBottom: 34,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: 16,
-                borderBottomWidth: 1,
-                borderBottomColor: c.border,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setShowDatePicker(false);
-                }}
-              >
-                <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
-              </Pressable>
-              <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
-                {t('onboarding_birthdate')}
-              </Text>
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setShowDatePicker(false);
-                }}
-              >
-                <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
-              </Pressable>
-            </View>
-            <DateTimePicker
-              value={birthdate ? new Date(birthdate) : new Date()}
-              mode="date"
-              display="spinner"
-              onChange={handleDateChange}
-              maximumDate={new Date()}
-              style={{ height: 200, alignSelf: 'center' }}
-            />
-          </View>
-        </Modal>
-      ) : (
-        showDatePicker && (
-          <DateTimePicker
-            value={birthdate ? new Date(birthdate) : new Date()}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-            maximumDate={new Date()}
-          />
-        )
+      {/* Month/Year Picker Modal */}
+      {showDatePicker && (
+        <MonthYearPicker
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+          onSelect={handleMonthYearSelect}
+          onClose={() => setShowDatePicker(false)}
+        />
       )}
     </View>
   );
