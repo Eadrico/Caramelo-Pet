@@ -208,6 +208,8 @@ type TranslationKey =
   | 'common_month'
   | 'common_years'
   | 'common_year'
+  | 'common_and'
+  | 'common_less_than_month'
   | 'common_delete'
   | 'common_edit'
   | 'common_confirm'
@@ -434,6 +436,8 @@ const en: Translations = {
   common_month: 'month',
   common_years: 'years',
   common_year: 'year',
+  common_and: 'and',
+  common_less_than_month: 'Less than 1 month',
   common_delete: 'Delete',
   common_edit: 'Edit',
   common_confirm: 'Confirm',
@@ -668,6 +672,8 @@ const pt: Translations = {
   common_month: 'mês',
   common_years: 'anos',
   common_year: 'ano',
+  common_and: 'e',
+  common_less_than_month: 'Menos de 1 mês',
   common_delete: 'Excluir',
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
@@ -902,6 +908,8 @@ const es: Translations = {
   common_month: 'mes',
   common_years: 'años',
   common_year: 'año',
+  common_and: 'y',
+  common_less_than_month: 'Menos de 1 mes',
   common_delete: 'Eliminar',
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
@@ -1136,6 +1144,8 @@ const fr: Translations = {
   common_month: 'mois',
   common_years: 'ans',
   common_year: 'an',
+  common_and: 'et',
+  common_less_than_month: 'Moins d\'un mois',
   common_delete: 'Supprimer',
   common_edit: 'Modifier',
   common_confirm: 'Confirmer',
@@ -1370,6 +1380,8 @@ const zh: Translations = {
   common_month: '个月',
   common_years: '年',
   common_year: '年',
+  common_and: '又',
+  common_less_than_month: '不到1个月',
   common_delete: '删除',
   common_edit: '编辑',
   common_confirm: '确认',

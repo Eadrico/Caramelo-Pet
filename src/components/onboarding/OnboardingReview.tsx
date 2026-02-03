@@ -78,18 +78,38 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
   const calculateAge = (birthdate: string) => {
     const birth = new Date(birthdate);
     const now = new Date();
-    const years = now.getFullYear() - birth.getFullYear();
-    const months = now.getMonth() - birth.getMonth();
+    let years = now.getFullYear() - birth.getFullYear();
+    let months = now.getMonth() - birth.getMonth();
 
+    // Adjust for negative months
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Adjust if we haven't reached the birth day this month
+    if (now.getDate() < birth.getDate()) {
+      months--;
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+    }
+
+    // Format the age string
+    if (years === 0 && months === 0) {
+      return t('common_less_than_month');
+    }
     if (years === 0) {
-      const monthCount = Math.max(0, months);
-      return `${monthCount} ${monthCount === 1 ? t('common_month') : t('common_months')}`;
+      return `${months} ${months === 1 ? t('common_month') : t('common_months')}`;
     }
-    if (years === 1 && months < 0) {
-      const monthCount = 12 + months;
-      return `${monthCount} ${monthCount === 1 ? t('common_month') : t('common_months')}`;
+    if (months === 0) {
+      return `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
     }
-    return `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
+    // Show both years and months
+    const yearStr = `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
+    const monthStr = `${months} ${months === 1 ? t('common_month') : t('common_months')}`;
+    return `${yearStr} ${t('common_and')} ${monthStr}`;
   };
 
   return (
