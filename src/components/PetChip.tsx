@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, Image, Pressable, useColorScheme } from 'react-native';
 import { PawPrint } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
 import { Pet } from '@/lib/types';
 import { useColors } from '@/components/design-system';
 
@@ -80,7 +81,16 @@ export function PetChip({ pet, selected = false, onPress, size = 'medium' }: Pet
   );
 
   if (onPress) {
-    return <Pressable onPress={onPress}>{content}</Pressable>;
+    return (
+      <Pressable
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          onPress();
+        }}
+      >
+        {content}
+      </Pressable>
+    );
   }
 
   return content;

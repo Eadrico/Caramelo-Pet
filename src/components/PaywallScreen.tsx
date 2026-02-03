@@ -519,7 +519,10 @@ export function PaywallScreen({
               {/* Action Buttons */}
               <View style={{ flexDirection: 'row', gap: 8 }}>
                 <Pressable
-                  onPress={handleRedeemCoupon}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    handleRedeemCoupon();
+                  }}
                   disabled={isLoading}
                   style={{
                     flex: 1,
@@ -541,7 +544,10 @@ export function PaywallScreen({
                 </Pressable>
 
                 <Pressable
-                  onPress={handleRestorePurchases}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    handleRestorePurchases();
+                  }}
                   disabled={isLoading}
                   style={{
                     flex: 1,

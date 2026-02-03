@@ -111,7 +111,10 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <ProgressIndicator current={3} total={5} />
             <Pressable
-              onPress={onBack}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onBack();
+              }}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Text style={{ fontSize: 15, color: c.accent, fontWeight: '500' }}>
@@ -255,7 +258,10 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
             <PrimaryButton title={t('onboarding_continue')} onPress={onNext} />
             {!birthdate && !weightKg && (
               <Pressable
-                onPress={onNext}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onNext();
+                }}
                 style={{ paddingVertical: 12, alignItems: 'center' }}
               >
                 <Text style={{ fontSize: 15, color: c.textSecondary, fontWeight: '500' }}>
@@ -296,13 +302,23 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                 borderBottomColor: c.border,
               }}
             >
-              <Pressable onPress={() => setShowDatePicker(false)}>
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setShowDatePicker(false);
+                }}
+              >
                 <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
               </Pressable>
               <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
                 {t('onboarding_birthdate')}
               </Text>
-              <Pressable onPress={() => setShowDatePicker(false)}>
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setShowDatePicker(false);
+                }}
+              >
                 <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
               </Pressable>
             </View>

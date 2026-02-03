@@ -194,13 +194,24 @@ export function AddReminderSheet({
               borderBottomColor: c.border,
             }}
           >
-            <Pressable onPress={onClose}>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onClose();
+              }}
+            >
               <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
               {editItem ? t('common_edit_reminder') : t('common_new_reminder')}
             </Text>
-            <Pressable onPress={handleSave} disabled={!isValid || isSaving}>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                handleSave();
+              }}
+              disabled={!isValid || isSaving}
+            >
               <Text
                 style={{
                   fontSize: 17,
@@ -450,7 +461,10 @@ export function AddReminderSheet({
             {/* Delete Button (Edit Mode) */}
             {editItem && (
               <Pressable
-                onPress={handleDelete}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  handleDelete();
+                }}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -503,13 +517,23 @@ export function AddReminderSheet({
                   borderBottomColor: c.border,
                 }}
               >
-                <Pressable onPress={() => setShowDatePicker(false)}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowDatePicker(false);
+                  }}
+                >
                   <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
                 </Pressable>
                 <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
                   {t('common_date')}
                 </Text>
-                <Pressable onPress={() => setShowDatePicker(false)}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowDatePicker(false);
+                  }}
+                >
                   <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
                 </Pressable>
               </View>
@@ -562,13 +586,23 @@ export function AddReminderSheet({
                   borderBottomColor: c.border,
                 }}
               >
-                <Pressable onPress={() => setShowTimePicker(false)}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowTimePicker(false);
+                  }}
+                >
                   <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
                 </Pressable>
                 <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
                   {t('common_time')}
                 </Text>
-                <Pressable onPress={() => setShowTimePicker(false)}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowTimePicker(false);
+                  }}
+                >
                   <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
                 </Pressable>
               </View>
