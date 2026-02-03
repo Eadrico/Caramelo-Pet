@@ -1,34 +1,31 @@
 // Language Context - Global language management with React Context
 import React, { createContext, useContext, useCallback, useMemo, useEffect, useState } from 'react';
-import { NativeModules, Platform } from 'react-native';
+import * as Localization from 'expo-localization';
 import { translations, SupportedLanguage, TranslationKey, languageNames, languageFlags } from './translations';
 import { useSettingsStore } from '../settings-store';
 
 // Get device language
 function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
-  let deviceLang = 'en';
-
   try {
-    if (Platform.OS === 'ios') {
-      deviceLang = NativeModules.SettingsManager?.settings?.AppleLocale ||
-                   NativeModules.SettingsManager?.settings?.AppleLanguages?.[0] ||
-                   'en';
-    } else {
-      deviceLang = NativeModules.I18nManager?.localeIdentifier || 'en';
-    }
-  } catch {
-    deviceLang = 'en';
+    // Get device locale from expo-localization
+    const deviceLocale = Localization.getLocales()[0];
+    const languageCode = deviceLocale?.languageCode?.toLowerCase() || 'en';
+
+    console.log('[i18n] Device locale detected:', deviceLocale);
+    console.log('[i18n] Language code:', languageCode);
+
+    // Map to supported languages
+    if (languageCode === 'pt') return 'pt';
+    if (languageCode === 'es') return 'es';
+    if (languageCode === 'fr') return 'fr';
+    if (languageCode === 'zh') return 'zh';
+
+    console.log('[i18n] Defaulting to English');
+    return 'en';
+  } catch (error) {
+    console.error('[i18n] Error detecting device language:', error);
+    return 'en';
   }
-
-  // Extract language code (e.g., 'pt-BR' -> 'pt', 'zh-Hans' -> 'zh')
-  const langCode = deviceLang.split(/[-_]/)[0].toLowerCase();
-
-  // Map to supported languages
-  if (langCode === 'pt') return 'pt';
-  if (langCode === 'es') return 'es';
-  if (langCode === 'fr') return 'fr';
-  if (langCode === 'zh') return 'zh';
-  return 'en';
 }
 
 interface LanguageContextType {
