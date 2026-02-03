@@ -7,12 +7,17 @@ import {
   useColorScheme,
   ActivityIndicator,
   Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   FadeInDown,
   FadeIn,
+  FadeOut,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -26,6 +31,7 @@ import {
   Infinity,
   Check,
   Sparkles,
+  Ticket,
 } from 'lucide-react-native';
 import { useColors } from '@/components/design-system';
 import { usePremiumStore } from '@/lib/premium-store';
@@ -108,11 +114,14 @@ export function PaywallScreen({
   const { t } = useTranslation();
 
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [showCouponInput, setShowCouponInput] = useState<boolean>(false);
+  const [couponCode, setCouponCode] = useState<string>('');
 
   const priceString = usePremiumStore((s) => s.priceString);
   const isLoading = usePremiumStore((s) => s.isLoading);
   const purchasePremium = usePremiumStore((s) => s.purchasePremium);
   const restorePurchasesFn = usePremiumStore((s) => s.restorePurchases);
+  const redeemCoupon = usePremiumStore((s) => s.redeemCoupon);
 
   const buyScale = useSharedValue(1);
   const restoreScale = useSharedValue(1);
@@ -148,6 +157,14 @@ export function PaywallScreen({
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setMessage(null);
 
+    // Toggle coupon input instead of restoring immediately
+    setShowCouponInput(!showCouponInput);
+  };
+
+  const handleRestorePurchases = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setMessage(null);
+
     const result = await restorePurchasesFn();
 
     if (result.success && result.restored) {
@@ -164,6 +181,31 @@ export function PaywallScreen({
     }
   };
 
+  const handleRedeemCoupon = async () => {
+    if (!couponCode.trim()) {
+      setMessage({ type: 'error', text: 'Digite um cupom' });
+      return;
+    }
+
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setMessage(null);
+
+    const result = await redeemCoupon(couponCode);
+
+    if (result.success) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setMessage({ type: 'success', text: 'Cupom resgatado com sucesso!' });
+      setCouponCode('');
+      setTimeout(() => {
+        onPurchaseSuccess?.();
+        onClose();
+      }, 1500);
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      setMessage({ type: 'error', text: result.error || 'Erro ao resgatar cupom' });
+    }
+  };
+
   return (
     <Modal
       visible={visible}
@@ -171,15 +213,24 @@ export function PaywallScreen({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View style={{ flex: 1 }}>
-        <LinearGradient
-          colors={
-            isDark
-              ? ['#1C1917', '#0C0A09', '#1C1917']
-              : ['#FFFBF5', '#F5F2EE', '#FFFBF5']
-          }
-          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-        />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={{ flex: 1 }}>
+            <LinearGradient
+              colors={
+                isDark
+                  ? ['#1C1917', '#0C0A09', '#1C1917']
+                  : ['#FFFBF5', '#F5F2EE', '#FFFBF5']
+              }
+              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+            />
 
         <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
           {/* Close Button */}
@@ -415,6 +466,117 @@ export function PaywallScreen({
             </AnimatedPressable>
           </Animated.View>
 
+          {/* Coupon Input Section */}
+          {showCouponInput && (
+            <Animated.View
+              entering={FadeInDown.duration(300)}
+              exiting={FadeOut.duration(200)}
+              style={{
+                marginHorizontal: 20,
+                marginBottom: 12,
+                padding: 16,
+                backgroundColor: c.surface,
+                borderRadius: 16,
+                borderWidth: 1,
+                borderColor: isDark ? 'rgba(196, 167, 125, 0.2)' : 'rgba(196, 167, 125, 0.15)',
+              }}
+            >
+              {/* Coupon Header */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+                <Ticket size={20} color={c.accent} strokeWidth={2} />
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: '600',
+                    color: c.text,
+                    marginLeft: 8,
+                  }}
+                >
+                  Cupom Promocional
+                </Text>
+              </View>
+
+              {/* Coupon Input */}
+              <TextInput
+                value={couponCode}
+                onChangeText={setCouponCode}
+                placeholder="Digite seu cupom"
+                placeholderTextColor={c.textTertiary}
+                autoCapitalize="characters"
+                style={{
+                  backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)',
+                  borderRadius: 12,
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  fontSize: 16,
+                  color: c.text,
+                  marginBottom: 12,
+                  borderWidth: 1,
+                  borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                }}
+              />
+
+              {/* Action Buttons */}
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <Pressable
+                  onPress={handleRedeemCoupon}
+                  disabled={isLoading}
+                  style={{
+                    flex: 1,
+                    backgroundColor: c.accent,
+                    borderRadius: 12,
+                    paddingVertical: 12,
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: '600',
+                      color: '#FFFFFF',
+                    }}
+                  >
+                    Resgatar
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={handleRestorePurchases}
+                  disabled={isLoading}
+                  style={{
+                    flex: 1,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                    borderRadius: 12,
+                    paddingVertical: 12,
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: '600',
+                      color: c.text,
+                    }}
+                  >
+                    Restaurar
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* Helper Text */}
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: c.textTertiary,
+                  textAlign: 'center',
+                  marginTop: 12,
+                }}
+              >
+                Insira um cupom válido ou restaure suas compras anteriores
+              </Text>
+            </Animated.View>
+          )}
+
           {/* Close Button */}
           <Animated.View
             entering={FadeIn.duration(400).delay(700)}
@@ -442,6 +604,8 @@ export function PaywallScreen({
           </Animated.View>
         </SafeAreaView>
       </View>
+    </ScrollView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

@@ -11,9 +11,36 @@ Caramelo é a solução perfeita para tutores que querem organizar a vida dos se
 - **Perfis Completos**: Adicione fotos, informações e acompanhe o crescimento dos seus pets
 - **Lembretes Inteligentes**: Notificações de vacinas, consultas e medicamentos
 - **Histórico de Cuidados**: Acompanhe todo o histórico veterinário
+- **Premium Lifetime**: Compra única para acesso ilimitado a pets
+- **Cupons Promocionais**: Sistema de cupons para liberação de recursos premium
 - **Multi-idioma**: Português, Inglês, Espanhol, Francês e Chinês
 - **Temas**: Suporte a modo claro e escuro
 - **Privacidade**: Todos os dados armazenados localmente no dispositivo
+
+## 💎 Sistema Premium
+
+O app oferece uma versão **Premium Lifetime** através de compra única via RevenueCat:
+
+### Recursos Gratuitos
+- Até 2 pets
+- Todos os recursos de cuidados e lembretes
+
+### Premium ($2.99 USD - pagamento único)
+- Pets ilimitados
+- Suporte prioritário
+- Acesso vitalício
+
+### Cupons Promocionais
+O app possui um sistema de cupons que permite conceder acesso premium gratuitamente:
+- **Cupom ativo**: `#CARNAVAU#` (válido indefinidamente)
+- Cupons são resgatados na tela de assinatura através do botão "Restaurar compras"
+- Sistema de validação impede uso duplicado do mesmo cupom
+- Cupons resgatados são salvos localmente para persistência
+
+**Gerenciamento de cupons:**
+- Armazenados em: `src/lib/premium-store.ts` (constante `VALID_COUPONS`)
+- Para adicionar novos cupons, edite a constante e inclua nome e data de expiração (opcional)
+- Futuramente será criado um painel admin para gestão dinâmica de cupons
 
 ## 🚀 Versão Atual
 
@@ -33,6 +60,14 @@ Caramelo é a solução perfeita para tutores que querem organizar a vida dos se
 Para informações completas sobre submissão à App Store e Google Play, incluindo descrições, keywords, screenshots e categorias, consulte [STORE_LISTING.md](./STORE_LISTING.md).
 
 ## Features (Release 1 - MVP)
+
+- **Premium System**: RevenueCat integration for lifetime premium access
+  - Paywall modal with feature highlights
+  - Lifetime purchase ($2.99 USD one-time payment)
+  - Restore purchases functionality
+  - Promotional coupon system (current active: `#CARNAVAU#`)
+  - Free tier: 2 pets limit
+  - Premium: unlimited pets
 
 - **Entry Flow**: Smart routing based on onboarding state
   - IntroView: Welcome splash screen with app features
@@ -139,6 +174,8 @@ src/
     ├── storage.ts        # AsyncStorage persistence + notifications
     ├── store.ts          # Zustand state management
     ├── settings-store.ts # Settings/preferences + onboarding state
+    ├── premium-store.ts  # Premium status, purchases, and coupon redemption
+    ├── revenuecatClient.ts # RevenueCat SDK wrapper
     ├── cn.ts             # Classname utility
     └── i18n/
         ├── index.ts          # i18n exports
