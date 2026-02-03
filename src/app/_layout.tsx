@@ -72,14 +72,17 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
   // Handle navigation based on onboarding state - only after navigation is ready
   useEffect(() => {
     if (settingsInitialized && appInitialized && isNavigationReady && !hasNavigated) {
-      SplashScreen.hideAsync();
-      setHasNavigated(true);
+      // Keep splash screen visible for 4 seconds
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+        setHasNavigated(true);
 
-      if (hasCompletedOnboarding) {
-        router.replace('/(tabs)');
-      } else {
-        router.replace('/onboarding');
-      }
+        if (hasCompletedOnboarding) {
+          router.replace('/(tabs)');
+        } else {
+          router.replace('/onboarding');
+        }
+      }, 4000); // 4 seconds delay
     }
   }, [settingsInitialized, appInitialized, hasCompletedOnboarding, isNavigationReady, hasNavigated]);
 
