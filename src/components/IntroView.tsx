@@ -1,6 +1,6 @@
 // IntroView - Welcome splash screen
 import React from 'react';
-import { View, Text, useColorScheme } from 'react-native';
+import { View, Text, useColorScheme, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
@@ -67,16 +67,22 @@ export function IntroView({ onContinue }: IntroViewProps) {
                 height: 120,
                 borderRadius: 36,
                 overflow: 'hidden',
-                backgroundColor: c.surface,
+                backgroundColor: 'transparent',
                 shadowColor: c.accent,
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.2,
                 shadowRadius: 24,
-                alignItems: 'center',
-                justifyContent: 'center',
               }}
             >
-              <PawPrint size={56} color={c.accent} strokeWidth={1.5} />
+              <Image
+                source={require('../../assets/logo.png')}
+                style={{
+                  width: 120,
+                  height: 120,
+                  borderRadius: 36,
+                }}
+                resizeMode="cover"
+              />
             </View>
           </Animated.View>
 
