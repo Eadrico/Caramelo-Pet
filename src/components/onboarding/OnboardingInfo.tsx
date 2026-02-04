@@ -15,7 +15,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Calendar, Scale, Check } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
-import { useTranslation } from '@/lib/i18n';
+import { useTranslation, useLanguage } from '@/lib/i18n';
 import {
   GlassCard,
   PrimaryButton,
@@ -47,6 +47,7 @@ function MonthYearPicker({
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+  const { effectiveLanguage } = useLanguage();
 
   const [tempMonth, setTempMonth] = useState(selectedMonth);
   const [tempYear, setTempYear] = useState(selectedYear);
@@ -63,14 +64,27 @@ function MonthYearPicker({
     return arr;
   }, [currentYear]);
 
+  // Map language codes to locale codes for Intl
+  const getLocale = (lang: string): string => {
+    const localeMap: Record<string, string> = {
+      'en': 'en-US',
+      'pt': 'pt-BR',
+      'es': 'es-ES',
+      'fr': 'fr-FR',
+      'zh': 'zh-CN',
+    };
+    return localeMap[lang] || 'en-US';
+  };
+
   // Month names
   const months = useMemo(() => {
-    const formatter = new Intl.DateTimeFormat(undefined, { month: 'long' });
+    const locale = getLocale(effectiveLanguage);
+    const formatter = new Intl.DateTimeFormat(locale, { month: 'long' });
     return Array.from({ length: 12 }, (_, i) => {
       const date = new Date(2024, i, 1);
       return formatter.format(date);
     });
-  }, []);
+  }, [effectiveLanguage]);
 
   const handleConfirm = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -237,9 +251,17 @@ function MonthYearPicker({
 }
 
 // Format month/year for display
-function formatMonthYear(dateString: string): string {
+function formatMonthYear(dateString: string, language: string): string {
   const date = new Date(dateString);
-  const formatter = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
+  const localeMap: Record<string, string> = {
+    'en': 'en-US',
+    'pt': 'pt-BR',
+    'es': 'es-ES',
+    'fr': 'fr-FR',
+    'zh': 'zh-CN',
+  };
+  const locale = localeMap[language] || 'en-US';
+  const formatter = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
   return formatter.format(date);
 }
 
@@ -248,6 +270,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+  const { effectiveLanguage } = useLanguage();
 
   const name = useStore((s) => s.onboardingData.name);
   const birthdate = useStore((s) => s.onboardingData.birthdate);
@@ -401,7 +424,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                       textTransform: 'capitalize',
                     }}
                   >
-                    {birthdate ? formatMonthYear(birthdate) : t('onboarding_select_birthdate')}
+                    {birthdate ? formatMonthYear(birthdate, effectiveLanguage) : t('onboarding_select_birthdate')}
                   </Text>
                 </Pressable>
               </View>
