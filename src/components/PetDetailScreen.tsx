@@ -419,8 +419,8 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                             }}
                             style={{
                               flex: 1,
-                              paddingVertical: 10,
-                              paddingHorizontal: 8,
+                              paddingVertical: 12,
+                              paddingHorizontal: 4,
                               borderRadius: 10,
                               backgroundColor: (editedPet.species || pet.species) === 'dog'
                                 ? c.accent
@@ -455,8 +455,8 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                             }}
                             style={{
                               flex: 1,
-                              paddingVertical: 10,
-                              paddingHorizontal: 8,
+                              paddingVertical: 12,
+                              paddingHorizontal: 4,
                               borderRadius: 10,
                               backgroundColor: (editedPet.species || pet.species) === 'cat'
                                 ? c.accent
@@ -491,8 +491,8 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                             }}
                             style={{
                               flex: 1,
-                              paddingVertical: 10,
-                              paddingHorizontal: 8,
+                              paddingVertical: 12,
+                              paddingHorizontal: 4,
                               borderRadius: 10,
                               backgroundColor: (editedPet.species || pet.species) === 'other'
                                 ? c.accent
