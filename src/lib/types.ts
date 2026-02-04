@@ -71,7 +71,13 @@ export function formatDate(dateString: string): string {
 export function formatRelativeDate(dateString: string, t: (key: any) => string): string {
   const date = new Date(dateString);
   const now = new Date();
-  const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Get dates without time for accurate day comparison
+  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const diffMs = dateOnly.getTime() - todayOnly.getTime();
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) return t('common_today');
   if (diffDays === 1) return t('common_tomorrow');
