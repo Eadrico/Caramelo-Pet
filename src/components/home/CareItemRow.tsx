@@ -1,12 +1,13 @@
 // Care Item Row Component
 import React from 'react';
-import { View, Text, Pressable, useColorScheme } from 'react-native';
+import { View, Text, Pressable, useColorScheme, Image } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import {
   Syringe,
@@ -15,6 +16,7 @@ import {
   Stethoscope,
   Calendar,
   ChevronRight,
+  PawPrint,
 } from 'lucide-react-native';
 import { CareItem, Pet, formatRelativeDate, CareType } from '@/lib/types';
 import { useColors } from '@/components/design-system';
@@ -53,7 +55,7 @@ export function CareItemRow({ item, pet, onPress }: CareItemRowProps) {
   };
 
   const getIcon = (type: CareType) => {
-    const iconProps = { size: 20, color: c.accent };
+    const iconProps = { size: 11, color: c.accent, strokeWidth: 2.5 };
     switch (type) {
       case 'vaccine':
         return <Syringe {...iconProps} />;
@@ -102,22 +104,74 @@ export function CareItemRow({ item, pet, onPress }: CareItemRowProps) {
           gap: 12,
         }}
       >
-        {/* Icon */}
-        <View
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 12,
-            backgroundColor: isOverdue
-              ? isDark
-                ? 'rgba(239, 68, 68, 0.15)'
-                : 'rgba(220, 38, 38, 0.1)'
-              : c.accentLight,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {getIcon(item.type)}
+        {/* Pet Avatar with Care Type Badge */}
+        <View style={{ position: 'relative' }}>
+          <View
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              overflow: 'hidden',
+              backgroundColor: c.accentLight,
+            }}
+          >
+            {pet.photoUri ? (
+              <Image
+                source={{ uri: pet.photoUri }}
+                style={{ width: '100%', height: '100%' }}
+                resizeMode="cover"
+              />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <PawPrint size={20} color={c.accent} strokeWidth={1.5} />
+              </View>
+            )}
+          </View>
+          {/* Care Type Badge with Liquid Glass */}
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -2,
+              right: -2,
+              borderRadius: 12,
+              overflow: 'hidden',
+            }}
+          >
+            <BlurView
+              intensity={isDark ? 50 : 70}
+              tint={isDark ? 'dark' : 'light'}
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: isOverdue
+                  ? isDark
+                    ? 'rgba(239, 68, 68, 0.6)'
+                    : 'rgba(220, 38, 38, 0.7)'
+                  : isDark
+                  ? 'rgba(0,0,0,0.5)'
+                  : 'rgba(255,255,255,0.7)',
+                borderWidth: 1.5,
+                borderColor: isOverdue
+                  ? isDark
+                    ? 'rgba(239, 68, 68, 0.3)'
+                    : 'rgba(220, 38, 38, 0.2)'
+                  : isDark
+                  ? 'rgba(255,255,255,0.15)'
+                  : 'rgba(0,0,0,0.08)',
+              }}
+            >
+              {getIcon(item.type)}
+            </BlurView>
+          </View>
         </View>
 
         {/* Content */}
