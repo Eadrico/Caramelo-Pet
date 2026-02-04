@@ -551,7 +551,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                           ? t('pet_species_dog')
                           : pet.species === 'cat'
                           ? t('pet_species_cat')
-                          : t('pet_species_other')}
+                          : pet.customSpecies || t('pet_species_other')}
                         {pet.breed ? ` • ${pet.breed}` : ''}
                       </Text>
                     )}
