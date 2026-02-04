@@ -54,7 +54,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
     >
       <View
         style={{
-          borderRadius: 20,
+          borderRadius: 24,
           overflow: 'hidden',
           backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.9)',
           borderWidth: 1,
@@ -94,7 +94,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
               backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.9)',
               paddingHorizontal: 8,
               paddingVertical: 4,
-              borderRadius: 8,
+              borderRadius: 12,
             }}
           >
             <Text style={{ fontSize: 14 }}>
