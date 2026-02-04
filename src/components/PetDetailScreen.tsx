@@ -16,6 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   ChevronLeft,
@@ -34,6 +35,7 @@ import {
   AlertCircle,
   Pill,
   Tag,
+  Camera,
 } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
 import {
@@ -90,6 +92,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showBirthdatePicker, setShowBirthdatePicker] = useState(false);
   const [showAddCareSheet, setShowAddCareSheet] = useState(false);
   const [editingCareItem, setEditingCareItem] = useState<CareItem | undefined>();
 
@@ -129,6 +132,9 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
 
   const handleStartEdit = () => {
     setEditedPet({
+      name: pet.name,
+      photoUri: pet.photoUri,
+      birthdate: pet.birthdate,
       breed: pet.breed,
       microchipId: pet.microchipId,
       allergies: pet.allergies,
@@ -139,6 +145,30 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
     });
     setIsEditing(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handlePickPhoto = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permissão necessária',
+        'Precisamos de acesso à sua galeria para alterar a foto.',
+        [{ text: t('common_cancel') }]
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setEditedPet((prev) => ({ ...prev, photoUri: result.assets[0].uri }));
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
   };
 
   const handleDeletePet = () => {
@@ -287,15 +317,17 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               }}
             >
               {/* Photo */}
-              <View
+              <Pressable
+                onPress={isEditing ? handlePickPhoto : undefined}
+                disabled={!isEditing}
                 style={{
                   height: 360,
                   backgroundColor: c.accentLight,
                 }}
               >
-                {pet.photoUri ? (
+                {(editedPet.photoUri || pet.photoUri) ? (
                   <Image
-                    source={{ uri: pet.photoUri }}
+                    source={{ uri: editedPet.photoUri || pet.photoUri }}
                     style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                   />
@@ -308,6 +340,22 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     }}
                   >
                     <PawPrint size={64} color={c.accent} strokeWidth={1.5} />
+                  </View>
+                )}
+
+                {/* Edit Photo Button - shown when editing */}
+                {isEditing && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 16,
+                      right: 16,
+                      backgroundColor: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)',
+                      borderRadius: 24,
+                      padding: 12,
+                    }}
+                  >
+                    <Camera size={24} color={c.accent} />
                   </View>
                 )}
 
@@ -330,16 +378,32 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                       backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.5)',
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 28,
-                        fontWeight: '700',
-                        color: isDark ? '#FFFFFF' : '#1C1917',
-                        marginBottom: 4,
-                      }}
-                    >
-                      {pet.name}
-                    </Text>
+                    {isEditing ? (
+                      <RNTextInput
+                        value={editedPet.name}
+                        onChangeText={(text) => setEditedPet((prev) => ({ ...prev, name: text }))}
+                        style={{
+                          fontSize: 28,
+                          fontWeight: '700',
+                          color: isDark ? '#FFFFFF' : '#1C1917',
+                          marginBottom: 4,
+                          padding: 0,
+                        }}
+                        placeholder={pet.name}
+                        placeholderTextColor={isDark ? 'rgba(255,255,255,0.5)' : 'rgba(28,25,23,0.5)'}
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 28,
+                          fontWeight: '700',
+                          color: isDark ? '#FFFFFF' : '#1C1917',
+                          marginBottom: 4,
+                        }}
+                      >
+                        {pet.name}
+                      </Text>
+                    )}
                     <Text
                       style={{
                         fontSize: 16,
@@ -357,26 +421,30 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
 
                     {/* Quick Stats */}
                     <View style={{ flexDirection: 'row', gap: 16 }}>
-                      {pet.birthdate && (
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      {(isEditing ? editedPet.birthdate : pet.birthdate) ? (
+                        <Pressable
+                          onPress={isEditing ? () => setShowBirthdatePicker(true) : undefined}
+                          disabled={!isEditing}
+                          style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                        >
                           <Calendar size={16} color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(28,25,23,0.6)'} />
                           <Text style={{ fontSize: 14, color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)' }}>
-                            {formatAge(pet.birthdate)}
+                            {formatAge((isEditing && editedPet.birthdate) ? editedPet.birthdate : pet.birthdate!)}
                           </Text>
-                        </View>
-                      )}
-                      {pet.weightKg && (
+                        </Pressable>
+                      ) : null}
+                      {(isEditing ? editedPet.weightKg : pet.weightKg) ? (
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                           <Weight size={16} color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(28,25,23,0.6)'} />
                           <Text style={{ fontSize: 14, color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)' }}>
-                            {pet.weightKg} kg
+                            {isEditing ? editedPet.weightKg : pet.weightKg} kg
                           </Text>
                         </View>
-                      )}
+                      ) : null}
                     </View>
                   </BlurView>
                 </View>
-              </View>
+              </Pressable>
             </View>
           </Animated.View>
 
@@ -1010,6 +1078,80 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
         editItem={editingCareItem}
         preselectedPetId={petId}
       />
+
+      {/* Birthdate Picker */}
+      {showBirthdatePicker && isEditing && (
+        <Modal
+          visible={showBirthdatePicker}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowBirthdatePicker(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+            }}
+          >
+            <Pressable
+              style={{ flex: 1 }}
+              onPress={() => setShowBirthdatePicker(false)}
+            />
+            <View
+              style={{
+                backgroundColor: isDark ? '#1C1917' : '#FFFFFF',
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                paddingBottom: 40,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingHorizontal: 20,
+                  paddingVertical: 16,
+                  borderBottomWidth: 1,
+                  borderBottomColor: c.border,
+                }}
+              >
+                <Pressable onPress={() => setShowBirthdatePicker(false)}>
+                  <Text style={{ color: c.textSecondary, fontSize: 17 }}>
+                    {t('common_cancel')}
+                  </Text>
+                </Pressable>
+                <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
+                  Data de Nascimento
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    setShowBirthdatePicker(false);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}
+                >
+                  <Text style={{ color: c.accent, fontSize: 17, fontWeight: '600' }}>
+                    {t('common_done')}
+                  </Text>
+                </Pressable>
+              </View>
+              <DateTimePicker
+                value={editedPet.birthdate ? new Date(editedPet.birthdate) : new Date()}
+                mode="date"
+                display="spinner"
+                onChange={(event, date) => {
+                  if (date) {
+                    setEditedPet((prev) => ({ ...prev, birthdate: date.toISOString() }));
+                  }
+                }}
+                maximumDate={new Date()}
+                style={{ alignSelf: 'center' }}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
