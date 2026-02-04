@@ -646,7 +646,7 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
   const c = useColors();
 
   return (
-    <GlassCard className="mx-4">
+    <GlassCard>
       <View style={{ alignItems: 'center', paddingVertical: 24 }}>
         <View
           style={{
