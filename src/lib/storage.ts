@@ -7,7 +7,26 @@ import { Pet, CareItem, Reminder, generateId } from './types';
 const PETS_KEY = 'caramelo_pets';
 const CARE_ITEMS_KEY = 'caramelo_care_items';
 const REMINDERS_KEY = 'caramelo_reminders';
+const UPCOMING_CARE_DAYS_KEY = 'caramelo_upcoming_care_days';
 const PHOTOS_DIR = `${FileSystem.documentDirectory}photos/`;
+
+// Settings operations
+export async function getUpcomingCareDays(): Promise<number | null> {
+  try {
+    const data = await AsyncStorage.getItem(UPCOMING_CARE_DAYS_KEY);
+    return data ? parseInt(data, 10) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function saveUpcomingCareDays(days: number): Promise<void> {
+  try {
+    await AsyncStorage.setItem(UPCOMING_CARE_DAYS_KEY, days.toString());
+  } catch (error) {
+    throw error;
+  }
+}
 
 // Initialize photos directory
 async function ensurePhotosDir(): Promise<void> {

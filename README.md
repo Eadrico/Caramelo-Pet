@@ -10,7 +10,8 @@ Caramelo é a solução perfeita para tutores que querem organizar a vida dos se
 
 - **Perfis Completos**: Adicione fotos, informações e acompanhe o crescimento dos seus pets
 - **Suporte a Pets Diversos**: Cães, gatos e outros animais (coelhos, hamsters, peixes, etc.) com emojis personalizados
-- **Lembretes Inteligentes**: Notificações de vacinas, consultas e medicamentos
+- **Lembretes Inteligentes**: Notificações de vacinas, consultas e medicamentos com frequências personalizáveis
+- **Janela de Cuidados Configurável**: Escolha visualizar cuidados e lembretes dos próximos 7, 14, 30 ou 60 dias
 - **Histórico de Cuidados**: Acompanhe todo o histórico veterinário
 - **Premium Lifetime**: Compra única para acesso ilimitado a pets
 - **Cupons Promocionais**: Sistema de cupons para liberação de recursos premium

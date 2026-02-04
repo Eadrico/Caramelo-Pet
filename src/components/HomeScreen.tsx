@@ -47,6 +47,7 @@ export function HomeScreen() {
   const pets = useStore((s) => s.pets);
   const careItems = useStore((s) => s.careItems);
   const reminders = useStore((s) => s.reminders);
+  const upcomingCareDays = useStore((s) => s.upcomingCareDays);
   const refreshData = useStore((s) => s.refreshData);
 
   // Premium state
@@ -97,12 +98,12 @@ export function HomeScreen() {
     }
   }, [isInitialized, initializePremium]);
 
-  // Get upcoming care items (next 14 days)
+  // Get upcoming care items (using configured days window)
   const upcomingCareItems = useMemo(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const futureDate = new Date(today);
-    futureDate.setDate(today.getDate() + 14);
+    futureDate.setDate(today.getDate() + upcomingCareDays);
 
     return careItems
       .filter((item) => {
@@ -111,13 +112,13 @@ export function HomeScreen() {
         return dueDateOnly >= today && dueDateOnly <= futureDate;
       })
       .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
-  }, [careItems]);
+  }, [careItems, upcomingCareDays]);
 
-  // Get upcoming reminders (next 14 days)
+  // Get upcoming reminders (using configured days window)
   const upcomingReminders = useMemo(() => {
     const now = new Date();
     const futureDate = new Date();
-    futureDate.setDate(now.getDate() + 14);
+    futureDate.setDate(now.getDate() + upcomingCareDays);
 
     return reminders
       .filter((reminder) => {
@@ -126,7 +127,7 @@ export function HomeScreen() {
         return reminderDate >= now && reminderDate <= futureDate;
       })
       .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
-  }, [reminders]);
+  }, [reminders, upcomingCareDays]);
 
   // Unified list combining care items and reminders
   type UnifiedItem = 

@@ -110,6 +110,12 @@ type TranslationKey =
   | 'settings_theme_system'
   | 'settings_theme_light'
   | 'settings_theme_dark'
+  | 'settings_upcoming_care_days'
+  | 'settings_upcoming_care_days_desc'
+  | 'settings_upcoming_care_days_7'
+  | 'settings_upcoming_care_days_14'
+  | 'settings_upcoming_care_days_30'
+  | 'settings_upcoming_care_days_60'
   | 'settings_danger_zone'
   | 'settings_reset_app'
   | 'settings_reset_desc'
@@ -354,6 +360,12 @@ const en: Translations = {
   settings_theme_system: 'System',
   settings_theme_light: 'Light',
   settings_theme_dark: 'Dark',
+  settings_upcoming_care_days: 'Upcoming Care Window',
+  settings_upcoming_care_days_desc: 'Show care items and reminders for the next',
+  settings_upcoming_care_days_7: '7 days',
+  settings_upcoming_care_days_14: '14 days',
+  settings_upcoming_care_days_30: '30 days',
+  settings_upcoming_care_days_60: '60 days',
   settings_danger_zone: 'Danger Zone',
   settings_reset_app: 'Reset App',
   settings_reset_desc: 'Delete all data',
@@ -596,6 +608,12 @@ const pt: Translations = {
   settings_theme_system: 'Sistema',
   settings_theme_light: 'Claro',
   settings_theme_dark: 'Escuro',
+  settings_upcoming_care_days: 'Janela de Cuidados',
+  settings_upcoming_care_days_desc: 'Mostrar cuidados e lembretes dos próximos',
+  settings_upcoming_care_days_7: '7 dias',
+  settings_upcoming_care_days_14: '14 dias',
+  settings_upcoming_care_days_30: '30 dias',
+  settings_upcoming_care_days_60: '60 dias',
   settings_danger_zone: 'Zona de Perigo',
   settings_reset_app: 'Resetar App',
   settings_reset_desc: 'Apaga todos os dados',
@@ -838,6 +856,12 @@ const es: Translations = {
   settings_theme_system: 'Sistema',
   settings_theme_light: 'Claro',
   settings_theme_dark: 'Oscuro',
+  settings_upcoming_care_days: 'Ventana de Cuidados',
+  settings_upcoming_care_days_desc: 'Mostrar cuidados y recordatorios de los próximos',
+  settings_upcoming_care_days_7: '7 días',
+  settings_upcoming_care_days_14: '14 días',
+  settings_upcoming_care_days_30: '30 días',
+  settings_upcoming_care_days_60: '60 días',
   settings_danger_zone: 'Zona de Peligro',
   settings_reset_app: 'Restablecer App',
   settings_reset_desc: 'Elimina todos los datos',
@@ -1080,6 +1104,12 @@ const fr: Translations = {
   settings_theme_system: 'Système',
   settings_theme_light: 'Clair',
   settings_theme_dark: 'Sombre',
+  settings_upcoming_care_days: 'Fenêtre de Soins',
+  settings_upcoming_care_days_desc: 'Afficher les soins et rappels des prochains',
+  settings_upcoming_care_days_7: '7 jours',
+  settings_upcoming_care_days_14: '14 jours',
+  settings_upcoming_care_days_30: '30 jours',
+  settings_upcoming_care_days_60: '60 jours',
   settings_danger_zone: 'Zone de Danger',
   settings_reset_app: 'Réinitialiser l\'App',
   settings_reset_desc: 'Supprime toutes les données',
@@ -1322,6 +1352,12 @@ const zh: Translations = {
   settings_theme_system: '跟随系统',
   settings_theme_light: '浅色',
   settings_theme_dark: '深色',
+  settings_upcoming_care_days: '护理时间窗口',
+  settings_upcoming_care_days_desc: '显示未来的护理项目和提醒',
+  settings_upcoming_care_days_7: '7天',
+  settings_upcoming_care_days_14: '14天',
+  settings_upcoming_care_days_30: '30天',
+  settings_upcoming_care_days_60: '60天',
   settings_danger_zone: '危险区域',
   settings_reset_app: '重置应用',
   settings_reset_desc: '删除所有数据',

@@ -11,12 +11,18 @@ interface AppState {
   isLoading: boolean;
   isInitialized: boolean;
 
+  // Settings
+  upcomingCareDays: number; // 7, 14, 30, or 60
+
   // Onboarding state
   onboardingData: OnboardingPetData;
 
   // Actions
   initialize: () => Promise<void>;
   refreshData: () => Promise<void>;
+
+  // Settings actions
+  setUpcomingCareDays: (days: number) => Promise<void>;
 
   // Pet actions
   addPet: (pet: Omit<Pet, 'id' | 'createdAt'>) => Promise<Pet>;
@@ -62,16 +68,25 @@ export const useStore = create<AppState>((set, get) => ({
   reminders: [],
   isLoading: true,
   isInitialized: false,
+  upcomingCareDays: 14, // Default to 14 days
   onboardingData: { ...initialOnboardingData },
 
   initialize: async () => {
     try {
-      const [pets, careItems, reminders] = await Promise.all([
+      const [pets, careItems, reminders, upcomingCareDays] = await Promise.all([
         storage.getPets(),
         storage.getCareItems(),
         storage.getReminders(),
+        storage.getUpcomingCareDays(),
       ]);
-      set({ pets, careItems, reminders, isLoading: false, isInitialized: true });
+      set({
+        pets,
+        careItems,
+        reminders,
+        upcomingCareDays: upcomingCareDays || 14,
+        isLoading: false,
+        isInitialized: true
+      });
     } catch (error) {
       console.error('Error initializing app:', error);
       set({ isLoading: false, isInitialized: true });
@@ -89,6 +104,11 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (error) {
       console.error('Error refreshing data:', error);
     }
+  },
+
+  setUpcomingCareDays: async (days) => {
+    await storage.saveUpcomingCareDays(days);
+    set({ upcomingCareDays: days });
   },
 
   addPet: async (petData) => {

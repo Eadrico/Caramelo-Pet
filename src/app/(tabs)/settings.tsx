@@ -37,6 +37,7 @@ import {
   Check,
   Crown,
   Bug,
+  Calendar,
 } from 'lucide-react-native';
 import { useSettingsStore, ThemeMode, LanguageMode } from '@/lib/settings-store';
 import { useStore } from '@/lib/store';
@@ -638,10 +639,13 @@ export default function SettingsScreen() {
   // App store for full reset
   const refreshData = useStore((s) => s.refreshData);
   const pets = useStore((s) => s.pets);
+  const upcomingCareDays = useStore((s) => s.upcomingCareDays);
+  const setUpcomingCareDays = useStore((s) => s.setUpcomingCareDays);
 
   // Modal states
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
+  const [showCareDaysModal, setShowCareDaysModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [editField, setEditField] = useState<'name' | 'email' | 'phone' | null>(null);
@@ -774,6 +778,13 @@ export default function SettingsScreen() {
       label: t('settings_theme_dark'),
       icon: <Moon size={20} color={c.textSecondary} />,
     },
+  ];
+
+  const careDaysOptions: { value: number; label: string }[] = [
+    { value: 7, label: t('settings_upcoming_care_days_7') },
+    { value: 14, label: t('settings_upcoming_care_days_14') },
+    { value: 30, label: t('settings_upcoming_care_days_30') },
+    { value: 60, label: t('settings_upcoming_care_days_60') },
   ];
 
   // Get app version
@@ -909,6 +920,14 @@ export default function SettingsScreen() {
               title={t('settings_theme')}
               subtitle={themeOptions.find(o => o.value === theme)?.label ?? ''}
               onPress={() => setShowThemeModal(true)}
+              rightContent={<ChevronRight size={18} color={c.textTertiary} />}
+            />
+            <View style={{ height: 1, backgroundColor: c.border, marginLeft: 66 }} />
+            <SettingRow
+              icon={<Calendar size={18} color={c.accent} strokeWidth={2} />}
+              title={t('settings_upcoming_care_days')}
+              subtitle={`${t('settings_upcoming_care_days_desc')} ${careDaysOptions.find(o => o.value === upcomingCareDays)?.label ?? ''}`}
+              onPress={() => setShowCareDaysModal(true)}
               rightContent={<ChevronRight size={18} color={c.textTertiary} />}
             />
           </Section>
@@ -1172,6 +1191,18 @@ export default function SettingsScreen() {
         options={themeOptions}
         selected={theme}
         onSelect={setTheme}
+      />
+
+      <SelectionModal
+        visible={showCareDaysModal}
+        onClose={() => setShowCareDaysModal(false)}
+        title={t('settings_upcoming_care_days')}
+        options={careDaysOptions.map(opt => ({
+          value: String(opt.value),
+          label: opt.label,
+        }))}
+        selected={String(upcomingCareDays)}
+        onSelect={(value) => setUpcomingCareDays(Number(value))}
       />
 
       <ConfirmationModal
