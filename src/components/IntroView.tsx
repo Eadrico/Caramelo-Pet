@@ -75,7 +75,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
               }}
             >
               <Image
-                source={require('../../assets/logo.png')}
+                source={{ uri: 'https://images.composerapi.com/019b3c58-3269-7708-b5ff-6eb362d545a7/assets/images/image_1769364705_1769364707105_019bf65a-d721-73e9-abdc-38ca9ff86f42.png' }}
                 style={{
                   width: 120,
                   height: 120,
