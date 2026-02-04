@@ -417,44 +417,49 @@ export function AddReminderSheet({
                 {t('common_repeat')}
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                {(['none', 'daily', 'weekly', 'monthly'] as const).map((type) => (
-                  <Pressable
-                    key={type}
-                    onPress={() => {
-                      setRepeatType(type);
-                      Haptics.selectionAsync();
-                    }}
-                    style={{
-                      paddingHorizontal: 16,
-                      paddingVertical: 10,
-                      borderRadius: 20,
-                      backgroundColor:
-                        repeatType === type
-                          ? c.accent
-                          : isDark
-                          ? 'rgba(255,255,255,0.05)'
-                          : 'rgba(0,0,0,0.05)',
-                      borderWidth: 1,
-                      borderColor: repeatType === type ? c.accent : c.border,
-                    }}
-                  >
-                    <Text
+                {(['none', 'daily', 'weekly', 'monthly'] as const).map((type) => {
+                  const getLabel = () => {
+                    switch (type) {
+                      case 'none': return t('common_once');
+                      case 'daily': return t('common_daily');
+                      case 'weekly': return t('common_weekly');
+                      case 'monthly': return t('common_monthly');
+                    }
+                  };
+
+                  return (
+                    <Pressable
+                      key={type}
+                      onPress={() => {
+                        setRepeatType(type);
+                        Haptics.selectionAsync();
+                      }}
                       style={{
-                        color: repeatType === type ? '#FFFFFF' : c.text,
-                        fontSize: 14,
-                        fontWeight: '500',
+                        paddingHorizontal: 16,
+                        paddingVertical: 10,
+                        borderRadius: 20,
+                        backgroundColor:
+                          repeatType === type
+                            ? c.accent
+                            : isDark
+                            ? 'rgba(255,255,255,0.05)'
+                            : 'rgba(0,0,0,0.05)',
+                        borderWidth: 1,
+                        borderColor: repeatType === type ? c.accent : c.border,
                       }}
                     >
-                      {type === 'none'
-                        ? t('common_once')
-                        : type === 'daily'
-                        ? t('common_daily')
-                        : type === 'weekly'
-                        ? t('common_weekly')
-                        : t('common_monthly')}
-                    </Text>
-                  </Pressable>
-                ))}
+                      <Text
+                        style={{
+                          color: repeatType === type ? '#FFFFFF' : c.text,
+                          fontSize: 14,
+                          fontWeight: '500',
+                        }}
+                      >
+                        {getLabel()}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             </View>
 
