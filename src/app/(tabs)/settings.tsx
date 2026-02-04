@@ -182,7 +182,7 @@ function Section({
           textTransform: 'uppercase',
           letterSpacing: 0.5,
           marginBottom: 8,
-          marginLeft: 16,
+          marginLeft: 20,
         }}
       >
         {title}
