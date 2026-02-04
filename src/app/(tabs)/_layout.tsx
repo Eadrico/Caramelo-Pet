@@ -37,21 +37,21 @@ export default function TabsLayout() {
             <LinearGradient
               colors={
                 isDark
-                  ? ['rgba(196, 167, 125, 0.15)', 'transparent']
-                  : ['rgba(196, 167, 125, 0.1)', 'transparent']
+                  ? ['rgba(196, 167, 125, 0.25)', 'transparent']
+                  : ['rgba(196, 167, 125, 0.15)', 'transparent']
               }
               style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
-                height: 40,
+                height: 50,
               }}
             />
 
             {/* Glass Effect */}
             <BlurView
-              intensity={isDark ? 70 : 90}
+              intensity={isDark ? 80 : 100}
               tint={isDark ? 'dark' : 'light'}
               style={{
                 position: 'absolute',
@@ -60,12 +60,12 @@ export default function TabsLayout() {
                 right: 0,
                 bottom: 0,
                 backgroundColor: isDark
-                  ? 'rgba(12, 10, 9, 0.7)'
-                  : 'rgba(255, 255, 255, 0.7)',
+                  ? 'rgba(12, 10, 9, 0.5)'
+                  : 'rgba(255, 255, 255, 0.5)',
                 borderTopWidth: 1,
                 borderTopColor: isDark
-                  ? 'rgba(255, 255, 255, 0.1)'
-                  : 'rgba(0, 0, 0, 0.1)',
+                  ? 'rgba(255, 255, 255, 0.15)'
+                  : 'rgba(0, 0, 0, 0.08)',
               }}
             />
           </View>
