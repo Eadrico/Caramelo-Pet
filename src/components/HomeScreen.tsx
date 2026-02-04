@@ -100,13 +100,15 @@ export function HomeScreen() {
   // Get upcoming care items (next 14 days)
   const upcomingCareItems = useMemo(() => {
     const now = new Date();
-    const futureDate = new Date();
-    futureDate.setDate(now.getDate() + 14);
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const futureDate = new Date(today);
+    futureDate.setDate(today.getDate() + 14);
 
     return careItems
       .filter((item) => {
         const dueDate = new Date(item.dueDate);
-        return dueDate >= new Date(now.setHours(0, 0, 0, 0)) && dueDate <= futureDate;
+        const dueDateOnly = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+        return dueDateOnly >= today && dueDateOnly <= futureDate;
       })
       .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
   }, [careItems]);
