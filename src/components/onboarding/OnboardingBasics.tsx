@@ -35,10 +35,29 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
 
   const name = useStore((s) => s.onboardingData.name);
   const species = useStore((s) => s.onboardingData.species);
+  const customSpecies = useStore((s) => s.onboardingData.customSpecies);
   const setName = useStore((s) => s.setOnboardingName);
   const setSpecies = useStore((s) => s.setOnboardingSpecies);
+  const setCustomSpecies = useStore((s) => s.setOnboardingCustomSpecies);
 
-  const isValid = name.trim().length >= 1;
+  const [localCustomSpecies, setLocalCustomSpecies] = useState(customSpecies || '');
+
+  const isValid = name.trim().length >= 1 && (species !== 'other' || localCustomSpecies.trim().length >= 1);
+
+  const handleNext = () => {
+    if (species === 'other' && localCustomSpecies.trim()) {
+      setCustomSpecies(localCustomSpecies.trim());
+    }
+    onNext();
+  };
+
+  const handleSpeciesChange = (newSpecies: Species) => {
+    setSpecies(newSpecies);
+    if (newSpecies !== 'other') {
+      setCustomSpecies(undefined);
+      setLocalCustomSpecies('');
+    }
+  };
 
   const speciesOptions: { value: Species; label: string }[] = [
     { value: 'dog', label: t('onboarding_species_dog') },
@@ -152,8 +171,47 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
                   <SegmentedControl
                     options={speciesOptions}
                     selected={species}
-                    onSelect={setSpecies}
+                    onSelect={handleSpeciesChange}
                   />
+
+                  {/* Custom Species Input - shown when "other" is selected */}
+                  {species === 'other' && (
+                    <Animated.View
+                      entering={FadeInDown.duration(300).delay(100)}
+                      style={{ marginTop: 16 }}
+                    >
+                      <RNTextInput
+                        value={localCustomSpecies}
+                        onChangeText={setLocalCustomSpecies}
+                        placeholder="Ex: Coelho, Hamster, Peixe..."
+                        placeholderTextColor={c.textTertiary}
+                        autoCapitalize="words"
+                        autoCorrect={false}
+                        maxLength={30}
+                        returnKeyType="done"
+                        style={{
+                          fontSize: 17,
+                          color: c.text,
+                          paddingVertical: 14,
+                          paddingHorizontal: 16,
+                          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                          borderRadius: 12,
+                          borderWidth: 1,
+                          borderColor: localCustomSpecies ? c.accent : c.border,
+                        }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: c.textTertiary,
+                          marginTop: 8,
+                          fontStyle: 'italic',
+                        }}
+                      >
+                        Digite o tipo do seu pet
+                      </Text>
+                    </Animated.View>
+                  )}
                 </View>
               </GlassCard>
             </Animated.View>
@@ -169,7 +227,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
             >
               <PrimaryButton
                 title={t('onboarding_continue')}
-                onPress={onNext}
+                onPress={handleNext}
                 disabled={!isValid}
               />
             </Animated.View>

@@ -37,6 +37,7 @@ interface AppState {
   // Onboarding actions
   setOnboardingName: (name: string) => void;
   setOnboardingSpecies: (species: Species) => void;
+  setOnboardingCustomSpecies: (customSpecies: string | undefined) => void;
   setOnboardingPhoto: (photoUri: string | undefined) => void;
   setOnboardingBirthdate: (birthdate: string | undefined) => void;
   setOnboardingWeight: (weightKg: number | undefined) => void;
@@ -181,6 +182,11 @@ export const useStore = create<AppState>((set, get) => ({
       onboardingData: { ...state.onboardingData, species },
     })),
 
+  setOnboardingCustomSpecies: (customSpecies) =>
+    set((state) => ({
+      onboardingData: { ...state.onboardingData, customSpecies },
+    })),
+
   setOnboardingPhoto: (photoUri) =>
     set((state) => ({
       onboardingData: { ...state.onboardingData, photoUri },
@@ -229,6 +235,7 @@ export const useStore = create<AppState>((set, get) => ({
       {
         name: onboardingData.name,
         species: onboardingData.species,
+        customSpecies: onboardingData.customSpecies,
         birthdate: onboardingData.birthdate,
         weightKg: onboardingData.weightKg,
         photoUri,

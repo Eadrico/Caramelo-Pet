@@ -9,12 +9,13 @@ Caramelo é a solução perfeita para tutores que querem organizar a vida dos se
 ### ✨ Principais Recursos
 
 - **Perfis Completos**: Adicione fotos, informações e acompanhe o crescimento dos seus pets
+- **Suporte a Pets Diversos**: Cães, gatos e outros animais (coelhos, hamsters, peixes, etc.) com emojis personalizados
 - **Lembretes Inteligentes**: Notificações de vacinas, consultas e medicamentos
 - **Histórico de Cuidados**: Acompanhe todo o histórico veterinário
 - **Premium Lifetime**: Compra única para acesso ilimitado a pets
 - **Cupons Promocionais**: Sistema de cupons para liberação de recursos premium
 - **Multi-idioma**: Português, Inglês, Espanhol, Francês e Chinês
-- **Temas**: Suporte a modo claro e escuro
+- **Temas**: Suporte a modo claro e escuro com efeito Liquid Glass elegante
 - **Privacidade**: Todos os dados armazenados localmente no dispositivo
 
 ## 💎 Sistema Premium

@@ -98,7 +98,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
             }}
           >
             <Text style={{ fontSize: 14 }}>
-              {getSpeciesEmoji(pet.species)}
+              {getSpeciesEmoji(pet.species, pet.customSpecies)}
             </Text>
           </View>
 
