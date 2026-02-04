@@ -109,7 +109,7 @@ export function ReminderRow({ reminder, pet, onPress }: ReminderRowProps) {
               color: c.textSecondary,
             }}
           >
-            {pet.name} • {formatRelativeDate(reminder.dateTime, t)}
+            {pet.name}
             {reminder.repeatType !== 'none' && ` • ${getRepeatLabel(reminder.repeatType, t)}`}
           </Text>
         </View>
