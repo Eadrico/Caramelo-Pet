@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Plus, Calendar, PawPrint, Crown, Stethoscope } from 'lucide-react-native';
@@ -351,58 +352,67 @@ export function HomeScreen() {
                     width: 160,
                     height: 200,
                     borderRadius: 20,
-                    borderWidth: 2,
-                    borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
-                    borderStyle: 'dashed',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+                    overflow: 'hidden',
                   }}
                 >
-                  <View
+                  <BlurView
+                    intensity={isDark ? 40 : 60}
+                    tint={isDark ? 'dark' : 'light'}
                     style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 24,
-                      backgroundColor: c.accentLight,
+                      flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginBottom: 12,
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.4)',
+                      borderWidth: 1,
+                      borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                      borderRadius: 20,
                     }}
                   >
-                    <Plus size={24} color={c.accent} strokeWidth={2} />
-                  </View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: '600',
-                      color: c.text,
-                      marginBottom: 4,
-                    }}
-                  >
-                    {t('home_add_pet')}
-                  </Text>
-                  {!isPremium && pets.length >= FREE_PET_LIMIT_COUNT && (
                     <View
                       style={{
-                        flexDirection: 'row',
+                        width: 48,
+                        height: 48,
+                        borderRadius: 24,
+                        backgroundColor: c.accentLight,
                         alignItems: 'center',
-                        gap: 4,
-                        marginTop: 4,
+                        justifyContent: 'center',
+                        marginBottom: 12,
                       }}
                     >
-                      <Crown size={12} color={c.accent} strokeWidth={2} />
-                      <Text
+                      <Plus size={24} color={c.accent} strokeWidth={2} />
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: '600',
+                        color: c.text,
+                        marginBottom: 4,
+                      }}
+                    >
+                      {t('home_add_pet')}
+                    </Text>
+                    {!isPremium && pets.length >= FREE_PET_LIMIT_COUNT && (
+                      <View
                         style={{
-                          fontSize: 11,
-                          color: c.accent,
-                          fontWeight: '500',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 4,
+                          marginTop: 4,
                         }}
                       >
-                        {t('home_premium_badge')}
-                      </Text>
-                    </View>
-                  )}
+                        <Crown size={12} color={c.accent} strokeWidth={2} />
+                        <Text
+                          style={{
+                            fontSize: 11,
+                            color: c.accent,
+                            fontWeight: '500',
+                          }}
+                        >
+                          {t('home_premium_badge')}
+                        </Text>
+                      </View>
+                    )}
+                  </BlurView>
                 </Pressable>
               </Animated.View>
             </ScrollView>
