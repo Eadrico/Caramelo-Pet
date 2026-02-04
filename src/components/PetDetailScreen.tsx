@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -288,7 +289,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               {/* Photo */}
               <View
                 style={{
-                  height: 200,
+                  height: 360,
                   backgroundColor: c.accentLight,
                 }}
               >
@@ -309,53 +310,71 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     <PawPrint size={64} color={c.accent} strokeWidth={1.5} />
                   </View>
                 )}
-              </View>
 
-              {/* Pet Info */}
-              <View style={{ padding: 20 }}>
-                <Text
+                {/* Glass Info Banner - Overlaid on Photo */}
+                <View
                   style={{
-                    fontSize: 28,
-                    fontWeight: '700',
-                    color: c.text,
-                    marginBottom: 4,
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    overflow: 'hidden',
                   }}
                 >
-                  {pet.name}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: c.textSecondary,
-                    marginBottom: 16,
-                  }}
-                >
-                  {pet.species === 'dog'
-                    ? t('pet_species_dog')
-                    : pet.species === 'cat'
-                    ? t('pet_species_cat')
-                    : t('pet_species_other')}
-                  {pet.breed ? ` • ${isEditing ? '' : pet.breed}` : ''}
-                </Text>
+                  <BlurView
+                    intensity={isDark ? 50 : 70}
+                    tint={isDark ? 'dark' : 'light'}
+                    style={{
+                      paddingVertical: 20,
+                      paddingHorizontal: 20,
+                      backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.5)',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 28,
+                        fontWeight: '700',
+                        color: isDark ? '#FFFFFF' : '#1C1917',
+                        marginBottom: 4,
+                      }}
+                    >
+                      {pet.name}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                        marginBottom: 16,
+                      }}
+                    >
+                      {pet.species === 'dog'
+                        ? t('pet_species_dog')
+                        : pet.species === 'cat'
+                        ? t('pet_species_cat')
+                        : t('pet_species_other')}
+                      {pet.breed ? ` • ${isEditing ? '' : pet.breed}` : ''}
+                    </Text>
 
-                {/* Quick Stats */}
-                <View style={{ flexDirection: 'row', gap: 16 }}>
-                  {pet.birthdate && (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Calendar size={16} color={c.textSecondary} />
-                      <Text style={{ fontSize: 14, color: c.textSecondary }}>
-                        {formatAge(pet.birthdate)}
-                      </Text>
+                    {/* Quick Stats */}
+                    <View style={{ flexDirection: 'row', gap: 16 }}>
+                      {pet.birthdate && (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                          <Calendar size={16} color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(28,25,23,0.6)'} />
+                          <Text style={{ fontSize: 14, color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)' }}>
+                            {formatAge(pet.birthdate)}
+                          </Text>
+                        </View>
+                      )}
+                      {pet.weightKg && (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                          <Weight size={16} color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(28,25,23,0.6)'} />
+                          <Text style={{ fontSize: 14, color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)' }}>
+                            {pet.weightKg} kg
+                          </Text>
+                        </View>
+                      )}
                     </View>
-                  )}
-                  {pet.weightKg && (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Weight size={16} color={c.textSecondary} />
-                      <Text style={{ fontSize: 14, color: c.textSecondary }}>
-                        {pet.weightKg} kg
-                      </Text>
-                    </View>
-                  )}
+                  </BlurView>
                 </View>
               </View>
             </View>
