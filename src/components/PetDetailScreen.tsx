@@ -517,7 +517,11 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
           >
             <SectionHeader
               title={t('pet_details_reminders')}
-              action={{ label: t('common_add'), onPress: () => setShowReminderModal(true) }}
+              action={
+                petReminders.length > 0
+                  ? { label: t('common_add'), onPress: () => setShowReminderModal(true) }
+                  : undefined
+              }
             />
 
             {petReminders.length > 0 ? (
@@ -578,7 +582,11 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
           >
             <SectionHeader
               title={t('pet_details_upcoming_care')}
-              action={{ label: t('common_add'), onPress: handleAddCarePress }}
+              action={
+                upcomingCareItems.length > 0
+                  ? { label: t('common_add'), onPress: handleAddCarePress }
+                  : undefined
+              }
             />
 
             {upcomingCareItems.length > 0 ? (
