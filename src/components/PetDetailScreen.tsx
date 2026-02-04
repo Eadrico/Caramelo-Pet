@@ -133,6 +133,8 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   const handleStartEdit = () => {
     setEditedPet({
       name: pet.name,
+      species: pet.species,
+      customSpecies: pet.customSpecies,
       photoUri: pet.photoUri,
       birthdate: pet.birthdate,
       breed: pet.breed,
@@ -404,20 +406,162 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                         {pet.name}
                       </Text>
                     )}
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
-                        marginBottom: 16,
-                      }}
-                    >
-                      {pet.species === 'dog'
-                        ? t('pet_species_dog')
-                        : pet.species === 'cat'
-                        ? t('pet_species_cat')
-                        : t('pet_species_other')}
-                      {pet.breed ? ` • ${isEditing ? '' : pet.breed}` : ''}
-                    </Text>
+
+                    {/* Species and Breed */}
+                    {isEditing ? (
+                      <View style={{ marginBottom: 16, gap: 10 }}>
+                        {/* Species Selector */}
+                        <View style={{ flexDirection: 'row', gap: 8 }}>
+                          <Pressable
+                            onPress={() => {
+                              setEditedPet((prev) => ({ ...prev, species: 'dog', customSpecies: undefined }));
+                              Haptics.selectionAsync();
+                            }}
+                            style={{
+                              flex: 1,
+                              paddingVertical: 10,
+                              paddingHorizontal: 12,
+                              borderRadius: 10,
+                              backgroundColor: (editedPet.species || pet.species) === 'dog'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                              borderWidth: 1,
+                              borderColor: (editedPet.species || pet.species) === 'dog'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: '500',
+                                color: (editedPet.species || pet.species) === 'dog'
+                                  ? '#FFFFFF'
+                                  : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                                textAlign: 'center',
+                              }}
+                            >
+                              🐕 {t('pet_species_dog')}
+                            </Text>
+                          </Pressable>
+
+                          <Pressable
+                            onPress={() => {
+                              setEditedPet((prev) => ({ ...prev, species: 'cat', customSpecies: undefined }));
+                              Haptics.selectionAsync();
+                            }}
+                            style={{
+                              flex: 1,
+                              paddingVertical: 10,
+                              paddingHorizontal: 12,
+                              borderRadius: 10,
+                              backgroundColor: (editedPet.species || pet.species) === 'cat'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                              borderWidth: 1,
+                              borderColor: (editedPet.species || pet.species) === 'cat'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: '500',
+                                color: (editedPet.species || pet.species) === 'cat'
+                                  ? '#FFFFFF'
+                                  : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                                textAlign: 'center',
+                              }}
+                            >
+                              🐈 {t('pet_species_cat')}
+                            </Text>
+                          </Pressable>
+
+                          <Pressable
+                            onPress={() => {
+                              setEditedPet((prev) => ({ ...prev, species: 'other' }));
+                              Haptics.selectionAsync();
+                            }}
+                            style={{
+                              flex: 1,
+                              paddingVertical: 10,
+                              paddingHorizontal: 12,
+                              borderRadius: 10,
+                              backgroundColor: (editedPet.species || pet.species) === 'other'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                              borderWidth: 1,
+                              borderColor: (editedPet.species || pet.species) === 'other'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: '500',
+                                color: (editedPet.species || pet.species) === 'other'
+                                  ? '#FFFFFF'
+                                  : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                                textAlign: 'center',
+                              }}
+                            >
+                              {t('pet_species_other')}
+                            </Text>
+                          </Pressable>
+                        </View>
+
+                        {/* Custom Species Input */}
+                        {(editedPet.species || pet.species) === 'other' && (
+                          <RNTextInput
+                            value={editedPet.customSpecies !== undefined ? editedPet.customSpecies : pet.customSpecies}
+                            onChangeText={(text) => setEditedPet((prev) => ({ ...prev, customSpecies: text }))}
+                            placeholder="Ex: Coelho, Hamster, Peixe..."
+                            placeholderTextColor={isDark ? 'rgba(255,255,255,0.4)' : 'rgba(28,25,23,0.4)'}
+                            style={{
+                              fontSize: 15,
+                              color: isDark ? 'rgba(255,255,255,0.9)' : 'rgba(28,25,23,0.8)',
+                              backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                              paddingHorizontal: 12,
+                              paddingVertical: 8,
+                              borderRadius: 8,
+                            }}
+                          />
+                        )}
+
+                        {/* Breed Input */}
+                        <RNTextInput
+                          value={editedPet.breed !== undefined ? editedPet.breed : pet.breed}
+                          onChangeText={(text) => setEditedPet((prev) => ({ ...prev, breed: text }))}
+                          placeholder="Ex: Golden Retriever, Persa..."
+                          placeholderTextColor={isDark ? 'rgba(255,255,255,0.4)' : 'rgba(28,25,23,0.4)'}
+                          style={{
+                            fontSize: 15,
+                            color: isDark ? 'rgba(255,255,255,0.9)' : 'rgba(28,25,23,0.8)',
+                            backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                            paddingHorizontal: 12,
+                            paddingVertical: 8,
+                            borderRadius: 8,
+                          }}
+                        />
+                      </View>
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                          marginBottom: 16,
+                        }}
+                      >
+                        {pet.species === 'dog'
+                          ? t('pet_species_dog')
+                          : pet.species === 'cat'
+                          ? t('pet_species_cat')
+                          : t('pet_species_other')}
+                        {pet.breed ? ` • ${pet.breed}` : ''}
+                      </Text>
+                    )}
 
                     {/* Quick Stats */}
                     <View style={{ flexDirection: 'row', gap: 16 }}>
