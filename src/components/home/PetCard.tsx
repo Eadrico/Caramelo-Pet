@@ -64,7 +64,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
         {/* Photo Section */}
         <View
           style={{
-            height: 160,
+            height: 200,
             backgroundColor: c.accentLight,
           }}
         >
