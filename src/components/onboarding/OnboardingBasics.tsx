@@ -200,16 +200,6 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
                           borderColor: localCustomSpecies ? c.accent : c.border,
                         }}
                       />
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: c.textTertiary,
-                          marginTop: 8,
-                          fontStyle: 'italic',
-                        }}
-                      >
-                        Digite o tipo do seu pet
-                      </Text>
                     </Animated.View>
                   )}
                 </View>
