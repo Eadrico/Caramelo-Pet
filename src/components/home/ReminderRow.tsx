@@ -1,6 +1,6 @@
 // Reminder Row Component for unified list
 import React from 'react';
-import { View, Text, Pressable, useColorScheme } from 'react-native';
+import { View, Text, Pressable, useColorScheme, Image } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,7 +8,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { Bell, ChevronRight } from 'lucide-react-native';
+import { Bell, ChevronRight, PawPrint } from 'lucide-react-native';
+import { BlurView } from 'expo-blur';
 import { Reminder, Pet, formatRelativeDate, getRepeatLabel } from '@/lib/types';
 import { useColors } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';
@@ -76,18 +77,63 @@ export function ReminderRow({ reminder, pet, onPress }: ReminderRowProps) {
           opacity: reminder.isEnabled ? 1 : 0.6,
         }}
       >
-        {/* Icon */}
-        <View
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 12,
-            backgroundColor: c.accentLight,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Bell size={20} color={c.accent} />
+        {/* Pet Avatar with Reminder Badge */}
+        <View style={{ position: 'relative' }}>
+          <View
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              overflow: 'hidden',
+              backgroundColor: c.accentLight,
+            }}
+          >
+            {pet.photoUri ? (
+              <Image
+                source={{ uri: pet.photoUri }}
+                style={{ width: '100%', height: '100%' }}
+                resizeMode="cover"
+              />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <PawPrint size={20} color={c.accent} strokeWidth={1.5} />
+              </View>
+            )}
+          </View>
+
+          {/* Reminder Badge with Liquid Glass */}
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -2,
+              right: -2,
+              borderRadius: 12,
+              overflow: 'hidden',
+            }}
+          >
+            <BlurView
+              intensity={isDark ? 50 : 70}
+              tint={isDark ? 'dark' : 'light'}
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.7)',
+                borderWidth: 1.5,
+                borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)',
+              }}
+            >
+              <Bell size={11} color={c.accent} strokeWidth={2.5} />
+            </BlurView>
+          </View>
         </View>
 
         {/* Content */}
