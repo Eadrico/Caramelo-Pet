@@ -76,6 +76,7 @@ export function AddCareItemSheet({
   );
   const [notes, setNotes] = useState(editItem?.notes || '');
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   // Reset form when opening
@@ -180,7 +181,26 @@ export function AddCareItemSheet({
     }
     if (selectedDate) {
       Haptics.selectionAsync();
-      setDueDate(selectedDate);
+      // Preserve the time when updating date
+      const newDate = new Date(dueDate);
+      newDate.setFullYear(selectedDate.getFullYear());
+      newDate.setMonth(selectedDate.getMonth());
+      newDate.setDate(selectedDate.getDate());
+      setDueDate(newDate);
+    }
+  };
+
+  const handleTimeChange = (event: any, selectedTime?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowTimePicker(false);
+    }
+    if (selectedTime) {
+      Haptics.selectionAsync();
+      // Preserve the date when updating time
+      const newDate = new Date(dueDate);
+      newDate.setHours(selectedTime.getHours());
+      newDate.setMinutes(selectedTime.getMinutes());
+      setDueDate(newDate);
     }
   };
 
@@ -397,7 +417,7 @@ export function AddCareItemSheet({
               />
             </View>
 
-            {/* Due Date */}
+            {/* Date and Time */}
             <View>
               <Text
                 style={{
@@ -409,28 +429,53 @@ export function AddCareItemSheet({
                   letterSpacing: 0.5,
                 }}
               >
-                {t('care_due_date_label')}
+                {t('care_date_label')}
               </Text>
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setShowDatePicker(true);
-                }}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingVertical: 14,
-                  paddingHorizontal: 16,
-                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                  borderRadius: 12,
-                  gap: 12,
-                }}
-              >
-                <Calendar size={20} color={c.accent} />
-                <Text style={{ fontSize: 17, color: c.text }}>
-                  {formatDate(dueDate.toISOString())}
-                </Text>
-              </Pressable>
+              <View style={{ flexDirection: 'row', gap: 12 }}>
+                {/* Date Picker */}
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowDatePicker(true);
+                  }}
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 14,
+                    paddingHorizontal: 16,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                    borderRadius: 12,
+                    gap: 12,
+                  }}
+                >
+                  <Calendar size={20} color={c.accent} />
+                  <Text style={{ fontSize: 17, color: c.text }}>
+                    {formatDate(dueDate.toISOString())}
+                  </Text>
+                </Pressable>
+
+                {/* Time Picker */}
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowTimePicker(true);
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 14,
+                    paddingHorizontal: 16,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                    borderRadius: 12,
+                    minWidth: 100,
+                  }}
+                >
+                  <Text style={{ fontSize: 17, color: c.text }}>
+                    {dueDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </Text>
+                </Pressable>
+              </View>
             </View>
 
             {/* Notes */}
@@ -563,6 +608,58 @@ export function AddCareItemSheet({
               mode="date"
               display="default"
               onChange={handleDateChange}
+            />
+          )
+        )}
+
+        {/* Time Picker */}
+        {Platform.OS === 'ios' ? (
+          <Modal
+            visible={showTimePicker}
+            animationType="slide"
+            transparent
+            onRequestClose={() => setShowTimePicker(false)}
+          >
+            <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+              <View style={{ backgroundColor: c.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: c.border }}>
+                  <Pressable
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setShowTimePicker(false);
+                    }}
+                  >
+                    <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
+                  </Pressable>
+                  <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
+                    Hora
+                  </Text>
+                  <Pressable
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setShowTimePicker(false);
+                    }}
+                  >
+                    <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
+                  </Pressable>
+                </View>
+                <DateTimePicker
+                  value={dueDate}
+                  mode="time"
+                  display="spinner"
+                  onChange={handleTimeChange}
+                  style={{ height: 200, alignSelf: 'center' }}
+                />
+              </View>
+            </View>
+          </Modal>
+        ) : (
+          showTimePicker && (
+            <DateTimePicker
+              value={dueDate}
+              mode="time"
+              display="default"
+              onChange={handleTimeChange}
             />
           )
         )}

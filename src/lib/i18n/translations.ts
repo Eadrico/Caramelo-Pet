@@ -155,6 +155,7 @@ type TranslationKey =
   | 'care_type_label'
   | 'care_title_label'
   | 'care_due_date_label'
+  | 'care_date_label'
   | 'care_notes_label'
   | 'care_select_pet'
   | 'care_select_pets'
@@ -399,6 +400,7 @@ const en: Translations = {
   care_type_label: 'Type',
   care_title_label: 'Title',
   care_due_date_label: 'Due Date',
+  care_date_label: 'Date',
   care_notes_label: 'Notes (Optional)',
   care_select_pet: 'Select a pet',
   care_select_pets: 'Select Pet(s)',
@@ -640,6 +642,7 @@ const pt: Translations = {
   care_type_label: 'Tipo',
   care_title_label: 'Título',
   care_due_date_label: 'Data de Vencimento',
+  care_date_label: 'Data',
   care_notes_label: 'Notas (Opcional)',
   care_select_pet: 'Selecione um pet',
   care_select_pets: 'Selecione Pet(s)',
@@ -881,6 +884,7 @@ const es: Translations = {
   care_type_label: 'Tipo',
   care_title_label: 'Título',
   care_due_date_label: 'Fecha de Vencimiento',
+  care_date_label: 'Fecha',
   care_notes_label: 'Notas (Opcional)',
   care_select_pet: 'Selecciona una mascota',
   care_select_pets: 'Selecciona Mascota(s)',
@@ -1122,6 +1126,7 @@ const fr: Translations = {
   care_type_label: 'Type',
   care_title_label: 'Titre',
   care_due_date_label: 'Date d\'Expiration',
+  care_date_label: 'Date',
   care_notes_label: 'Notes (Optionnel)',
   care_select_pet: 'Sélectionnez un animal',
   care_select_pets: 'Sélectionnez Animal(s)',
@@ -1363,6 +1368,7 @@ const zh: Translations = {
   care_type_label: '类型',
   care_title_label: '标题',
   care_due_date_label: '截止日期',
+  care_date_label: '日期',
   care_notes_label: '备注（可选）',
   care_select_pet: '选择一个宠物',
   care_select_pets: '选择宠物',
