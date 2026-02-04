@@ -420,7 +420,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                             style={{
                               flex: 1,
                               paddingVertical: 10,
-                              paddingHorizontal: 12,
+                              paddingHorizontal: 8,
                               borderRadius: 10,
                               backgroundColor: (editedPet.species || pet.species) === 'dog'
                                 ? c.accent
@@ -429,19 +429,22 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                               borderColor: (editedPet.species || pet.species) === 'dog'
                                 ? c.accent
                                 : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 4,
                             }}
                           >
+                            <Text style={{ fontSize: 24 }}>🐕</Text>
                             <Text
                               style={{
-                                fontSize: 15,
+                                fontSize: 13,
                                 fontWeight: '500',
                                 color: (editedPet.species || pet.species) === 'dog'
                                   ? '#FFFFFF'
                                   : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
-                                textAlign: 'center',
                               }}
                             >
-                              🐕 {t('pet_species_dog')}
+                              {t('pet_species_dog')}
                             </Text>
                           </Pressable>
 
@@ -453,7 +456,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                             style={{
                               flex: 1,
                               paddingVertical: 10,
-                              paddingHorizontal: 12,
+                              paddingHorizontal: 8,
                               borderRadius: 10,
                               backgroundColor: (editedPet.species || pet.species) === 'cat'
                                 ? c.accent
@@ -462,19 +465,22 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                               borderColor: (editedPet.species || pet.species) === 'cat'
                                 ? c.accent
                                 : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 4,
                             }}
                           >
+                            <Text style={{ fontSize: 24 }}>🐈</Text>
                             <Text
                               style={{
-                                fontSize: 15,
+                                fontSize: 13,
                                 fontWeight: '500',
                                 color: (editedPet.species || pet.species) === 'cat'
                                   ? '#FFFFFF'
                                   : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
-                                textAlign: 'center',
                               }}
                             >
-                              🐈 {t('pet_species_cat')}
+                              {t('pet_species_cat')}
                             </Text>
                           </Pressable>
 
@@ -486,7 +492,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                             style={{
                               flex: 1,
                               paddingVertical: 10,
-                              paddingHorizontal: 12,
+                              paddingHorizontal: 8,
                               borderRadius: 10,
                               backgroundColor: (editedPet.species || pet.species) === 'other'
                                 ? c.accent
@@ -495,16 +501,19 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                               borderColor: (editedPet.species || pet.species) === 'other'
                                 ? c.accent
                                 : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 4,
                             }}
                           >
+                            <Text style={{ fontSize: 24 }}>❤️</Text>
                             <Text
                               style={{
-                                fontSize: 15,
+                                fontSize: 13,
                                 fontWeight: '500',
                                 color: (editedPet.species || pet.species) === 'other'
                                   ? '#FFFFFF'
                                   : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
-                                textAlign: 'center',
                               }}
                             >
                               {t('pet_species_other')}
