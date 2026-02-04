@@ -17,6 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
+import Constants from 'expo-constants';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -775,6 +776,12 @@ export default function SettingsScreen() {
     },
   ];
 
+  // Get app version
+  const getAppVersion = (): string => {
+    const version = Constants.expoConfig?.version || '1.0.0';
+    return `v${version}`;
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <LinearGradient
@@ -1130,6 +1137,19 @@ export default function SettingsScreen() {
               }}
             >
               Feito pensando no Loki, Brownie, Fuba e Baunilia.
+            </Text>
+
+            {/* Version number */}
+            <Text
+              style={{
+                fontSize: 10,
+                color: c.textTertiary,
+                textAlign: 'center',
+                opacity: 0.5,
+                marginTop: 8,
+              }}
+            >
+              {getAppVersion()}
             </Text>
           </View>
         </ScrollView>
