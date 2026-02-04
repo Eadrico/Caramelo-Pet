@@ -529,22 +529,6 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                             }}
                           />
                         )}
-
-                        {/* Breed Input */}
-                        <RNTextInput
-                          value={editedPet.breed !== undefined ? editedPet.breed : pet.breed}
-                          onChangeText={(text) => setEditedPet((prev) => ({ ...prev, breed: text }))}
-                          placeholder="Ex: Golden Retriever, Persa..."
-                          placeholderTextColor={isDark ? 'rgba(255,255,255,0.4)' : 'rgba(28,25,23,0.4)'}
-                          style={{
-                            fontSize: 15,
-                            color: isDark ? 'rgba(255,255,255,0.9)' : 'rgba(28,25,23,0.8)',
-                            backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-                            paddingHorizontal: 12,
-                            paddingVertical: 8,
-                            borderRadius: 8,
-                          }}
-                        />
                       </View>
                     ) : (
                       <Text
