@@ -167,6 +167,11 @@ type TranslationKey =
   | 'care_grooming'
   | 'care_medication'
   | 'care_vet_visit'
+  | 'care_type_vaccine'
+  | 'care_type_grooming'
+  | 'care_type_medication'
+  | 'care_type_vet_visit'
+  | 'care_type_general'
   // Paywall
   | 'paywall_title'
   | 'paywall_subtitle'
@@ -406,6 +411,11 @@ const en: Translations = {
   care_grooming: 'Grooming',
   care_medication: 'Medication',
   care_vet_visit: 'Vet Visit',
+  care_type_vaccine: 'Vaccine',
+  care_type_grooming: 'Grooming',
+  care_type_medication: 'Medication',
+  care_type_vet_visit: 'Vet Visit',
+  care_type_general: 'Care',
   // Paywall
   paywall_title: 'Unlock Premium',
   paywall_subtitle: 'Unlimited care for all your pets',
@@ -642,6 +652,11 @@ const pt: Translations = {
   care_grooming: 'Banho/Tosa',
   care_medication: 'Medicação',
   care_vet_visit: 'Consulta Veterinária',
+  care_type_vaccine: 'Vacina',
+  care_type_grooming: 'Banho/Tosa',
+  care_type_medication: 'Medicação',
+  care_type_vet_visit: 'Consulta Veterinária',
+  care_type_general: 'Cuidado',
   // Paywall
   paywall_title: 'Desbloqueie o Premium',
   paywall_subtitle: 'Cuidado ilimitado para todos os seus pets',
@@ -878,6 +893,11 @@ const es: Translations = {
   care_grooming: 'Baño/Peluquería',
   care_medication: 'Medicación',
   care_vet_visit: 'Visita al Veterinario',
+  care_type_vaccine: 'Vacuna',
+  care_type_grooming: 'Baño/Peluquería',
+  care_type_medication: 'Medicación',
+  care_type_vet_visit: 'Visita al Veterinario',
+  care_type_general: 'Cuidado',
   // Paywall
   paywall_title: 'Desbloquea Premium',
   paywall_subtitle: 'Cuidado ilimitado para todas tus mascotas',
@@ -1114,6 +1134,11 @@ const fr: Translations = {
   care_grooming: 'Toilettage',
   care_medication: 'Médicament',
   care_vet_visit: 'Visite Vétérinaire',
+  care_type_vaccine: 'Vaccin',
+  care_type_grooming: 'Toilettage',
+  care_type_medication: 'Médicament',
+  care_type_vet_visit: 'Visite Vétérinaire',
+  care_type_general: 'Soin',
   // Paywall
   paywall_title: 'Débloquez Premium',
   paywall_subtitle: 'Soins illimités pour tous vos animaux',
@@ -1350,6 +1375,11 @@ const zh: Translations = {
   care_grooming: '美容',
   care_medication: '药物',
   care_vet_visit: '兽医就诊',
+  care_type_vaccine: '疫苗',
+  care_type_grooming: '美容',
+  care_type_medication: '药物',
+  care_type_vet_visit: '兽医就诊',
+  care_type_general: '护理',
   // Paywall
   paywall_title: '解锁高级版',
   paywall_subtitle: '为您所有宠物提供无限护理',

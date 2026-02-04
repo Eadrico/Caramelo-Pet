@@ -844,7 +844,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                           marginTop: 2,
                         }}
                       >
-                        {getCareTypeLabel(item.type)} • {formatRelativeDate(item.dueDate, t)}
+                        {getCareTypeLabel(item.type, t)} • {formatRelativeDate(item.dueDate, t)}
                       </Text>
                     </View>
                   </Pressable>

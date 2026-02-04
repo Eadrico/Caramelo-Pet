@@ -98,13 +98,13 @@ export function getCareTypeIcon(type: CareType): string {
   }
 }
 
-export function getCareTypeLabel(type: CareType): string {
+export function getCareTypeLabel(type: CareType, t: (key: any) => string): string {
   switch (type) {
-    case 'vaccine': return 'Vaccine';
-    case 'grooming': return 'Grooming';
-    case 'medication': return 'Medication';
-    case 'vet_visit': return 'Vet Visit';
-    default: return 'Care';
+    case 'vaccine': return t('care_type_vaccine');
+    case 'grooming': return t('care_type_grooming');
+    case 'medication': return t('care_type_medication');
+    case 'vet_visit': return t('care_type_vet_visit');
+    default: return t('care_type_general');
   }
 }
 
