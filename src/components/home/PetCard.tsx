@@ -64,7 +64,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
         {/* Photo Section */}
         <View
           style={{
-            height: 140,
+            height: 160,
             backgroundColor: c.accentLight,
           }}
         >
@@ -101,32 +101,50 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
               {getSpeciesEmoji(pet.species)}
             </Text>
           </View>
-        </View>
 
-        {/* Info Section */}
-        <View style={{ padding: 14 }}>
-          <Text
+          {/* Glass Name Banner - Overlaid on Photo */}
+          <View
             style={{
-              fontSize: 17,
-              fontWeight: '600',
-              color: c.text,
-              marginBottom: 4,
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              overflow: 'hidden',
             }}
-            numberOfLines={1}
           >
-            {pet.name}
-          </Text>
-          {nextCareItem && (
-            <Text
+            <BlurView
+              intensity={isDark ? 40 : 60}
+              tint={isDark ? 'dark' : 'light'}
               style={{
-                fontSize: 13,
-                color: c.textSecondary,
+                paddingVertical: 12,
+                paddingHorizontal: 14,
+                backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.4)',
               }}
-              numberOfLines={1}
             >
-              {nextCareItem.title} • {formatRelativeDate(nextCareItem.dueDate, t)}
-            </Text>
-          )}
+              <Text
+                style={{
+                  fontSize: 17,
+                  fontWeight: '600',
+                  color: isDark ? '#FFFFFF' : '#1C1917',
+                  marginBottom: nextCareItem ? 2 : 0,
+                }}
+                numberOfLines={1}
+              >
+                {pet.name}
+              </Text>
+              {nextCareItem && (
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                  }}
+                  numberOfLines={1}
+                >
+                  {nextCareItem.title} • {formatRelativeDate(nextCareItem.dueDate, t)}
+                </Text>
+              )}
+            </BlurView>
+          </View>
         </View>
       </View>
     </AnimatedPressable>
