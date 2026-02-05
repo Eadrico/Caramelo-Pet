@@ -4,36 +4,56 @@ import { Platform, NativeModules } from 'react-native';
 import { translations, SupportedLanguage, TranslationKey, languageNames, languageFlags } from './translations';
 import { useSettingsStore } from '../settings-store';
 
-// Get device language using NativeModules
+// Get device language using multiple detection methods
 function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
   try {
     let locale = 'en';
 
-    if (Platform.OS === 'ios') {
-      const settings = NativeModules.SettingsManager?.settings;
-      const appleLocale = settings?.AppleLocale;
-      const appleLanguages = settings?.AppleLanguages;
-
-      console.log('[i18n] 🍎 iOS SettingsManager available:', !!settings);
-      console.log('[i18n] 🍎 AppleLocale:', appleLocale);
-      console.log('[i18n] 🍎 AppleLanguages:', JSON.stringify(appleLanguages));
-
-      locale = appleLocale || appleLanguages?.[0] || 'en-US';
-      console.log('[i18n] 🍎 iOS final locale:', locale);
-    } else if (Platform.OS === 'android') {
-      const i18nLocale = NativeModules.I18nManager?.localeIdentifier;
-      console.log('[i18n] 🤖 Android I18nManager locale:', i18nLocale);
-      locale = i18nLocale || 'en-US';
-    } else if (Platform.OS === 'web') {
-      locale = typeof navigator !== 'undefined'
-        ? (navigator.language || (navigator as any).userLanguage || 'en')
-        : 'en';
-      console.log('[i18n] 🌐 Web locale from navigator:', locale);
+    // Method 1: Try Intl API (works on modern React Native)
+    try {
+      if (typeof Intl !== 'undefined' && Intl.DateTimeFormat) {
+        const dtf = new Intl.DateTimeFormat();
+        const resolvedOptions = dtf.resolvedOptions();
+        if (resolvedOptions.locale) {
+          locale = resolvedOptions.locale;
+          console.log('[i18n] 🌍 Intl.DateTimeFormat locale:', locale);
+        }
+      }
+    } catch (e) {
+      console.log('[i18n] ⚠️ Intl API not available');
     }
+
+    // Method 2: Platform-specific NativeModules (fallback)
+    if (locale === 'en') {
+      if (Platform.OS === 'ios') {
+        const settings = NativeModules.SettingsManager?.settings;
+        const appleLocale = settings?.AppleLocale;
+        const appleLanguages = settings?.AppleLanguages;
+
+        console.log('[i18n] 🍎 iOS SettingsManager available:', !!settings);
+        if (appleLocale || appleLanguages) {
+          locale = appleLocale || appleLanguages?.[0] || 'en-US';
+          console.log('[i18n] 🍎 iOS NativeModules locale:', locale);
+        }
+      } else if (Platform.OS === 'android') {
+        const i18nLocale = NativeModules.I18nManager?.localeIdentifier;
+        if (i18nLocale) {
+          locale = i18nLocale;
+          console.log('[i18n] 🤖 Android I18nManager locale:', locale);
+        }
+      } else if (Platform.OS === 'web') {
+        locale = typeof navigator !== 'undefined'
+          ? (navigator.language || (navigator as any).userLanguage || 'en')
+          : 'en';
+        console.log('[i18n] 🌐 Web locale from navigator:', locale);
+      }
+    }
+
+    console.log('[i18n] 📍 Final detected locale:', locale);
 
     // Extract language code (first 2 characters before - or _)
     const languageCode = locale.split(/[-_]/)[0].toLowerCase();
-    console.log('[i18n] 🔤 Extracted language code:', languageCode, 'from locale:', locale);
+    console.log('[i18n] 🔤 Extracted language code:', languageCode);
 
     // Map to supported languages
     if (languageCode === 'pt') {
@@ -53,7 +73,7 @@ function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
       return 'zh';
     }
 
-    console.log('[i18n] ℹ️ Using English (detected:', languageCode, ')');
+    console.log('[i18n] ℹ️ Using English');
     return 'en';
   } catch (error) {
     console.error('[i18n] ❌ Error detecting device language:', error);
