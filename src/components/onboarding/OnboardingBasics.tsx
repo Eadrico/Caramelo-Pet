@@ -5,9 +5,9 @@ import {
   Text,
   TextInput as RNTextInput,
   useColorScheme,
-  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useStore } from '@/lib/store';
@@ -74,10 +74,11 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <ScrollView
+        <KeyboardAwareScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
+          bottomOffset={20}
         >
           {/* Header */}
           <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
@@ -201,7 +202,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
           </Animated.View>
 
           <View style={{ flex: 1 }} />
-        </ScrollView>
+        </KeyboardAwareScrollView>
 
         {/* Bottom Button */}
         <SafeAreaView edges={['bottom']}>

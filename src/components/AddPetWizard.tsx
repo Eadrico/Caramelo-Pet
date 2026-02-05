@@ -1,7 +1,8 @@
 // AddPetWizard - Modal wizard for adding a new pet
 import React, { useState } from 'react';
-import { View, Modal, Pressable, useColorScheme, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Modal, Pressable, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
@@ -87,11 +88,7 @@ export function AddPetWizard({ visible, onClose, onComplete }: AddPetWizardProps
       presentationStyle="pageSheet"
       onRequestClose={handleClose}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={0}
-      >
+      <KeyboardProvider>
         <View style={{ flex: 1, backgroundColor: isDark ? '#0C0A09' : '#F5F2EE' }}>
           {/* Close button overlay */}
           {currentStep === 'basics' && (
@@ -130,7 +127,7 @@ export function AddPetWizard({ visible, onClose, onComplete }: AddPetWizardProps
             {renderStep()}
           </Animated.View>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardProvider>
     </Modal>
   );
 }
