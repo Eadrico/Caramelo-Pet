@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useStore } from '@/lib/store';
@@ -33,6 +33,7 @@ export function OnboardingBasics({ onNext, hideCloseButton = false }: Onboarding
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   const name = useStore((s) => s.onboardingData.name);
   const species = useStore((s) => s.onboardingData.species);
@@ -87,7 +88,7 @@ export function OnboardingBasics({ onNext, hideCloseButton = false }: Onboarding
           showsVerticalScrollIndicator={false}
         >
           {/* Header with Safe Area Top Padding */}
-          <SafeAreaView edges={['top']} style={{ paddingHorizontal: 20 }}>
+          <View style={{ paddingTop: insets.top, paddingHorizontal: 20 }}>
             <View style={{ paddingTop: 16 }}>
               <ProgressIndicator current={1} total={5} />
             </View>
@@ -114,7 +115,7 @@ export function OnboardingBasics({ onNext, hideCloseButton = false }: Onboarding
                 {t('onboarding_add_pet_subtitle')}
               </Text>
             </Animated.View>
-          </SafeAreaView>
+          </View>
 
           {/* Content */}
           <Animated.View
@@ -211,7 +212,7 @@ export function OnboardingBasics({ onNext, hideCloseButton = false }: Onboarding
         </ScrollView>
 
         {/* Bottom Button - Inside KeyboardAvoidingView */}
-        <SafeAreaView edges={['bottom']}>
+        <View style={{ paddingBottom: insets.bottom }}>
           <View style={{ paddingHorizontal: 20, paddingBottom: 8 }}>
             <PrimaryButton
               title={t('onboarding_continue')}
@@ -219,7 +220,7 @@ export function OnboardingBasics({ onNext, hideCloseButton = false }: Onboarding
               disabled={!isValid}
             />
           </View>
-        </SafeAreaView>
+        </View>
       </KeyboardAvoidingView>
     </View>
   );
