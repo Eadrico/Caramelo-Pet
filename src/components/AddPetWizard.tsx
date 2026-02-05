@@ -85,7 +85,7 @@ export function AddPetWizard({ visible, onClose, onComplete }: AddPetWizardProps
     <Modal
       visible={visible}
       animationType="slide"
-      presentationStyle="pageSheet"
+      presentationStyle="fullScreen"
       onRequestClose={handleClose}
     >
       <KeyboardProvider>
