@@ -8,6 +8,7 @@ import { useSettingsStore } from '../settings-store';
 function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
   try {
     let locale = 'en';
+    let region = '';
 
     // Method 1: Try Intl API (works on modern React Native)
     try {
@@ -51,11 +52,39 @@ function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
 
     console.log('[i18n] 📍 Final detected locale:', locale);
 
-    // Extract language code (first 2 characters before - or _)
-    const languageCode = locale.split(/[-_]/)[0].toLowerCase();
-    console.log('[i18n] 🔤 Extracted language code:', languageCode);
+    // Extract language code and region
+    const parts = locale.split(/[-_]/);
+    const languageCode = parts[0].toLowerCase();
+    region = parts[1]?.toUpperCase() || '';
 
-    // Map to supported languages
+    console.log('[i18n] 🔤 Extracted language:', languageCode, 'region:', region);
+
+    // Special case: If region is BR (Brazil), use Portuguese
+    // This handles cases like "en-BR" which should be "pt-BR"
+    if (region === 'BR') {
+      console.log('[i18n] 🇧🇷 Detected Brazil region, using Portuguese!');
+      return 'pt';
+    }
+
+    // Special case: If region is ES (Spain), use Spanish
+    if (region === 'ES') {
+      console.log('[i18n] 🇪🇸 Detected Spain region, using Spanish!');
+      return 'es';
+    }
+
+    // Special case: If region is FR (France), use French
+    if (region === 'FR') {
+      console.log('[i18n] 🇫🇷 Detected France region, using French!');
+      return 'fr';
+    }
+
+    // Special case: If region is CN/TW/HK (China/Taiwan/Hong Kong), use Chinese
+    if (['CN', 'TW', 'HK'].includes(region)) {
+      console.log('[i18n] 🇨🇳 Detected Chinese region, using Chinese!');
+      return 'zh';
+    }
+
+    // Map language code to supported languages
     if (languageCode === 'pt') {
       console.log('[i18n] ✅ Detected Portuguese!');
       return 'pt';
