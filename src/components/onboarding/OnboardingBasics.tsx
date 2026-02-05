@@ -25,9 +25,10 @@ import {
 
 interface OnboardingBasicsProps {
   onNext: () => void;
+  hideCloseButton?: boolean;
 }
 
-export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
+export function OnboardingBasics({ onNext, hideCloseButton = false }: OnboardingBasicsProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
@@ -86,8 +87,10 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
           showsVerticalScrollIndicator={false}
         >
           {/* Header with Safe Area Top Padding */}
-          <SafeAreaView edges={['top']} style={{ paddingHorizontal: 20, paddingTop: 16 }}>
-            <ProgressIndicator current={1} total={5} />
+          <SafeAreaView edges={['top']} style={{ paddingHorizontal: 20 }}>
+            <View style={{ paddingTop: 16 }}>
+              <ProgressIndicator current={1} total={5} />
+            </View>
             <Animated.View entering={FadeInDown.duration(400).delay(100)}>
               <Text
                 style={{
@@ -209,7 +212,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
 
         {/* Bottom Button - Inside KeyboardAvoidingView */}
         <SafeAreaView edges={['bottom']}>
-          <View style={{ paddingHorizontal: 20, paddingBottom: 8, backgroundColor: isDark ? '#0C0A09' : '#F5F2EE' }}>
+          <View style={{ paddingHorizontal: 20, paddingBottom: 8 }}>
             <PrimaryButton
               title={t('onboarding_continue')}
               onPress={handleNext}

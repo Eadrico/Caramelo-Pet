@@ -1,7 +1,7 @@
 // AddPetWizard - Modal wizard for adding a new pet
 import React, { useState } from 'react';
 import { View, Modal, Pressable, useColorScheme } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
@@ -28,6 +28,7 @@ export function AddPetWizard({ visible, onClose, onComplete }: AddPetWizardProps
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const insets = useSafeAreaInsets();
 
   const goNext = () => {
     const currentIndex = steps.indexOf(currentStep);
@@ -90,11 +91,10 @@ export function AddPetWizard({ visible, onClose, onComplete }: AddPetWizardProps
       <View style={{ flex: 1, backgroundColor: isDark ? '#0C0A09' : '#F5F2EE' }}>
         {/* Close button overlay */}
         {currentStep === 'basics' && (
-          <SafeAreaView
-            edges={['top']}
+          <View
             style={{
               position: 'absolute',
-              top: 0,
+              top: insets.top,
               right: 0,
               zIndex: 100
             }}
@@ -113,7 +113,7 @@ export function AddPetWizard({ visible, onClose, onComplete }: AddPetWizardProps
             >
               <X size={20} color={c.textSecondary} strokeWidth={2} />
             </Pressable>
-          </SafeAreaView>
+          </View>
         )}
 
         <Animated.View
