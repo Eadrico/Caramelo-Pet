@@ -90,7 +90,7 @@ export function OnboardingBasics({ onNext, hideCloseButton = false }: Onboarding
           {/* Header with Safe Area Top Padding */}
           <View style={{ paddingTop: insets.top, paddingHorizontal: 20 }}>
             <View style={{ paddingTop: 16 }}>
-              <ProgressIndicator current={1} total={5} />
+              <ProgressIndicator current={1} total={4} />
             </View>
             <Animated.View entering={FadeInDown.duration(400).delay(100)}>
               <Text

@@ -345,7 +345,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
         {/* Header */}
         <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <ProgressIndicator current={3} total={5} />
+            <ProgressIndicator current={3} total={4} />
             <Pressable
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

@@ -98,7 +98,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
         {/* Header */}
         <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <ProgressIndicator current={2} total={5} />
+            <ProgressIndicator current={2} total={4} />
             <Pressable
               onPress={onBack}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
