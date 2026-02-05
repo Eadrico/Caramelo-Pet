@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { View, Modal, Pressable, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { KeyboardProvider } from 'react-native-keyboard-controller';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
@@ -88,46 +87,44 @@ export function AddPetWizard({ visible, onClose, onComplete }: AddPetWizardProps
       presentationStyle="fullScreen"
       onRequestClose={handleClose}
     >
-      <KeyboardProvider>
-        <View style={{ flex: 1, backgroundColor: isDark ? '#0C0A09' : '#F5F2EE' }}>
-          {/* Close button overlay */}
-          {currentStep === 'basics' && (
-            <SafeAreaView
-              edges={['top']}
+      <View style={{ flex: 1, backgroundColor: isDark ? '#0C0A09' : '#F5F2EE' }}>
+        {/* Close button overlay */}
+        {currentStep === 'basics' && (
+          <SafeAreaView
+            edges={['top']}
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              zIndex: 100
+            }}
+          >
+            <Pressable
+              onPress={handleClose}
               style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                zIndex: 100
+                margin: 16,
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: c.surface,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              <Pressable
-                onPress={handleClose}
-                style={{
-                  margin: 16,
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
-                  backgroundColor: c.surface,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <X size={20} color={c.textSecondary} strokeWidth={2} />
-              </Pressable>
-            </SafeAreaView>
-          )}
+              <X size={20} color={c.textSecondary} strokeWidth={2} />
+            </Pressable>
+          </SafeAreaView>
+        )}
 
-          <Animated.View
-            key={currentStep}
-            entering={FadeIn.duration(200)}
-            exiting={FadeOut.duration(100)}
-            style={{ flex: 1 }}
-          >
-            {renderStep()}
-          </Animated.View>
-        </View>
-      </KeyboardProvider>
+        <Animated.View
+          key={currentStep}
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(100)}
+          style={{ flex: 1 }}
+        >
+          {renderStep()}
+        </Animated.View>
+      </View>
     </Modal>
   );
 }
