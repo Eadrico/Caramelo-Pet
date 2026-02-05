@@ -75,7 +75,7 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
         }
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
-      <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -209,13 +209,15 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
           </ScrollView>
 
           {/* Bottom Button - Inside KeyboardAvoidingView */}
-          <View style={{ paddingHorizontal: 20, paddingBottom: 8, backgroundColor: isDark ? '#0C0A09' : '#F5F2EE' }}>
-            <PrimaryButton
-              title={t('onboarding_continue')}
-              onPress={handleNext}
-              disabled={!isValid}
-            />
-          </View>
+          <SafeAreaView edges={['bottom']}>
+            <View style={{ paddingHorizontal: 20, paddingBottom: 8, backgroundColor: isDark ? '#0C0A09' : '#F5F2EE' }}>
+              <PrimaryButton
+                title={t('onboarding_continue')}
+                onPress={handleNext}
+                disabled={!isValid}
+              />
+            </View>
+          </SafeAreaView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
