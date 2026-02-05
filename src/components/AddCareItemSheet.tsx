@@ -77,6 +77,7 @@ export function AddCareItemSheet({
   const [notes, setNotes] = useState(editItem?.notes || '');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showTypeSelector, setShowTypeSelector] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   // Reset form when opening
@@ -339,11 +340,8 @@ export function AddCareItemSheet({
               <Pressable
                 onPress={() => {
                   Keyboard.dismiss();
-                  // Cycle through care types
-                  const currentIndex = careTypeConfig.findIndex((c) => c.type === selectedType);
-                  const nextIndex = (currentIndex + 1) % careTypeConfig.length;
-                  setSelectedType(careTypeConfig[nextIndex].type);
-                  Haptics.selectionAsync();
+                  setShowTypeSelector(true);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }}
                 style={{
                   flexDirection: 'row',
@@ -663,6 +661,118 @@ export function AddCareItemSheet({
             />
           )
         )}
+
+        {/* Type Selector Modal */}
+        <Modal
+          visible={showTypeSelector}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setShowTypeSelector(false)}
+        >
+          <Pressable
+            style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' }}
+            onPress={() => setShowTypeSelector(false)}
+          />
+          <View
+            style={{
+              backgroundColor: c.surface,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              paddingBottom: 34,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: 16,
+                borderBottomWidth: 1,
+                borderBottomColor: c.border,
+              }}
+            >
+              <View style={{ width: 60 }} />
+              <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
+                {t('care_type_label')}
+              </Text>
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setShowTypeSelector(false);
+                }}
+              >
+                <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>
+                  {t('common_done')}
+                </Text>
+              </Pressable>
+            </View>
+            <ScrollView style={{ maxHeight: 400 }}>
+              {careTypeConfig.map((config) => {
+                const Icon = config.icon;
+                const isSelected = selectedType === config.type;
+                return (
+                  <Pressable
+                    key={config.type}
+                    onPress={() => {
+                      setSelectedType(config.type);
+                      Haptics.selectionAsync();
+                      setTimeout(() => setShowTypeSelector(false), 150);
+                    }}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingVertical: 16,
+                      paddingHorizontal: 20,
+                      gap: 12,
+                      backgroundColor: isSelected
+                        ? isDark
+                          ? 'rgba(255,255,255,0.08)'
+                          : 'rgba(0,0,0,0.05)'
+                        : 'transparent',
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 10,
+                        backgroundColor: isSelected ? c.accent : c.accentLight,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Icon size={20} color={isSelected ? '#FFFFFF' : c.accent} />
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        color: c.text,
+                        flex: 1,
+                        fontWeight: isSelected ? '600' : '400',
+                      }}
+                    >
+                      {config.label}
+                    </Text>
+                    {isSelected && (
+                      <View
+                        style={{
+                          width: 24,
+                          height: 24,
+                          borderRadius: 12,
+                          backgroundColor: c.accent,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>✓</Text>
+                      </View>
+                    )}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+        </Modal>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
