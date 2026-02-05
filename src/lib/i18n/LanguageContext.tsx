@@ -4,49 +4,9 @@ import { Platform, NativeModules } from 'react-native';
 import { translations, SupportedLanguage, TranslationKey, languageNames, languageFlags } from './translations';
 import { useSettingsStore } from '../settings-store';
 
-// Get device language with multiple fallback strategies
+// Get device language using NativeModules
 function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
   try {
-    // Strategy 1: Try expo-localization (preferred)
-    try {
-      const Localization = require('expo-localization');
-      const locales = Localization.getLocales();
-      console.log('[i18n] ✅ expo-localization available');
-      console.log('[i18n] 📱 Device locales:', JSON.stringify(locales));
-
-      if (locales && locales.length > 0) {
-        const primaryLocale = locales[0];
-        const languageCode = primaryLocale.languageCode?.toLowerCase() || 'en';
-
-        console.log('[i18n] 🌍 Primary locale:', JSON.stringify(primaryLocale));
-        console.log('[i18n] 🔤 Language code:', languageCode);
-
-        // Map to supported languages
-        if (languageCode === 'pt') {
-          console.log('[i18n] ✅ Detected Portuguese!');
-          return 'pt';
-        }
-        if (languageCode === 'es') {
-          console.log('[i18n] ✅ Detected Spanish!');
-          return 'es';
-        }
-        if (languageCode === 'fr') {
-          console.log('[i18n] ✅ Detected French!');
-          return 'fr';
-        }
-        if (languageCode === 'zh') {
-          console.log('[i18n] ✅ Detected Chinese!');
-          return 'zh';
-        }
-
-        console.log('[i18n] ℹ️ Detected English or unsupported language, defaulting to English');
-        return 'en';
-      }
-    } catch (e) {
-      console.log('[i18n] ⚠️ expo-localization not available, trying fallback');
-    }
-
-    // Strategy 2: Fallback to NativeModules
     let locale = 'en';
 
     if (Platform.OS === 'ios') {
@@ -54,15 +14,16 @@ function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
       const appleLocale = settings?.AppleLocale;
       const appleLanguages = settings?.AppleLanguages;
 
-      console.log('[i18n] 🍎 iOS SettingsManager.settings:', JSON.stringify(settings));
+      console.log('[i18n] 🍎 iOS SettingsManager available:', !!settings);
       console.log('[i18n] 🍎 AppleLocale:', appleLocale);
       console.log('[i18n] 🍎 AppleLanguages:', JSON.stringify(appleLanguages));
 
       locale = appleLocale || appleLanguages?.[0] || 'en-US';
       console.log('[i18n] 🍎 iOS final locale:', locale);
     } else if (Platform.OS === 'android') {
-      locale = NativeModules.I18nManager?.localeIdentifier || 'en-US';
-      console.log('[i18n] 🤖 Android locale from NativeModules:', locale);
+      const i18nLocale = NativeModules.I18nManager?.localeIdentifier;
+      console.log('[i18n] 🤖 Android I18nManager locale:', i18nLocale);
+      locale = i18nLocale || 'en-US';
     } else if (Platform.OS === 'web') {
       locale = typeof navigator !== 'undefined'
         ? (navigator.language || (navigator as any).userLanguage || 'en')
@@ -70,29 +31,29 @@ function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
       console.log('[i18n] 🌐 Web locale from navigator:', locale);
     }
 
-    // Extract language code (first 2 characters)
-    const languageCode = locale.substring(0, 2).toLowerCase();
-    console.log('[i18n] 🔤 Extracted language code:', languageCode);
+    // Extract language code (first 2 characters before - or _)
+    const languageCode = locale.split(/[-_]/)[0].toLowerCase();
+    console.log('[i18n] 🔤 Extracted language code:', languageCode, 'from locale:', locale);
 
     // Map to supported languages
     if (languageCode === 'pt') {
-      console.log('[i18n] ✅ Fallback detected Portuguese!');
+      console.log('[i18n] ✅ Detected Portuguese!');
       return 'pt';
     }
     if (languageCode === 'es') {
-      console.log('[i18n] ✅ Fallback detected Spanish!');
+      console.log('[i18n] ✅ Detected Spanish!');
       return 'es';
     }
     if (languageCode === 'fr') {
-      console.log('[i18n] ✅ Fallback detected French!');
+      console.log('[i18n] ✅ Detected French!');
       return 'fr';
     }
     if (languageCode === 'zh') {
-      console.log('[i18n] ✅ Fallback detected Chinese!');
+      console.log('[i18n] ✅ Detected Chinese!');
       return 'zh';
     }
 
-    console.log('[i18n] ℹ️ Defaulting to English');
+    console.log('[i18n] ℹ️ Using English (detected:', languageCode, ')');
     return 'en';
   } catch (error) {
     console.error('[i18n] ❌ Error detecting device language:', error);
