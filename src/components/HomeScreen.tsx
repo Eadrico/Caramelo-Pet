@@ -44,10 +44,15 @@ export function HomeScreen() {
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
 
-  const pets = useStore((s) => s.pets);
+  const petsUnsorted = useStore((s) => s.pets);
   const careItems = useStore((s) => s.careItems);
   const reminders = useStore((s) => s.reminders);
   const upcomingCareDays = useStore((s) => s.upcomingCareDays);
+
+  // Sort pets alphabetically by name
+  const pets = useMemo(() => {
+    return [...petsUnsorted].sort((a, b) => a.name.localeCompare(b.name));
+  }, [petsUnsorted]);
   const refreshData = useStore((s) => s.refreshData);
 
   // Premium state
