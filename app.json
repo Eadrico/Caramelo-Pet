@@ -3,7 +3,7 @@
     "name": "Caramelo Pets",
     "slug": "meucaramelo",
     "scheme": "caramelo",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Organize a vida dos seus pets com facilidade! Gerencie perfis, agende lembretes de vacinas e consultas, e acompanhe o crescimento dos seus amigos de quatro patas.",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
@@ -18,7 +18,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.vibecode.caramelopets.n2p4b1",
+      "bundleIdentifier": "com.caramelo.petcare",
       "buildNumber": "2",
       "infoPlist": {
         "NSCameraUsageDescription": "Caramelo Pets uses the camera to capture photos inside the app before you publish them.",
