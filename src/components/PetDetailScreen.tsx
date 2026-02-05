@@ -47,6 +47,7 @@ import {
   formatAge,
   getRepeatLabel,
   getCareTypeLabel,
+  getSpeciesEmoji,
 } from '@/lib/types';
 import {
   useColors,
@@ -506,7 +507,11 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                               gap: 4,
                             }}
                           >
-                            <Text style={{ fontSize: 24 }}>❤️</Text>
+                            <Text style={{ fontSize: 24 }}>
+                              {(editedPet.species || pet.species) === 'other' && (editedPet.customSpecies || pet.customSpecies)
+                                ? getSpeciesEmoji('other', editedPet.customSpecies || pet.customSpecies)
+                                : '❤️'}
+                            </Text>
                             <Text
                               style={{
                                 fontSize: 13,
@@ -516,7 +521,9 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                                   : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
                               }}
                             >
-                              {t('pet_species_other')}
+                              {(editedPet.species || pet.species) === 'other' && (editedPet.customSpecies || pet.customSpecies)
+                                ? (editedPet.customSpecies || pet.customSpecies)
+                                : t('pet_species_other')}
                             </Text>
                           </Pressable>
                         </View>
