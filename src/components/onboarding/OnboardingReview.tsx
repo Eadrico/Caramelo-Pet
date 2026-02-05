@@ -8,7 +8,7 @@ import {
   useColorScheme,
   ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
@@ -46,6 +46,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   const onboardingData = useStore((s) => s.onboardingData);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
@@ -122,7 +123,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
         }
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+      <View style={{ flex: 1, paddingTop: insets.top }}>
         {/* Header */}
         <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -413,7 +414,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
         </ScrollView>
 
         {/* Bottom Button */}
-        <SafeAreaView edges={['bottom']} style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+        <View style={{ position: 'absolute', bottom: insets.bottom, left: 0, right: 0 }}>
           <View
             style={{
               backgroundColor: isDark ? '#0C0A09' : '#F5F2EE',
@@ -429,8 +430,8 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
               loading={isSaving}
             />
           </View>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
     </View>
   );
 }

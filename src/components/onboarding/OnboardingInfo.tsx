@@ -9,7 +9,7 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
@@ -271,6 +271,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
   const { effectiveLanguage } = useLanguage();
+  const insets = useSafeAreaInsets();
 
   const name = useStore((s) => s.onboardingData.name);
   const birthdate = useStore((s) => s.onboardingData.birthdate);
@@ -340,7 +341,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
         }
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+      <View style={{ flex: 1, paddingTop: insets.top }}>
         {/* Header */}
         <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -486,7 +487,7 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
         </View>
 
         {/* Bottom Button */}
-        <SafeAreaView edges={['bottom']}>
+        <View style={{ paddingBottom: insets.bottom }}>
           <Animated.View
             entering={FadeInDown.duration(400).delay(300)}
             style={{ paddingHorizontal: 20, paddingBottom: 8, gap: 12 }}
@@ -506,8 +507,8 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
               </Pressable>
             )}
           </Animated.View>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
 
       {/* Month/Year Picker Modal */}
       {showDatePicker && (
