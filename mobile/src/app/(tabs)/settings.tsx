@@ -650,6 +650,7 @@ export default function SettingsScreen() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [editField, setEditField] = useState<'name' | 'email' | 'phone' | null>(null);
   const [showSandboxMenu, setShowSandboxMenu] = useState(false);
+  const [showPremiumModalTest, setShowPremiumModalTest] = useState(false);
 
   // Check if running in sandbox environment
   const isSandbox = isSandboxEnvironment();
@@ -946,6 +947,14 @@ export default function SettingsScreen() {
                 onPress={() => setShowSandboxMenu(true)}
                 rightContent={<ChevronRight size={18} color={c.textTertiary} />}
               />
+              <View style={{ height: 1, backgroundColor: c.border, marginLeft: 66 }} />
+              <SettingRow
+                icon={<Crown size={18} color={c.accent} strokeWidth={2} />}
+                title="Test Premium Modal"
+                subtitle="Abrir modal de premium para teste rápido"
+                onPress={() => setShowPremiumModalTest(true)}
+                rightContent={<ChevronRight size={18} color={c.textTertiary} />}
+              />
             </Section>
           )}
 
@@ -1166,6 +1175,13 @@ export default function SettingsScreen() {
       <PremiumUpsellModal
         visible={showPaywall}
         onClose={() => setShowPaywall(false)}
+        context="general"
+      />
+
+      {/* Test Premium Modal - Sandbox only */}
+      <PremiumUpsellModal
+        visible={showPremiumModalTest}
+        onClose={() => setShowPremiumModalTest(false)}
         context="general"
       />
 
