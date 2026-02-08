@@ -1,5 +1,5 @@
 // Paywall Screen - Premium upgrade flow
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -116,6 +116,7 @@ export function PaywallScreen({
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showCouponInput, setShowCouponInput] = useState<boolean>(false);
   const [couponCode, setCouponCode] = useState<string>('');
+  const couponInputRef = useRef<TextInput>(null);
 
   const priceString = usePremiumStore((s) => s.priceString);
   const isLoading = usePremiumStore((s) => s.isLoading);
@@ -157,8 +158,12 @@ export function PaywallScreen({
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setMessage(null);
 
-    // Toggle coupon input instead of restoring immediately
-    setShowCouponInput(!showCouponInput);
+    // Show coupon input instead of restoring immediately
+    setShowCouponInput(true);
+    // Focus input after a small delay to ensure it's rendered
+    setTimeout(() => {
+      couponInputRef.current?.focus();
+    }, 100);
   };
 
   const handleRestorePurchases = async () => {
@@ -436,39 +441,41 @@ export function PaywallScreen({
               </AnimatedPressable>
             </Animated.View>
 
-            {/* Restore Button */}
-            <Animated.View
-              entering={FadeInDown.duration(400).delay(600)}
-              style={{ paddingHorizontal: 20, marginBottom: 8 }}
-            >
-              <AnimatedPressable
-                onPress={handleRestore}
-                onPressIn={() => {
-                  restoreScale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
-                }}
-                onPressOut={() => {
-                  restoreScale.value = withSpring(1, { damping: 15, stiffness: 400 });
-                }}
-                disabled={isLoading}
-                style={[
-                  restoreAnimatedStyle,
-                  {
-                    paddingVertical: 14,
-                    alignItems: 'center',
-                  },
-                ]}
+            {/* Restore Button - Now opens coupon input */}
+            {!showCouponInput && (
+              <Animated.View
+                entering={FadeInDown.duration(400).delay(600)}
+                style={{ paddingHorizontal: 20, marginBottom: 8 }}
               >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: '500',
-                    color: c.textSecondary,
+                <AnimatedPressable
+                  onPress={handleRestore}
+                  onPressIn={() => {
+                    restoreScale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
                   }}
+                  onPressOut={() => {
+                    restoreScale.value = withSpring(1, { damping: 15, stiffness: 400 });
+                  }}
+                  disabled={isLoading}
+                  style={[
+                    restoreAnimatedStyle,
+                    {
+                      paddingVertical: 14,
+                      alignItems: 'center',
+                    },
+                  ]}
                 >
-                  {t('paywall_restore')}
-                </Text>
-              </AnimatedPressable>
-            </Animated.View>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: '500',
+                      color: c.textSecondary,
+                    }}
+                  >
+                    Use um cupom, ou restaure uma compra
+                  </Text>
+                </AnimatedPressable>
+              </Animated.View>
+            )}
 
             {/* Coupon Input Section */}
             {showCouponInput && (
@@ -478,67 +485,66 @@ export function PaywallScreen({
                 style={{
                   marginHorizontal: 20,
                   marginBottom: 12,
-                  padding: 16,
-                  backgroundColor: c.surface,
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: isDark ? 'rgba(196, 167, 125, 0.2)' : 'rgba(196, 167, 125, 0.15)',
+                  gap: 16,
                 }}
               >
-                {/* Coupon Header */}
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-                  <Ticket size={20} color={c.accent} strokeWidth={2} />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: '600',
-                      color: c.text,
-                      marginLeft: 8,
-                    }}
-                  >
+                {/* Header */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                  <Ticket size={24} color={c.text} strokeWidth={2} />
+                  <Text style={{ fontSize: 20, fontWeight: '600', color: c.text }}>
                     Cupom Promocional
                   </Text>
                 </View>
 
-                {/* Coupon Input */}
-                <TextInput
-                  value={couponCode}
-                  onChangeText={setCouponCode}
-                  placeholder="Digite seu cupom"
-                  placeholderTextColor={c.textTertiary}
-                  autoCapitalize="characters"
+                {/* Input */}
+                <View
                   style={{
-                    backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)',
-                    borderRadius: 12,
-                    paddingHorizontal: 16,
-                    paddingVertical: 14,
-                    fontSize: 16,
-                    color: c.text,
-                    marginBottom: 12,
-                    borderWidth: 1,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                    borderRadius: 16,
+                    borderWidth: 1.5,
                     borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                    overflow: 'hidden',
                   }}
-                />
+                >
+                  <TextInput
+                    ref={couponInputRef}
+                    value={couponCode}
+                    onChangeText={setCouponCode}
+                    placeholder="Digite seu cupom"
+                    placeholderTextColor={c.textTertiary}
+                    autoCapitalize="characters"
+                    returnKeyType="done"
+                    onSubmitEditing={handleRedeemCoupon}
+                    style={{
+                      paddingVertical: 18,
+                      paddingHorizontal: 20,
+                      fontSize: 17,
+                      color: c.text,
+                      fontWeight: '500',
+                    }}
+                  />
+                </View>
 
                 {/* Action Buttons */}
-                <View style={{ flexDirection: 'row', gap: 8 }}>
+                <View style={{ flexDirection: 'row', gap: 12 }}>
                   <Pressable
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       handleRedeemCoupon();
                     }}
                     disabled={isLoading}
-                    style={{
+                    style={({ pressed }) => ({
                       flex: 1,
                       backgroundColor: c.accent,
-                      borderRadius: 12,
-                      paddingVertical: 12,
+                      borderRadius: 16,
+                      paddingVertical: 16,
                       alignItems: 'center',
-                    }}
+                      opacity: pressed ? 0.8 : 1,
+                    })}
                   >
                     <Text
                       style={{
-                        fontSize: 15,
+                        fontSize: 17,
                         fontWeight: '600',
                         color: '#FFFFFF',
                       }}
@@ -553,17 +559,18 @@ export function PaywallScreen({
                       handleRestorePurchases();
                     }}
                     disabled={isLoading}
-                    style={{
+                    style={({ pressed }) => ({
                       flex: 1,
-                      backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-                      borderRadius: 12,
-                      paddingVertical: 12,
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+                      borderRadius: 16,
+                      paddingVertical: 16,
                       alignItems: 'center',
-                    }}
+                      opacity: pressed ? 0.8 : 1,
+                    })}
                   >
                     <Text
                       style={{
-                        fontSize: 15,
+                        fontSize: 17,
                         fontWeight: '600',
                         color: c.text,
                       }}
@@ -576,10 +583,10 @@ export function PaywallScreen({
                 {/* Helper Text */}
                 <Text
                   style={{
-                    fontSize: 13,
-                    color: c.textTertiary,
+                    fontSize: 14,
+                    color: c.textSecondary,
                     textAlign: 'center',
-                    marginTop: 12,
+                    lineHeight: 20,
                   }}
                 >
                   Insira um cupom válido ou restaure suas compras anteriores
