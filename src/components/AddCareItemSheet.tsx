@@ -656,10 +656,10 @@ export function AddCareItemSheet({
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 17, color: c.text, fontWeight: '500' }}>
-                      Adicionar ao Calendário
+                      {t('calendar_add_to_calendar')}
                     </Text>
                     <Text style={{ fontSize: 13, color: c.textSecondary, marginTop: 2 }}>
-                      Sincronize com seu calendário pessoal
+                      {t('calendar_sync_description')}
                     </Text>
                   </View>
                 </View>

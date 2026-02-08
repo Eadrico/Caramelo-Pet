@@ -26,6 +26,7 @@ import { useStore } from '@/lib/store';
 import {
   formatDate,
   getSpeciesEmoji,
+  getSpeciesTranslationKey,
   CareType,
 } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n';
@@ -223,8 +224,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
                   }}
                 >
                   {getSpeciesEmoji(onboardingData.species)}{' '}
-                  {onboardingData.species.charAt(0).toUpperCase() +
-                    onboardingData.species.slice(1)}
+                  {t(getSpeciesTranslationKey(onboardingData.species))}
                 </Text>
               </View>
 

@@ -193,6 +193,8 @@ type TranslationKey =
   | 'paywall_restore_success'
   | 'paywall_restore_none'
   | 'paywall_error'
+  | 'paywall_coupon_invalid'
+  | 'paywall_coupon_or_restore'
   // Settings - Premium
   | 'settings_premium'
   | 'settings_premium_active'
@@ -263,7 +265,10 @@ type TranslationKey =
   | 'repeat_does_not_repeat'
   | 'repeat_every_day'
   | 'repeat_every_week'
-  | 'repeat_every_month';
+  | 'repeat_every_month'
+  // Calendar
+  | 'calendar_add_to_calendar'
+  | 'calendar_sync_description';
 
 type Translations = Record<TranslationKey, string>;
 
@@ -444,6 +449,8 @@ const en: Translations = {
   paywall_restore_success: 'Purchases restored successfully!',
   paywall_restore_none: 'No previous purchases found',
   paywall_error: 'Something went wrong. Please try again.',
+  paywall_coupon_invalid: 'Enter a valid coupon',
+  paywall_coupon_or_restore: 'Enter a valid coupon or restore your previous purchases',
   // Common
   common_today: 'Today',
   common_tomorrow: 'Tomorrow',
@@ -513,6 +520,9 @@ const en: Translations = {
   repeat_every_day: 'Every day',
   repeat_every_week: 'Every week',
   repeat_every_month: 'Every month',
+  // Calendar
+  calendar_add_to_calendar: 'Add to calendar',
+  calendar_sync_description: 'Sync with your personal calendar',
 };
 
 const pt: Translations = {
@@ -692,6 +702,8 @@ const pt: Translations = {
   paywall_restore_success: 'Compras restauradas com sucesso!',
   paywall_restore_none: 'Nenhuma compra anterior encontrada',
   paywall_error: 'Algo deu errado. Tente novamente.',
+  paywall_coupon_invalid: 'Digite um cupom válido',
+  paywall_coupon_or_restore: 'Insira um cupom válido ou restaure suas compras anteriores',
   // Common
   common_today: 'Hoje',
   common_tomorrow: 'Amanhã',
@@ -761,6 +773,9 @@ const pt: Translations = {
   repeat_every_day: 'Todo dia',
   repeat_every_week: 'Toda semana',
   repeat_every_month: 'Todo mês',
+  // Calendar
+  calendar_add_to_calendar: 'Adicionar ao calendário',
+  calendar_sync_description: 'Sincronize com seu calendário pessoal',
 };
 
 const es: Translations = {
@@ -940,6 +955,8 @@ const es: Translations = {
   paywall_restore_success: '¡Compras restauradas exitosamente!',
   paywall_restore_none: 'No se encontraron compras anteriores',
   paywall_error: 'Algo salió mal. Intenta de nuevo.',
+  paywall_coupon_invalid: 'Ingresa un cupón válido',
+  paywall_coupon_or_restore: 'Ingresa un cupón válido o restaura tus compras anteriores',
   // Common
   common_today: 'Hoy',
   common_tomorrow: 'Mañana',
@@ -1009,6 +1026,9 @@ const es: Translations = {
   repeat_every_day: 'Todos los días',
   repeat_every_week: 'Cada semana',
   repeat_every_month: 'Cada mes',
+  // Calendar
+  calendar_add_to_calendar: 'Agregar al calendario',
+  calendar_sync_description: 'Sincroniza con tu calendario personal',
 };
 
 

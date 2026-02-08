@@ -188,7 +188,7 @@ export function PaywallScreen({
 
   const handleRedeemCoupon = async () => {
     if (!couponCode.trim()) {
-      setMessage({ type: 'error', text: 'Digite um cupom' });
+      setMessage({ type: 'error', text: t('paywall_coupon_invalid') });
       return;
     }
 
@@ -598,7 +598,7 @@ export function PaywallScreen({
                     paddingHorizontal: 8,
                   }}
                 >
-                  Insira um cupom válido ou restaure suas compras anteriores
+                  {t('paywall_coupon_or_restore')}
                 </Text>
               </Animated.View>
             )}
