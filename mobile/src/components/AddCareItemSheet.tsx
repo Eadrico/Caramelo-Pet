@@ -26,10 +26,10 @@ import {
   Trash2,
   CalendarPlus,
 } from 'lucide-react-native';
-import { CareItem, CareType, Pet, formatDate, getCareTypeLabel } from '@/lib/types';
+import { CareItem, CareType, formatDate } from '@/lib/types';
 import { useStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n';
-import { useColors, PrimaryButton, SegmentedControl } from '@/components/design-system';
+import { useColors } from '@/components/design-system';
 import { PetChip } from '@/components/PetChip';
 import { calendarService } from '@/lib/calendarService';
 

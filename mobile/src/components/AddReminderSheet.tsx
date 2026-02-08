@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
 import { Calendar, Trash2, CalendarPlus } from 'lucide-react-native';
-import { Reminder, getRepeatLabel } from '@/lib/types';
+import { Reminder } from '@/lib/types';
 import { useStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n';
 import { useColors } from '@/components/design-system';
