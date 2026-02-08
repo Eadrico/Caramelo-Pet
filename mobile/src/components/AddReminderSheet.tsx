@@ -613,12 +613,12 @@ export function AddReminderSheet({
               style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
               onPress={() => setShowDatePicker(false)}
             />
+            <SafeAreaView edges={['bottom']} style={{ backgroundColor: c.surface }}>
             <View
               style={{
                 backgroundColor: c.surface,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
-                paddingBottom: 34,
               }}
             >
               <View
@@ -659,6 +659,7 @@ export function AddReminderSheet({
                 style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
+            </SafeAreaView>
           </Modal>
         ) : (
           showDatePicker && (
@@ -682,12 +683,12 @@ export function AddReminderSheet({
               style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
               onPress={() => setShowTimePicker(false)}
             />
+            <SafeAreaView edges={['bottom']} style={{ backgroundColor: c.surface }}>
             <View
               style={{
                 backgroundColor: c.surface,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
-                paddingBottom: 34,
               }}
             >
               <View
@@ -728,6 +729,7 @@ export function AddReminderSheet({
                 style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
+            </SafeAreaView>
           </Modal>
         ) : (
           showTimePicker && (

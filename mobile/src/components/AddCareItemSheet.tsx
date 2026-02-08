@@ -732,12 +732,12 @@ export function AddCareItemSheet({
               style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
               onPress={() => setShowDatePicker(false)}
             />
+            <SafeAreaView edges={['bottom']} style={{ backgroundColor: c.surface }}>
             <View
               style={{
                 backgroundColor: c.surface,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
-                paddingBottom: 34,
               }}
             >
               <View
@@ -778,6 +778,7 @@ export function AddCareItemSheet({
                 style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
+            </SafeAreaView>
           </Modal>
         ) : (
           showDatePicker && (
@@ -799,6 +800,7 @@ export function AddCareItemSheet({
             onRequestClose={() => setShowTimePicker(false)}
           >
             <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+              <SafeAreaView edges={['bottom']} style={{ backgroundColor: c.surface }}>
               <View style={{ backgroundColor: c.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: c.border }}>
                   <Pressable
@@ -829,6 +831,7 @@ export function AddCareItemSheet({
                   style={{ height: 200, alignSelf: 'center' }}
                 />
               </View>
+              </SafeAreaView>
             </View>
           </Modal>
         ) : (
@@ -853,12 +856,12 @@ export function AddCareItemSheet({
             style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' }}
             onPress={() => setShowTypeSelector(false)}
           />
+          <SafeAreaView edges={['bottom']} style={{ backgroundColor: c.surface }}>
           <View
             style={{
               backgroundColor: c.surface,
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
-              paddingBottom: 34,
             }}
           >
             <View
@@ -952,6 +955,7 @@ export function AddCareItemSheet({
               })}
             </ScrollView>
           </View>
+          </SafeAreaView>
         </Modal>
           </View>
         </TouchableWithoutFeedback>
