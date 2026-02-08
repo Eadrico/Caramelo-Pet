@@ -34,8 +34,9 @@ import { AddItemSelector } from '@/components/AddItemSelector';
 import { AddPetWizard } from '@/components/AddPetWizard';
 import { PetDetailScreen } from '@/components/PetDetailScreen';
 import { PaywallScreen } from '@/components/PaywallScreen';
+import { PremiumUpsellModal, UpsellContext } from '@/components/PremiumUpsellModal';
 import { useTranslation } from '@/lib/i18n';
-import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
+import { usePremiumStore, FREE_PET_LIMIT_COUNT, FREE_CARE_LIMIT_COUNT, FREE_REMINDER_LIMIT_COUNT } from '@/lib/premium-store';
 import { Reminder } from '@/lib/types';
 import { useFocusEffect } from 'expo-router';
 
@@ -61,6 +62,8 @@ export function HomeScreen() {
   // Premium state
   const isPremium = usePremiumStore((s) => s.isPremium);
   const canAddPet = usePremiumStore((s) => s.canAddPet);
+  const canAddCareItem = usePremiumStore((s) => s.canAddCareItem);
+  const canAddReminder = usePremiumStore((s) => s.canAddReminder);
   const initializePremium = usePremiumStore((s) => s.initialize);
   const isInitialized = usePremiumStore((s) => s.isInitialized);
 
@@ -70,6 +73,8 @@ export function HomeScreen() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [showAddPetWizard, setShowAddPetWizard] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showUpsellModal, setShowUpsellModal] = useState(false);
+  const [upsellContext, setUpsellContext] = useState<UpsellContext>('pets');
   const [editingItem, setEditingItem] = useState<CareItem | undefined>();
   const [editingReminder, setEditingReminder] = useState<Reminder | undefined>();
   const [refreshing, setRefreshing] = useState(false);
@@ -185,17 +190,35 @@ export function HomeScreen() {
   };
 
   const handleSelectCare = () => {
+    // Check if user can add more care items
+    if (!canAddCareItem(careItems.length)) {
+      setUpsellContext('care');
+      setShowUpsellModal(true);
+      return;
+    }
     setEditingItem(undefined);
     setShowAddSheet(true);
   };
 
   const handleSelectReminder = () => {
+    // Check if user can add more reminders
+    if (!canAddReminder(reminders.length)) {
+      setUpsellContext('reminders');
+      setShowUpsellModal(true);
+      return;
+    }
     setEditingReminder(undefined);
     setShowAddReminderSheet(true);
   };
 
   const handleAddCarePress = () => {
     setShowAddMenu(false);
+    // Check if user can add more care items
+    if (!canAddCareItem(careItems.length)) {
+      setUpsellContext('care');
+      setShowUpsellModal(true);
+      return;
+    }
     setEditingItem(undefined);
     setShowAddSheet(true);
   };
@@ -256,8 +279,9 @@ export function HomeScreen() {
       // User can add pet - show wizard
       setShowAddPetWizard(true);
     } else {
-      // User has reached free limit - show paywall
-      setShowPaywall(true);
+      // User has reached free limit - show upsell modal
+      setUpsellContext('pets');
+      setShowUpsellModal(true);
     }
   };
 
@@ -553,6 +577,13 @@ export function HomeScreen() {
           // After successful purchase, show add pet wizard
           setShowAddPetWizard(true);
         }}
+      />
+
+      {/* Premium Upsell Modal */}
+      <PremiumUpsellModal
+        visible={showUpsellModal}
+        onClose={() => setShowUpsellModal(false)}
+        context={upsellContext}
       />
 
       {/* Add Menu Modal */}

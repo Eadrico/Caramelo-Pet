@@ -14,6 +14,8 @@ const ADMIN_MODE_KEY = 'caramelo_admin_premium_mode';
 const COUPON_MODE_KEY = 'caramelo_coupon_premium_mode';
 const REDEEMED_COUPONS_KEY = 'caramelo_redeemed_coupons';
 const FREE_PET_LIMIT = 2;
+const FREE_CARE_LIMIT = 1;
+const FREE_REMINDER_LIMIT = 1;
 const PREMIUM_ENTITLEMENT_ID = 'premium';
 
 // Valid promotional coupons
@@ -45,6 +47,8 @@ interface PremiumState {
 
   // Helpers
   canAddPet: (currentPetCount: number) => boolean;
+  canAddCareItem: (currentCareCount: number) => boolean;
+  canAddReminder: (currentReminderCount: number) => boolean;
 }
 
 export const usePremiumStore = create<PremiumState>((set, get) => ({
@@ -265,7 +269,19 @@ export const usePremiumStore = create<PremiumState>((set, get) => ({
     const { isPremium } = get();
     return isPremium || currentPetCount < FREE_PET_LIMIT;
   },
+
+  canAddCareItem: (currentCareCount: number) => {
+    const { isPremium } = get();
+    return isPremium || currentCareCount < FREE_CARE_LIMIT;
+  },
+
+  canAddReminder: (currentReminderCount: number) => {
+    const { isPremium } = get();
+    return isPremium || currentReminderCount < FREE_REMINDER_LIMIT;
+  },
 }));
 
 // Export constants for use elsewhere
 export const FREE_PET_LIMIT_COUNT = FREE_PET_LIMIT;
+export const FREE_CARE_LIMIT_COUNT = FREE_CARE_LIMIT;
+export const FREE_REMINDER_LIMIT_COUNT = FREE_REMINDER_LIMIT;
