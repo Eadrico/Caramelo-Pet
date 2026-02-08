@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import {
   Syringe,
@@ -85,6 +86,7 @@ export function AddCareItemSheet({
   const [showTypeSelector, setShowTypeSelector] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [addToCalendar, setAddToCalendar] = useState(false);
+  const [hasAttemptedSave, setHasAttemptedSave] = useState(false);
 
   // Reset form when opening
   useEffect(() => {
@@ -125,7 +127,12 @@ export function AddCareItemSheet({
   }, [selectedType, editItem]);
 
   const handleSave = async () => {
-    if (!title.trim() || selectedPetIds.length === 0) return;
+    setHasAttemptedSave(true);
+    
+    if (!title.trim() || selectedPetIds.length === 0) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      return;
+    }
 
     setIsSaving(true);
     try {
@@ -328,7 +335,7 @@ export function AddCareItemSheet({
                 showsVerticalScrollIndicator={false}
               >
             {/* Pet Selector - Always visible */}
-            <View>
+            <Animated.View entering={FadeInDown.duration(400).delay(50)}>
               <Text
                 style={{
                   fontSize: 14,
@@ -369,10 +376,10 @@ export function AddCareItemSheet({
                     />
                   ))}
                 </ScrollView>
-            </View>
+            </Animated.View>
 
             {/* Care Type */}
-            <View>
+            <Animated.View entering={FadeInDown.duration(400).delay(100)}>
               <Text
                 style={{
                   fontSize: 14,
@@ -429,10 +436,10 @@ export function AddCareItemSheet({
                   <Text style={{ fontSize: 18, color: c.textSecondary }}>›</Text>
                 </View>
               </Pressable>
-            </View>
+            </Animated.View>
 
             {/* Title */}
-            <View>
+            <Animated.View entering={FadeInDown.duration(400).delay(150)}>
               <Text
                 style={{
                   fontSize: 14,
@@ -457,12 +464,18 @@ export function AddCareItemSheet({
                   backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                   borderRadius: 12,
                   minHeight: 52,
+                  borderWidth: 1.5,
+                  borderColor: hasAttemptedSave && !title.trim()
+                    ? '#EF4444'
+                    : title.trim()
+                    ? '#22C55E'
+                    : 'transparent',
                 }}
               />
-            </View>
+            </Animated.View>
 
             {/* Date and Time */}
-            <View>
+            <Animated.View entering={FadeInDown.duration(400).delay(200)}>
               <Text
                 style={{
                   fontSize: 14,
@@ -521,10 +534,10 @@ export function AddCareItemSheet({
                   </Text>
                 </Pressable>
               </View>
-            </View>
+            </Animated.View>
 
             {/* Repeat */}
-            <View>
+            <Animated.View entering={FadeInDown.duration(400).delay(250)}>
               <Text
                 style={{
                   fontSize: 14,
@@ -580,10 +593,10 @@ export function AddCareItemSheet({
                   );
                 })}
               </View>
-            </View>
+            </Animated.View>
 
             {/* Notes */}
-            <View>
+            <Animated.View entering={FadeInDown.duration(400).delay(300)}>
               <Text
                 style={{
                   fontSize: 14,
@@ -613,9 +626,10 @@ export function AddCareItemSheet({
                   textAlignVertical: 'top',
                 }}
               />
-            </View>
+            </Animated.View>
 
             {/* Add to Calendar Toggle */}
+            <Animated.View entering={FadeInDown.duration(400).delay(350)}>
             <View>
               <Pressable
                 onPress={() => {
