@@ -54,7 +54,7 @@ export function IntroView({ onContinue }: IntroViewProps) {
         <View style={{ flex: 1, paddingHorizontal: 24 }}>
           {/* Logo / Icon Area */}
           <Animated.View
-            entering={FadeInDown.delay(200).duration(800).springify()}
+            entering={FadeInDown.duration(500).springify()}
             style={{
               alignItems: 'center',
               marginTop: 60,
@@ -82,13 +82,14 @@ export function IntroView({ onContinue }: IntroViewProps) {
                   borderRadius: 36,
                 }}
                 resizeMode="cover"
+                fadeDuration={0}
               />
             </View>
           </Animated.View>
 
           {/* Welcome Text */}
           <Animated.View
-            entering={FadeInDown.delay(400).duration(800).springify()}
+            entering={FadeInDown.delay(200).duration(600).springify()}
             style={{ alignItems: 'center', marginBottom: 48 }}
           >
             <Text
