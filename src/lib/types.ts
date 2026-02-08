@@ -243,13 +243,19 @@ export function calculateAge(birthdate: string): { years: number; months: number
   return { years, months };
 }
 
-export function formatAge(birthdate: string): string {
+export function formatAge(birthdate: string, t: (key: any) => string): string {
   const { years, months } = calculateAge(birthdate);
+  if (years === 0 && months === 0) {
+    return t('common_less_than_month');
+  }
   if (years === 0) {
-    return `${months} month${months !== 1 ? 's' : ''}`;
+    return `${months} ${months === 1 ? t('common_month') : t('common_months')}`;
   }
   if (months === 0) {
-    return `${years} year${years !== 1 ? 's' : ''}`;
+    return `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
   }
-  return `${years}y ${months}m`;
+  // Show both years and months
+  const yearStr = `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
+  const monthStr = `${months} ${months === 1 ? t('common_month') : t('common_months')}`;
+  return `${yearStr} ${t('common_and')} ${monthStr}`;
 }

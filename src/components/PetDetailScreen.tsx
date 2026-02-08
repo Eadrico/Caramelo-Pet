@@ -569,7 +569,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                         >
                           <Calendar size={16} color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(28,25,23,0.6)'} />
                           <Text style={{ fontSize: 14, color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)' }}>
-                            {formatAge((isEditing && editedPet.birthdate) ? editedPet.birthdate : pet.birthdate!)}
+                            {formatAge((isEditing && editedPet.birthdate) ? editedPet.birthdate : pet.birthdate!, t)}
                           </Text>
                         </Pressable>
                       ) : null}
