@@ -70,8 +70,6 @@ function MonthYearPicker({
       'en': 'en-US',
       'pt': 'pt-BR',
       'es': 'es-ES',
-      'fr': 'fr-FR',
-      'zh': 'zh-CN',
     };
     return localeMap[lang] || 'en-US';
   };
@@ -257,8 +255,6 @@ function formatMonthYear(dateString: string, language: string): string {
     'en': 'en-US',
     'pt': 'pt-BR',
     'es': 'es-ES',
-    'fr': 'fr-FR',
-    'zh': 'zh-CN',
   };
   const locale = localeMap[language] || 'en-US';
   const formatter = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });

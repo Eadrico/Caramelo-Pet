@@ -717,16 +717,6 @@ export default function SettingsScreen() {
       label: 'Español',
       icon: <Text style={{ fontSize: 18 }}>🇪🇸</Text>,
     },
-    {
-      value: 'fr',
-      label: 'Français',
-      icon: <Text style={{ fontSize: 18 }}>🇫🇷</Text>,
-    },
-    {
-      value: 'zh',
-      label: '中文',
-      icon: <Text style={{ fontSize: 18 }}>🇨🇳</Text>,
-    },
   ];
 
   const themeOptions: { value: ThemeMode; label: string; icon: React.ReactNode }[] = [
