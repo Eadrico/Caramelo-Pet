@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react';
 import { useSettingsStore } from '@/lib/settings-store';
 import { useStore } from '@/lib/store';
 import { LanguageProvider } from '@/lib/i18n';
+import { Image } from 'react-native';
+import { Asset } from 'expo-asset';
 
 import '../../global.css';
 
@@ -63,10 +65,13 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
   const rootNavigationState = useRootNavigationState();
   const isNavigationReady = rootNavigationState?.key != null;
 
-  // Initialize on mount
+  // Initialize on mount and preload images
   useEffect(() => {
     initializeSettings();
     initializeApp();
+
+    // Preload paywall icon for instant display
+    Image.prefetch(Asset.fromModule(require('../../../assets/icon-small.png')).uri);
   }, []);
 
   // Handle navigation based on onboarding state - only after navigation is ready
