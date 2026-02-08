@@ -527,54 +527,122 @@ export function PremiumUpsellModal({
 
               {/* Coupon Section */}
               {showCouponInput ? (
-                <View style={{ marginBottom: 8 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                    <TextInput
-                      value={couponCode}
-                      onChangeText={(text) => {
-                        setCouponCode(text);
-                        setCouponError(null);
-                      }}
-                      placeholder="Digite seu cupom"
-                      placeholderTextColor={c.textTertiary}
-                      autoCapitalize="characters"
-                      autoCorrect={false}
+                <View style={{ marginBottom: 12 }}>
+                  {/* Input container with Apple-style design */}
+                  <View
+                    style={{
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                      borderRadius: 14,
+                      borderWidth: 1.5,
+                      borderColor: couponError
+                        ? '#EF4444'
+                        : isDark
+                        ? 'rgba(255,255,255,0.1)'
+                        : 'rgba(0,0,0,0.08)',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <View
                       style={{
-                        flex: 1,
-                        backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.03)',
-                        borderRadius: 12,
-                        paddingVertical: 12,
-                        paddingHorizontal: 16,
-                        fontSize: 15,
-                        color: c.text,
-                        borderWidth: 1,
-                        borderColor: couponError ? '#EF4444' : c.border,
-                      }}
-                    />
-                    <Pressable
-                      onPress={handleRedeemCoupon}
-                      disabled={isRedeemingCoupon}
-                      style={{
-                        backgroundColor: c.accent,
-                        paddingVertical: 12,
-                        paddingHorizontal: 16,
-                        borderRadius: 12,
+                        flexDirection: 'row',
+                        alignItems: 'center',
                       }}
                     >
-                      {isRedeemingCoupon ? (
-                        <ActivityIndicator color="#FFFFFF" size="small" />
-                      ) : (
-                        <Text style={{ color: '#FFFFFF', fontWeight: '600', fontSize: 14 }}>
-                          Aplicar
-                        </Text>
-                      )}
-                    </Pressable>
+                      {/* Icon */}
+                      <View
+                        style={{
+                          paddingLeft: 16,
+                          paddingRight: 12,
+                        }}
+                      >
+                        <Ticket size={18} color={c.textSecondary} />
+                      </View>
+
+                      {/* Input */}
+                      <TextInput
+                        value={couponCode}
+                        onChangeText={(text) => {
+                          setCouponCode(text);
+                          setCouponError(null);
+                        }}
+                        placeholder="Código do cupom"
+                        placeholderTextColor={c.textTertiary}
+                        autoCapitalize="characters"
+                        autoCorrect={false}
+                        autoFocus
+                        returnKeyType="done"
+                        onSubmitEditing={handleRedeemCoupon}
+                        style={{
+                          flex: 1,
+                          paddingVertical: 14,
+                          fontSize: 16,
+                          color: c.text,
+                          fontWeight: '500',
+                        }}
+                      />
+
+                      {/* Apply button */}
+                      <Pressable
+                        onPress={handleRedeemCoupon}
+                        disabled={isRedeemingCoupon || !couponCode.trim()}
+                        style={({ pressed }) => ({
+                          paddingHorizontal: 16,
+                          paddingVertical: 14,
+                          opacity: pressed ? 0.6 : 1,
+                        })}
+                      >
+                        {isRedeemingCoupon ? (
+                          <ActivityIndicator color={c.accent} size="small" />
+                        ) : (
+                          <Text
+                            style={{
+                              color: couponCode.trim() ? c.accent : c.textTertiary,
+                              fontWeight: '600',
+                              fontSize: 16,
+                            }}
+                          >
+                            Aplicar
+                          </Text>
+                        )}
+                      </Pressable>
+                    </View>
                   </View>
+
+                  {/* Error message */}
                   {couponError && (
-                    <Text style={{ fontSize: 12, color: '#EF4444', marginTop: 6, marginLeft: 4 }}>
-                      {couponError}
-                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 6,
+                        marginTop: 8,
+                        paddingHorizontal: 4,
+                      }}
+                    >
+                      <Text style={{ fontSize: 13, color: '#EF4444', lineHeight: 18 }}>
+                        {couponError}
+                      </Text>
+                    </View>
                   )}
+
+                  {/* Cancel button */}
+                  <Pressable
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setShowCouponInput(false);
+                      setCouponCode('');
+                      setCouponError(null);
+                    }}
+                    style={{
+                      alignItems: 'center',
+                      paddingVertical: 12,
+                      marginTop: 4,
+                    }}
+                  >
+                    <Text style={{ fontSize: 14, color: c.textSecondary, fontWeight: '500' }}>
+                      Cancelar
+                    </Text>
+                  </Pressable>
                 </View>
               ) : (
                 <Pressable
@@ -586,12 +654,13 @@ export function PremiumUpsellModal({
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: 6,
-                    paddingVertical: 10,
+                    gap: 8,
+                    paddingVertical: 12,
+                    marginBottom: 4,
                   }}
                 >
-                  <Ticket size={16} color={c.textSecondary} />
-                  <Text style={{ fontSize: 14, color: c.textSecondary, fontWeight: '500' }}>
+                  <Ticket size={17} color={c.textSecondary} />
+                  <Text style={{ fontSize: 15, color: c.textSecondary, fontWeight: '500' }}>
                     Tenho um cupom
                   </Text>
                 </Pressable>
