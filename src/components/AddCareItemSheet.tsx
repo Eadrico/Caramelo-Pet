@@ -327,7 +327,8 @@ export function AddCareItemSheet({
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
               >
-            {/* Pet Selector - Always visible */}
+            {/* Pet Selector - Only show if coming from Home (no preselectedPetId) */}
+            {!preselectedPetId && (
             <View>
               <Text
                 style={{
@@ -370,6 +371,7 @@ export function AddCareItemSheet({
                   ))}
                 </ScrollView>
             </View>
+            )}
 
             {/* Care Type */}
             <View>

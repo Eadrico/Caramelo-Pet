@@ -271,7 +271,8 @@ export function AddReminderSheet({
             contentContainerStyle={{ padding: 20, gap: 20, paddingBottom: 40 }}
             keyboardShouldPersistTaps="handled"
           >
-            {/* Pet Selector - Always first, always shown */}
+            {/* Pet Selector - Only show if coming from Home (no preselectedPetId) */}
+            {!preselectedPetId && (
             <View>
               <Text
                 style={{
@@ -314,6 +315,7 @@ export function AddReminderSheet({
                 ))}
               </ScrollView>
             </View>
+            )}
 
             {/* Title */}
             <View>
