@@ -72,18 +72,6 @@ function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
       return 'es';
     }
 
-    // Special case: If region is FR (France), use French
-    if (region === 'FR') {
-      console.log('[i18n] 🇫🇷 Detected France region, using French!');
-      return 'fr';
-    }
-
-    // Special case: If region is CN/TW/HK (China/Taiwan/Hong Kong), use Chinese
-    if (['CN', 'TW', 'HK'].includes(region)) {
-      console.log('[i18n] 🇨🇳 Detected Chinese region, using Chinese!');
-      return 'zh';
-    }
-
     // Map language code to supported languages
     if (languageCode === 'pt') {
       console.log('[i18n] ✅ Detected Portuguese!');
@@ -92,14 +80,6 @@ function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
     if (languageCode === 'es') {
       console.log('[i18n] ✅ Detected Spanish!');
       return 'es';
-    }
-    if (languageCode === 'fr') {
-      console.log('[i18n] ✅ Detected French!');
-      return 'fr';
-    }
-    if (languageCode === 'zh') {
-      console.log('[i18n] ✅ Detected Chinese!');
-      return 'zh';
     }
 
     console.log('[i18n] ℹ️ Using English');
@@ -138,7 +118,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   // Map stored language to SupportedLanguage type
   const language: SupportedLanguage = useMemo(() => {
     // All valid LanguageMode values are also valid SupportedLanguage values
-    if (['system', 'en', 'pt', 'es', 'fr', 'zh'].includes(storedLanguage)) {
+    if (['system', 'en', 'pt', 'es'].includes(storedLanguage)) {
       return storedLanguage as SupportedLanguage;
     }
     return 'system';
@@ -150,7 +130,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       return deviceLanguage;
     }
     // Ensure it's a valid language
-    if (['en', 'pt', 'es', 'fr', 'zh'].includes(language)) {
+    if (['en', 'pt', 'es'].includes(language)) {
       return language as Exclude<SupportedLanguage, 'system'>;
     }
     return 'en';
@@ -177,7 +157,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [effectiveLanguage]);
 
   // Supported languages list
-  const supportedLanguages: SupportedLanguage[] = ['system', 'en', 'pt', 'es', 'fr', 'zh'];
+  const supportedLanguages: SupportedLanguage[] = ['system', 'en', 'pt', 'es'];
 
   // Get language display name
   const getLanguageName = useCallback((lang: SupportedLanguage): string => {

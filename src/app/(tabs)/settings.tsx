@@ -56,8 +56,6 @@ const languageLabels: Record<LanguageMode, string> = {
   en: 'English',
   pt: 'Português',
   es: 'Español',
-  fr: 'Français',
-  zh: '中文',
 };
 
 // Setting Row Component

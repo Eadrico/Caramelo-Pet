@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
-export type LanguageMode = 'system' | 'en' | 'pt' | 'es' | 'fr' | 'zh';
+export type LanguageMode = 'system' | 'en' | 'pt' | 'es';
 
 export interface UserProfile {
   name: string;
