@@ -12,7 +12,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   FadeInDown,
@@ -26,7 +26,6 @@ import * as Haptics from 'expo-haptics';
 import {
   X,
   Crown,
-  PawPrint,
   Headphones,
   Infinity,
   Check,
@@ -112,6 +111,7 @@ export function PaywallScreen({
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showCouponInput, setShowCouponInput] = useState<boolean>(false);
@@ -217,402 +217,403 @@ export function PaywallScreen({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={{ flex: 1 }}>
-            <LinearGradient
-              colors={
-                isDark
-                  ? ['#1C1917', '#0C0A09', '#1C1917']
-                  : ['#FFFBF5', '#F5F2EE', '#FFFBF5']
-              }
-              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-            />
+        <View style={{ flex: 1 }}>
+          <LinearGradient
+            colors={
+              isDark
+                ? ['#1C1917', '#0C0A09', '#1C1917']
+                : ['#FFFBF5', '#F5F2EE', '#FFFBF5']
+            }
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+          />
 
-        <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-          {/* Close Button */}
-          <View style={{ alignItems: 'flex-end', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}>
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onClose();
-              }}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
-                backgroundColor: c.surface,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <X size={20} color={c.textSecondary} strokeWidth={2} />
-            </Pressable>
-          </View>
-
-          {/* Header */}
-          <Animated.View
-            entering={FadeInDown.duration(500)}
-            style={{ alignItems: 'center', paddingHorizontal: 24, marginBottom: 8 }}
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingTop: 16,
+              paddingBottom: insets.bottom + 20,
+            }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
-            <View
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: 24,
-                backgroundColor: 'rgba(196, 167, 125, 0.2)',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: 20,
-              }}
-            >
-              <Crown size={40} color={c.accent} strokeWidth={1.5} />
+            {/* Close Button */}
+            <View style={{ alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8 }}>
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onClose();
+                }}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  backgroundColor: c.surface,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <X size={20} color={c.textSecondary} strokeWidth={2} />
+              </Pressable>
             </View>
 
-            <Text
-              style={{
-                fontSize: 32,
-                fontWeight: '700',
-                color: c.text,
-                textAlign: 'center',
-                marginBottom: 8,
-                letterSpacing: -0.5,
-              }}
-            >
-              {t('paywall_title')}
-            </Text>
-
-            <Text
-              style={{
-                fontSize: 17,
-                color: c.textSecondary,
-                textAlign: 'center',
-                lineHeight: 24,
-              }}
-            >
-              {t('paywall_subtitle')}
-            </Text>
-          </Animated.View>
-
-          {/* Limit Banner */}
-          <Animated.View
-            entering={FadeInDown.duration(400).delay(100)}
-            style={{
-              marginHorizontal: 20,
-              marginTop: 16,
-              marginBottom: 8,
-              backgroundColor: 'rgba(196, 167, 125, 0.1)',
-              borderRadius: 12,
-              padding: 14,
-              borderWidth: 1,
-              borderColor: 'rgba(196, 167, 125, 0.3)',
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 15,
-                color: c.accent,
-                textAlign: 'center',
-                fontWeight: '500',
-              }}
-            >
-              {t('paywall_limit_reached')}
-            </Text>
-          </Animated.View>
-
-          {/* Features */}
-          <View style={{ marginTop: 16 }}>
-            <FeatureRow
-              icon={<Infinity size={24} color={c.accent} strokeWidth={2} />}
-              title={t('paywall_feature_unlimited')}
-              description={t('paywall_feature_unlimited_desc')}
-              delay={200}
-            />
-            <FeatureRow
-              icon={<Headphones size={24} color={c.accent} strokeWidth={2} />}
-              title={t('paywall_feature_support')}
-              description={t('paywall_feature_support_desc')}
-              delay={300}
-            />
-            <FeatureRow
-              icon={<Sparkles size={24} color={c.accent} strokeWidth={2} />}
-              title={t('paywall_feature_lifetime')}
-              description={t('paywall_feature_lifetime_desc')}
-              delay={400}
-            />
-          </View>
-
-          {/* Spacer */}
-          <View style={{ flex: 1 }} />
-
-          {/* Message */}
-          {message && (
+            {/* Header */}
             <Animated.View
-              entering={FadeIn.duration(300)}
+              entering={FadeInDown.duration(500)}
+              style={{ alignItems: 'center', paddingHorizontal: 24, marginBottom: 8 }}
+            >
+              <View
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 24,
+                  backgroundColor: 'rgba(196, 167, 125, 0.2)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 20,
+                }}
+              >
+                <Crown size={40} color={c.accent} strokeWidth={1.5} />
+              </View>
+
+              <Text
+                style={{
+                  fontSize: 32,
+                  fontWeight: '700',
+                  color: c.text,
+                  textAlign: 'center',
+                  marginBottom: 8,
+                  letterSpacing: -0.5,
+                }}
+              >
+                {t('paywall_title')}
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: c.textSecondary,
+                  textAlign: 'center',
+                  lineHeight: 24,
+                }}
+              >
+                {t('paywall_subtitle')}
+              </Text>
+            </Animated.View>
+
+            {/* Limit Banner */}
+            <Animated.View
+              entering={FadeInDown.duration(400).delay(100)}
               style={{
                 marginHorizontal: 20,
-                marginBottom: 16,
-                padding: 14,
+                marginTop: 16,
+                marginBottom: 8,
+                backgroundColor: 'rgba(196, 167, 125, 0.1)',
                 borderRadius: 12,
-                backgroundColor:
-                  message.type === 'success'
-                    ? 'rgba(34, 197, 94, 0.1)'
-                    : 'rgba(239, 68, 68, 0.1)',
+                padding: 14,
+                borderWidth: 1,
+                borderColor: 'rgba(196, 167, 125, 0.3)',
               }}
             >
               <Text
                 style={{
                   fontSize: 15,
-                  color: message.type === 'success' ? '#22C55E' : '#EF4444',
+                  color: c.accent,
                   textAlign: 'center',
                   fontWeight: '500',
                 }}
               >
-                {message.text}
+                {t('paywall_limit_reached')}
               </Text>
             </Animated.View>
-          )}
 
-          {/* Purchase Button */}
-          <Animated.View
-            entering={FadeInDown.duration(400).delay(500)}
-            style={{ paddingHorizontal: 20, marginBottom: 12 }}
-          >
-            <AnimatedPressable
-              onPress={handlePurchase}
-              onPressIn={() => {
-                buyScale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
-              }}
-              onPressOut={() => {
-                buyScale.value = withSpring(1, { damping: 15, stiffness: 400 });
-              }}
-              disabled={isLoading}
-              style={[
-                buyAnimatedStyle,
-                {
-                  backgroundColor: c.accent,
-                  borderRadius: 16,
-                  paddingVertical: 18,
-                  alignItems: 'center',
-                  shadowColor: c.accent,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 8,
-                  elevation: 4,
-                },
-              ]}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <View style={{ alignItems: 'center' }}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: '700',
-                      color: '#FFFFFF',
-                    }}
-                  >
-                    {t('paywall_buy_button')} - {priceString}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      marginTop: 2,
-                    }}
-                  >
-                    {t('paywall_one_time')}
-                  </Text>
-                </View>
-              )}
-            </AnimatedPressable>
-          </Animated.View>
+            {/* Features */}
+            <View style={{ marginTop: 16 }}>
+              <FeatureRow
+                icon={<Infinity size={24} color={c.accent} strokeWidth={2} />}
+                title={t('paywall_feature_unlimited')}
+                description={t('paywall_feature_unlimited_desc')}
+                delay={200}
+              />
+              <FeatureRow
+                icon={<Headphones size={24} color={c.accent} strokeWidth={2} />}
+                title={t('paywall_feature_support')}
+                description={t('paywall_feature_support_desc')}
+                delay={300}
+              />
+              <FeatureRow
+                icon={<Sparkles size={24} color={c.accent} strokeWidth={2} />}
+                title={t('paywall_feature_lifetime')}
+                description={t('paywall_feature_lifetime_desc')}
+                delay={400}
+              />
+            </View>
 
-          {/* Restore Button */}
-          <Animated.View
-            entering={FadeInDown.duration(400).delay(600)}
-            style={{ paddingHorizontal: 20, marginBottom: 8 }}
-          >
-            <AnimatedPressable
-              onPress={handleRestore}
-              onPressIn={() => {
-                restoreScale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
-              }}
-              onPressOut={() => {
-                restoreScale.value = withSpring(1, { damping: 15, stiffness: 400 });
-              }}
-              disabled={isLoading}
-              style={[
-                restoreAnimatedStyle,
-                {
-                  paddingVertical: 14,
-                  alignItems: 'center',
-                },
-              ]}
-            >
-              <Text
+            {/* Spacer */}
+            <View style={{ flex: 1, minHeight: 20 }} />
+
+            {/* Message */}
+            {message && (
+              <Animated.View
+                entering={FadeIn.duration(300)}
                 style={{
-                  fontSize: 15,
-                  fontWeight: '500',
-                  color: c.textSecondary,
+                  marginHorizontal: 20,
+                  marginBottom: 16,
+                  padding: 14,
+                  borderRadius: 12,
+                  backgroundColor:
+                    message.type === 'success'
+                      ? 'rgba(34, 197, 94, 0.1)'
+                      : 'rgba(239, 68, 68, 0.1)',
                 }}
               >
-                {t('paywall_restore')}
-              </Text>
-            </AnimatedPressable>
-          </Animated.View>
-
-          {/* Coupon Input Section */}
-          {showCouponInput && (
-            <Animated.View
-              entering={FadeInDown.duration(300)}
-              exiting={FadeOut.duration(200)}
-              style={{
-                marginHorizontal: 20,
-                marginBottom: 12,
-                padding: 16,
-                backgroundColor: c.surface,
-                borderRadius: 16,
-                borderWidth: 1,
-                borderColor: isDark ? 'rgba(196, 167, 125, 0.2)' : 'rgba(196, 167, 125, 0.15)',
-              }}
-            >
-              {/* Coupon Header */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-                <Ticket size={20} color={c.accent} strokeWidth={2} />
                 <Text
                   style={{
-                    fontSize: 16,
-                    fontWeight: '600',
-                    color: c.text,
-                    marginLeft: 8,
+                    fontSize: 15,
+                    color: message.type === 'success' ? '#22C55E' : '#EF4444',
+                    textAlign: 'center',
+                    fontWeight: '500',
                   }}
                 >
-                  Cupom Promocional
+                  {message.text}
                 </Text>
-              </View>
+              </Animated.View>
+            )}
 
-              {/* Coupon Input */}
-              <TextInput
-                value={couponCode}
-                onChangeText={setCouponCode}
-                placeholder="Digite seu cupom"
-                placeholderTextColor={c.textTertiary}
-                autoCapitalize="characters"
-                style={{
-                  backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)',
-                  borderRadius: 12,
-                  paddingHorizontal: 16,
-                  paddingVertical: 14,
-                  fontSize: 16,
-                  color: c.text,
-                  marginBottom: 12,
-                  borderWidth: 1,
-                  borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+            {/* Purchase Button */}
+            <Animated.View
+              entering={FadeInDown.duration(400).delay(500)}
+              style={{ paddingHorizontal: 20, marginBottom: 12 }}
+            >
+              <AnimatedPressable
+                onPress={handlePurchase}
+                onPressIn={() => {
+                  buyScale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
                 }}
-              />
-
-              {/* Action Buttons */}
-              <View style={{ flexDirection: 'row', gap: 8 }}>
-                <Pressable
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    handleRedeemCoupon();
-                  }}
-                  disabled={isLoading}
-                  style={{
-                    flex: 1,
+                onPressOut={() => {
+                  buyScale.value = withSpring(1, { damping: 15, stiffness: 400 });
+                }}
+                disabled={isLoading}
+                style={[
+                  buyAnimatedStyle,
+                  {
                     backgroundColor: c.accent,
-                    borderRadius: 12,
-                    paddingVertical: 12,
+                    borderRadius: 16,
+                    paddingVertical: 18,
                     alignItems: 'center',
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: '600',
-                      color: '#FFFFFF',
-                    }}
-                  >
-                    Resgatar
-                  </Text>
-                </Pressable>
+                    shadowColor: c.accent,
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 8,
+                    elevation: 4,
+                  },
+                ]}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: '700',
+                        color: '#FFFFFF',
+                      }}
+                    >
+                      {t('paywall_buy_button')} - {priceString}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginTop: 2,
+                      }}
+                    >
+                      {t('paywall_one_time')}
+                    </Text>
+                  </View>
+                )}
+              </AnimatedPressable>
+            </Animated.View>
 
-                <Pressable
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    handleRestorePurchases();
-                  }}
-                  disabled={isLoading}
-                  style={{
-                    flex: 1,
-                    backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-                    borderRadius: 12,
-                    paddingVertical: 12,
+            {/* Restore Button */}
+            <Animated.View
+              entering={FadeInDown.duration(400).delay(600)}
+              style={{ paddingHorizontal: 20, marginBottom: 8 }}
+            >
+              <AnimatedPressable
+                onPress={handleRestore}
+                onPressIn={() => {
+                  restoreScale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
+                }}
+                onPressOut={() => {
+                  restoreScale.value = withSpring(1, { damping: 15, stiffness: 400 });
+                }}
+                disabled={isLoading}
+                style={[
+                  restoreAnimatedStyle,
+                  {
+                    paddingVertical: 14,
                     alignItems: 'center',
+                  },
+                ]}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: '500',
+                    color: c.textSecondary,
                   }}
                 >
+                  {t('paywall_restore')}
+                </Text>
+              </AnimatedPressable>
+            </Animated.View>
+
+            {/* Coupon Input Section */}
+            {showCouponInput && (
+              <Animated.View
+                entering={FadeInDown.duration(300)}
+                exiting={FadeOut.duration(200)}
+                style={{
+                  marginHorizontal: 20,
+                  marginBottom: 12,
+                  padding: 16,
+                  backgroundColor: c.surface,
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: isDark ? 'rgba(196, 167, 125, 0.2)' : 'rgba(196, 167, 125, 0.15)',
+                }}
+              >
+                {/* Coupon Header */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+                  <Ticket size={20} color={c.accent} strokeWidth={2} />
                   <Text
                     style={{
-                      fontSize: 15,
+                      fontSize: 16,
                       fontWeight: '600',
                       color: c.text,
+                      marginLeft: 8,
                     }}
                   >
-                    Restaurar
+                    Cupom Promocional
                   </Text>
-                </Pressable>
-              </View>
+                </View>
 
-              {/* Helper Text */}
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: c.textTertiary,
-                  textAlign: 'center',
-                  marginTop: 12,
-                }}
-              >
-                Insira um cupom válido ou restaure suas compras anteriores
-              </Text>
-            </Animated.View>
-          )}
+                {/* Coupon Input */}
+                <TextInput
+                  value={couponCode}
+                  onChangeText={setCouponCode}
+                  placeholder="Digite seu cupom"
+                  placeholderTextColor={c.textTertiary}
+                  autoCapitalize="characters"
+                  style={{
+                    backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)',
+                    borderRadius: 12,
+                    paddingHorizontal: 16,
+                    paddingVertical: 14,
+                    fontSize: 16,
+                    color: c.text,
+                    marginBottom: 12,
+                    borderWidth: 1,
+                    borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                  }}
+                />
 
-          {/* Close Button */}
-          <Animated.View
-            entering={FadeIn.duration(400).delay(700)}
-            style={{ paddingHorizontal: 20, paddingBottom: 20 }}
-          >
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onClose();
-              }}
-              style={{
-                paddingVertical: 12,
-                alignItems: 'center',
-              }}
+                {/* Action Buttons */}
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <Pressable
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      handleRedeemCoupon();
+                    }}
+                    disabled={isLoading}
+                    style={{
+                      flex: 1,
+                      backgroundColor: c.accent,
+                      borderRadius: 12,
+                      paddingVertical: 12,
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: '600',
+                        color: '#FFFFFF',
+                      }}
+                    >
+                      Resgatar
+                    </Text>
+                  </Pressable>
+
+                  <Pressable
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      handleRestorePurchases();
+                    }}
+                    disabled={isLoading}
+                    style={{
+                      flex: 1,
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                      borderRadius: 12,
+                      paddingVertical: 12,
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: '600',
+                        color: c.text,
+                      }}
+                    >
+                      Restaurar
+                    </Text>
+                  </Pressable>
+                </View>
+
+                {/* Helper Text */}
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: c.textTertiary,
+                    textAlign: 'center',
+                    marginTop: 12,
+                  }}
+                >
+                  Insira um cupom válido ou restaure suas compras anteriores
+                </Text>
+              </Animated.View>
+            )}
+
+            {/* Close Button */}
+            <Animated.View
+              entering={FadeIn.duration(400).delay(700)}
+              style={{ paddingHorizontal: 20 }}
             >
-              <Text
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onClose();
+                }}
                 style={{
-                  fontSize: 14,
-                  color: c.textTertiary,
+                  paddingVertical: 12,
+                  alignItems: 'center',
                 }}
               >
-                {t('paywall_close')}
-              </Text>
-            </Pressable>
-          </Animated.View>
-          {/* Bottom Safe Area */}
-          <SafeAreaView edges={['bottom']} style={{ backgroundColor: 'transparent' }} />
-        </SafeAreaView>
-      </View>
-    </ScrollView>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: c.textTertiary,
+                  }}
+                >
+                  {t('paywall_close')}
+                </Text>
+              </Pressable>
+            </Animated.View>
+          </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </Modal>
   );

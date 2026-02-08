@@ -12,8 +12,9 @@ import {
   Platform,
   Image,
   Dimensions,
+  ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import Animated, {
@@ -36,7 +37,6 @@ import {
   Sparkles,
   Ticket,
   X,
-  Infinity,
   Heart,
 } from 'lucide-react-native';
 import { useColors } from '@/components/design-system';
@@ -61,6 +61,7 @@ export function PremiumUpsellModal({
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
+  const insets = useSafeAreaInsets();
 
   const priceString = usePremiumStore((s) => s.priceString);
   const purchasePremium = usePremiumStore((s) => s.purchasePremium);
@@ -168,8 +169,6 @@ export function PremiumUpsellModal({
     onClose();
   };
 
-  const hasLimitContext = context !== 'general';
-
   const getContextTitle = () => {
     switch (context) {
       case 'pets': return 'Limite de Pets Atingido';
@@ -202,7 +201,6 @@ export function PremiumUpsellModal({
       presentationStyle="fullScreen"
       onRequestClose={onClose}
     >
-      {/* Background with gradient */}
       <View style={{ flex: 1 }}>
         <LinearGradient
           colors={
@@ -245,10 +243,19 @@ export function PremiumUpsellModal({
           ]}
         />
 
-        <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <ScrollView
             style={{ flex: 1 }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingTop: insets.top,
+              paddingBottom: insets.bottom + 20,
+            }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
             {/* Close button */}
             <View
@@ -669,17 +676,15 @@ export function PremiumUpsellModal({
               {/* Maybe Later */}
               <Pressable
                 onPress={handleClose}
-                style={{ alignItems: 'center', paddingVertical: 10, paddingBottom: 20 }}
+                style={{ alignItems: 'center', paddingVertical: 10 }}
               >
                 <Text style={{ fontSize: 14, color: c.textTertiary, fontWeight: '500' }}>
                   Talvez depois
                 </Text>
               </Pressable>
             </View>
-          </KeyboardAvoidingView>
-          {/* Bottom Safe Area */}
-          <SafeAreaView edges={['bottom']} style={{ backgroundColor: 'transparent' }} />
-        </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     </Modal>
   );
