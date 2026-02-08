@@ -38,9 +38,10 @@ import { isRevenueCatEnabled, getOfferings, getCustomerInfo } from '@/lib/revenu
 interface SandboxDevMenuProps {
   visible: boolean;
   onClose: () => void;
+  onOpenPremiumModal?: () => void;
 }
 
-export function SandboxDevMenu({ visible, onClose }: SandboxDevMenuProps) {
+export function SandboxDevMenu({ visible, onClose, onOpenPremiumModal }: SandboxDevMenuProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
@@ -236,11 +237,31 @@ export function SandboxDevMenu({ visible, onClose }: SandboxDevMenuProps) {
                 borderColor: c.border,
               }}
             >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                <Crown size={20} color={c.accent} />
-                <Text style={{ fontSize: 16, fontWeight: '600', color: c.text }}>
-                  Status Premium (Simulação Local)
-                </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <Crown size={20} color={c.accent} />
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: c.text }}>
+                    Status Premium (Simulação Local)
+                  </Text>
+                </View>
+                {onOpenPremiumModal && (
+                  <Pressable
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      onOpenPremiumModal();
+                    }}
+                    style={{
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
+                      borderRadius: 8,
+                      backgroundColor: c.accentLight,
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: c.accent }}>
+                      Testar Modal
+                    </Text>
+                  </Pressable>
+                )}
               </View>
 
               {/* Warning about local simulation */}

@@ -947,14 +947,6 @@ export default function SettingsScreen() {
                 onPress={() => setShowSandboxMenu(true)}
                 rightContent={<ChevronRight size={18} color={c.textTertiary} />}
               />
-              <View style={{ height: 1, backgroundColor: c.border, marginLeft: 66 }} />
-              <SettingRow
-                icon={<Crown size={18} color={c.accent} strokeWidth={2} />}
-                title="Test Premium Modal"
-                subtitle="Abrir modal de premium para teste rápido"
-                onPress={() => setShowPremiumModalTest(true)}
-                rightContent={<ChevronRight size={18} color={c.textTertiary} />}
-              />
             </Section>
           )}
 
@@ -1189,6 +1181,17 @@ export default function SettingsScreen() {
       <SandboxDevMenu
         visible={showSandboxMenu}
         onClose={() => setShowSandboxMenu(false)}
+        onOpenPremiumModal={() => {
+          setShowSandboxMenu(false);
+          setShowPremiumModalTest(true);
+        }}
+      />
+
+      {/* Premium Modal for testing */}
+      <PremiumUpsellModal
+        visible={showPremiumModalTest}
+        onClose={() => setShowPremiumModalTest(false)}
+        context="general"
       />
     </View>
   );
