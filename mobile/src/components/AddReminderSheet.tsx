@@ -89,6 +89,23 @@ export function AddReminderSheet({
     try {
       if (editItem) {
         // Edit mode: update single reminder
+        let calendarEventId = editItem.calendarEventId;
+
+        // Add to calendar if requested
+        if (addToCalendar) {
+          const pet = pets.find((p) => p.id === selectedPetIds[0]);
+          const result = await calendarService.addReminderToCalendar(
+            title.trim(),
+            dateTime.toISOString(),
+            message.trim() || undefined,
+            pet?.name,
+            repeatType
+          );
+          if (result.success && result.eventId) {
+            calendarEventId = result.eventId;
+          }
+        }
+
         await updateReminder(editItem.id, {
           petId: selectedPetIds[0],
           title: title.trim(),
@@ -96,21 +113,28 @@ export function AddReminderSheet({
           dateTime: dateTime.toISOString(),
           repeatType,
           isEnabled: editItem.isEnabled,
+          calendarEventId,
         });
-
-        // Add to calendar if requested
-        if (addToCalendar) {
-          const pet = pets.find((p) => p.id === selectedPetIds[0]);
-          await calendarService.addReminderToCalendar(
-            title.trim(),
-            dateTime.toISOString(),
-            message.trim() || undefined,
-            pet?.name
-          );
-        }
       } else {
         // Create mode: create one reminder for each selected pet
         const promises = selectedPetIds.map(async (petId) => {
+          let calendarEventId: string | undefined;
+
+          // Add to calendar if requested
+          if (addToCalendar) {
+            const pet = pets.find((p) => p.id === petId);
+            const result = await calendarService.addReminderToCalendar(
+              title.trim(),
+              dateTime.toISOString(),
+              message.trim() || undefined,
+              pet?.name,
+              repeatType
+            );
+            if (result.success && result.eventId) {
+              calendarEventId = result.eventId;
+            }
+          }
+
           await addReminder({
             petId,
             title: title.trim(),
@@ -118,18 +142,8 @@ export function AddReminderSheet({
             dateTime: dateTime.toISOString(),
             repeatType,
             isEnabled: true,
+            calendarEventId,
           });
-
-          // Add to calendar if requested
-          if (addToCalendar) {
-            const pet = pets.find((p) => p.id === petId);
-            await calendarService.addReminderToCalendar(
-              title.trim(),
-              dateTime.toISOString(),
-              message.trim() || undefined,
-              pet?.name
-            );
-          }
         });
         await Promise.all(promises);
       }
@@ -156,6 +170,10 @@ export function AddReminderSheet({
           style: 'destructive',
           onPress: async () => {
             try {
+              // Delete from calendar if it was added
+              if (editItem.calendarEventId) {
+                await calendarService.deleteEvent(editItem.calendarEventId);
+              }
               await deleteReminder(editItem.id);
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
               onClose();

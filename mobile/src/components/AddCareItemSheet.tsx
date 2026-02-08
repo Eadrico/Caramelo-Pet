@@ -124,45 +124,57 @@ export function AddCareItemSheet({
     try {
       if (editItem) {
         // Edit mode: update single item
+        let calendarEventId = editItem.calendarEventId;
+
+        // Add to calendar if requested
+        if (addToCalendar) {
+          const pet = pets.find((p) => p.id === selectedPetIds[0]);
+          const result = await calendarService.addCareItemToCalendar(
+            title.trim(),
+            dueDate.toISOString(),
+            notes.trim() || undefined,
+            pet?.name
+          );
+          if (result.success && result.eventId) {
+            calendarEventId = result.eventId;
+          }
+        }
+
         await updateCareItem(editItem.id, {
           petId: selectedPetIds[0],
           type: selectedType,
           title: title.trim(),
           dueDate: dueDate.toISOString(),
           notes: notes.trim() || undefined,
+          calendarEventId,
         });
-
-        // Add to calendar if requested
-        if (addToCalendar) {
-          const pet = pets.find((p) => p.id === selectedPetIds[0]);
-          await calendarService.addCareItemToCalendar(
-            title.trim(),
-            dueDate.toISOString(),
-            notes.trim() || undefined,
-            pet?.name
-          );
-        }
       } else {
         // Create mode: create one item for each selected pet
         const promises = selectedPetIds.map(async (petId) => {
+          let calendarEventId: string | undefined;
+
+          // Add to calendar if requested
+          if (addToCalendar) {
+            const pet = pets.find((p) => p.id === petId);
+            const result = await calendarService.addCareItemToCalendar(
+              title.trim(),
+              dueDate.toISOString(),
+              notes.trim() || undefined,
+              pet?.name
+            );
+            if (result.success && result.eventId) {
+              calendarEventId = result.eventId;
+            }
+          }
+
           await addCareItem({
             petId,
             type: selectedType,
             title: title.trim(),
             dueDate: dueDate.toISOString(),
             notes: notes.trim() || undefined,
+            calendarEventId,
           });
-
-          // Add to calendar if requested
-          if (addToCalendar) {
-            const pet = pets.find((p) => p.id === petId);
-            await calendarService.addCareItemToCalendar(
-              title.trim(),
-              dueDate.toISOString(),
-              notes.trim() || undefined,
-              pet?.name
-            );
-          }
         });
         await Promise.all(promises);
       }
@@ -189,6 +201,10 @@ export function AddCareItemSheet({
           style: 'destructive',
           onPress: async () => {
             try {
+              // Delete from calendar if it was added
+              if (editItem.calendarEventId) {
+                await calendarService.deleteEvent(editItem.calendarEventId);
+              }
               await deleteCareItem(editItem.id);
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
               onClose();
