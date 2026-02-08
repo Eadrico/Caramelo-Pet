@@ -1,5 +1,5 @@
 // Premium Upsell Modal - Full screen modal with iridescent Liquid Glass CTA
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,9 @@ import {
   useColorScheme,
   Modal,
   ActivityIndicator,
-  Dimensions,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -22,26 +24,26 @@ import Animated, {
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import {
-  X,
   Crown,
   PawPrint,
   Bell,
   Calendar,
   Check,
   Sparkles,
+  Ticket,
+  X,
 } from 'lucide-react-native';
 import { useColors } from '@/components/design-system';
 import { usePremiumStore } from '@/lib/premium-store';
 
-export type UpsellContext = 'pets' | 'care' | 'reminders';
+// 'general' is for settings - no limit message
+export type UpsellContext = 'pets' | 'care' | 'reminders' | 'general';
 
 interface PremiumUpsellModalProps {
   visible: boolean;
   onClose: () => void;
   context: UpsellContext;
 }
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export function PremiumUpsellModal({
   visible,
@@ -54,7 +56,14 @@ export function PremiumUpsellModal({
 
   const priceString = usePremiumStore((s) => s.priceString);
   const purchasePremium = usePremiumStore((s) => s.purchasePremium);
+  const redeemCoupon = usePremiumStore((s) => s.redeemCoupon);
   const isLoading = usePremiumStore((s) => s.isLoading);
+
+  // Coupon state
+  const [showCouponInput, setShowCouponInput] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [isRedeemingCoupon, setIsRedeemingCoupon] = useState(false);
 
   // Iridescent animation
   const shimmerProgress = useSharedValue(0);
@@ -66,6 +75,10 @@ export function PremiumUpsellModal({
         -1,
         false
       );
+      // Reset coupon state when modal opens
+      setShowCouponInput(false);
+      setCouponCode('');
+      setCouponError(null);
     }
   }, [visible, shimmerProgress]);
 
@@ -96,25 +109,60 @@ export function PremiumUpsellModal({
     }
   };
 
+  const handleRedeemCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError('Digite um cupom válido');
+      return;
+    }
+
+    setIsRedeemingCoupon(true);
+    setCouponError(null);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    const result = await redeemCoupon(couponCode.trim());
+
+    if (result.success) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      onClose();
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      setCouponError(result.error ?? 'Erro ao resgatar cupom');
+    }
+
+    setIsRedeemingCoupon(false);
+  };
+
+  const handleClose = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onClose();
+  };
+
+  // Only show limit message for specific contexts (not 'general')
+  const hasLimitContext = context !== 'general';
+
   const getContextTitle = () => {
     switch (context) {
       case 'pets':
-        return 'Limite de Pets';
+        return 'Limite de Pets Atingido';
       case 'care':
-        return 'Limite de Cuidados';
+        return 'Limite de Cuidados Atingido';
       case 'reminders':
-        return 'Limite de Lembretes';
+        return 'Limite de Lembretes Atingido';
+      case 'general':
+        return 'Caramelo Premium';
     }
   };
 
   const getContextDescription = () => {
     switch (context) {
       case 'pets':
-        return 'Desbloqueie pets ilimitados';
+        return 'Você atingiu o limite de pets do plano gratuito';
       case 'care':
-        return 'Desbloqueie cuidados ilimitados';
+        return 'Você atingiu o limite de cuidados do plano gratuito';
       case 'reminders':
-        return 'Desbloqueie lembretes ilimitados';
+        return 'Você atingiu o limite de lembretes do plano gratuito';
+      case 'general':
+        return 'Desbloqueie todo o potencial do app';
     }
   };
 
@@ -126,6 +174,8 @@ export function PremiumUpsellModal({
         return <Calendar size={28} color="#FFFFFF" />;
       case 'reminders':
         return <Bell size={28} color="#FFFFFF" />;
+      case 'general':
+        return <Crown size={28} color="#FFFFFF" />;
     }
   };
 
@@ -143,7 +193,10 @@ export function PremiumUpsellModal({
       presentationStyle="fullScreen"
       onRequestClose={onClose}
     >
-      <View style={{ flex: 1, backgroundColor: c.background }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1, backgroundColor: c.background }}
+      >
         <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
           {/* Close button */}
           <View
@@ -155,10 +208,7 @@ export function PremiumUpsellModal({
             }}
           >
             <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onClose();
-              }}
+              onPress={handleClose}
               style={{
                 width: 32,
                 height: 32,
@@ -181,7 +231,7 @@ export function PremiumUpsellModal({
             }}
           >
             {/* Context Icon */}
-            <View style={{ alignItems: 'center', marginBottom: 20 }}>
+            <View style={{ alignItems: 'center', marginBottom: 16 }}>
               <LinearGradient
                 colors={['#D4A574', '#C4956A', '#B8855F']}
                 start={{ x: 0, y: 0 }}
@@ -206,7 +256,7 @@ export function PremiumUpsellModal({
             {/* Title & Subtitle */}
             <Text
               style={{
-                fontSize: 26,
+                fontSize: 24,
                 fontWeight: '700',
                 color: c.text,
                 textAlign: 'center',
@@ -222,43 +272,45 @@ export function PremiumUpsellModal({
                 fontSize: 15,
                 color: c.textSecondary,
                 textAlign: 'center',
-                marginBottom: 32,
+                marginBottom: hasLimitContext ? 24 : 20,
               }}
             >
               {getContextDescription()}
             </Text>
 
-            {/* Premium Badge */}
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: 20,
-                gap: 6,
-              }}
-            >
-              <Crown size={18} color={c.accent} />
-              <Text
+            {/* Premium Badge - only show for general context */}
+            {!hasLimitContext && (
+              <View
                 style={{
-                  fontSize: 16,
-                  fontWeight: '600',
-                  color: c.accent,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 16,
+                  gap: 6,
                 }}
               >
-                Caramelo Premium
-              </Text>
-              <Sparkles size={14} color={c.accent} />
-            </View>
+                <Sparkles size={14} color={c.accent} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    color: c.accent,
+                  }}
+                >
+                  Pagamento único, use para sempre
+                </Text>
+                <Sparkles size={14} color={c.accent} />
+              </View>
+            )}
 
             {/* Benefits - Compact List */}
             <View
               style={{
                 backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)',
                 borderRadius: 16,
-                paddingVertical: 16,
-                paddingHorizontal: 20,
-                marginBottom: 32,
+                paddingVertical: 14,
+                paddingHorizontal: 18,
+                marginBottom: 24,
               }}
             >
               {benefits.map((benefit, index) => (
@@ -267,25 +319,25 @@ export function PremiumUpsellModal({
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    gap: 12,
-                    paddingVertical: 8,
+                    gap: 10,
+                    paddingVertical: 6,
                   }}
                 >
                   <View
                     style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: 11,
+                      width: 20,
+                      height: 20,
+                      borderRadius: 10,
                       backgroundColor: c.accentLight,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
                   >
-                    <Check size={14} color={c.accent} strokeWidth={3} />
+                    <Check size={12} color={c.accent} strokeWidth={3} />
                   </View>
                   <Text
                     style={{
-                      fontSize: 15,
+                      fontSize: 14,
                       color: c.text,
                       fontWeight: '500',
                     }}
@@ -297,10 +349,10 @@ export function PremiumUpsellModal({
             </View>
 
             {/* Price */}
-            <View style={{ alignItems: 'center', marginBottom: 20 }}>
+            <View style={{ alignItems: 'center', marginBottom: 16 }}>
               <Text
                 style={{
-                  fontSize: 36,
+                  fontSize: 32,
                   fontWeight: '700',
                   color: c.text,
                   letterSpacing: -1,
@@ -310,7 +362,7 @@ export function PremiumUpsellModal({
               </Text>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 12,
                   color: c.textTertiary,
                   marginTop: 2,
                 }}
@@ -326,12 +378,13 @@ export function PremiumUpsellModal({
               style={({ pressed }) => ({
                 opacity: pressed ? 0.95 : 1,
                 transform: [{ scale: pressed ? 0.98 : 1 }],
+                marginBottom: 12,
               })}
             >
               <Animated.View
                 style={[
                   {
-                    borderRadius: 20,
+                    borderRadius: 16,
                     borderWidth: 1.5,
                     overflow: 'hidden',
                   },
@@ -374,8 +427,8 @@ export function PremiumUpsellModal({
                   intensity={isDark ? 40 : 60}
                   tint={isDark ? 'dark' : 'light'}
                   style={{
-                    paddingVertical: 18,
-                    paddingHorizontal: 32,
+                    paddingVertical: 16,
+                    paddingHorizontal: 24,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -386,10 +439,10 @@ export function PremiumUpsellModal({
                     <ActivityIndicator color={c.accent} size="small" />
                   ) : (
                     <>
-                      <Crown size={22} color={c.accent} strokeWidth={2.5} />
+                      <Crown size={20} color={c.accent} strokeWidth={2.5} />
                       <Text
                         style={{
-                          fontSize: 17,
+                          fontSize: 16,
                           fontWeight: '700',
                           color: c.text,
                           letterSpacing: -0.3,
@@ -417,9 +470,120 @@ export function PremiumUpsellModal({
                 />
               </Animated.View>
             </Pressable>
+
+            {/* Coupon Section */}
+            {showCouponInput ? (
+              <View style={{ marginBottom: 12 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 10,
+                  }}
+                >
+                  <TextInput
+                    value={couponCode}
+                    onChangeText={(text) => {
+                      setCouponCode(text);
+                      setCouponError(null);
+                    }}
+                    placeholder="Digite seu cupom"
+                    placeholderTextColor={c.textTertiary}
+                    autoCapitalize="characters"
+                    autoCorrect={false}
+                    style={{
+                      flex: 1,
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.03)',
+                      borderRadius: 12,
+                      paddingVertical: 12,
+                      paddingHorizontal: 16,
+                      fontSize: 15,
+                      color: c.text,
+                      borderWidth: 1,
+                      borderColor: couponError ? '#EF4444' : c.border,
+                    }}
+                  />
+                  <Pressable
+                    onPress={handleRedeemCoupon}
+                    disabled={isRedeemingCoupon}
+                    style={{
+                      backgroundColor: c.accent,
+                      paddingVertical: 12,
+                      paddingHorizontal: 16,
+                      borderRadius: 12,
+                    }}
+                  >
+                    {isRedeemingCoupon ? (
+                      <ActivityIndicator color="#FFFFFF" size="small" />
+                    ) : (
+                      <Text style={{ color: '#FFFFFF', fontWeight: '600', fontSize: 14 }}>
+                        Aplicar
+                      </Text>
+                    )}
+                  </Pressable>
+                </View>
+                {couponError && (
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: '#EF4444',
+                      marginTop: 6,
+                      marginLeft: 4,
+                    }}
+                  >
+                    {couponError}
+                  </Text>
+                )}
+              </View>
+            ) : (
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setShowCouponInput(true);
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  paddingVertical: 10,
+                  marginBottom: 4,
+                }}
+              >
+                <Ticket size={16} color={c.textSecondary} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: c.textSecondary,
+                    fontWeight: '500',
+                  }}
+                >
+                  Tenho um cupom
+                </Text>
+              </Pressable>
+            )}
+
+            {/* Maybe Later Button */}
+            <Pressable
+              onPress={handleClose}
+              style={{
+                alignItems: 'center',
+                paddingVertical: 12,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: c.textTertiary,
+                  fontWeight: '500',
+                }}
+              >
+                Talvez depois
+              </Text>
+            </Pressable>
           </View>
         </SafeAreaView>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

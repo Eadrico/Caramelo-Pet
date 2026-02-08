@@ -43,7 +43,7 @@ import { useSettingsStore, ThemeMode, LanguageMode } from '@/lib/settings-store'
 import { useStore } from '@/lib/store';
 import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
 import { useColors } from '@/components/design-system';
-import { PaywallScreen } from '@/components/PaywallScreen';
+import { PremiumUpsellModal } from '@/components/PremiumUpsellModal';
 import { router } from 'expo-router';
 import { useTranslation } from '@/lib/i18n';
 import { isSandboxEnvironment } from '@/lib/sandboxDetection';
@@ -1162,10 +1162,11 @@ export default function SettingsScreen() {
         saveText={t('settings_save')}
       />
 
-      {/* Paywall */}
-      <PaywallScreen
+      {/* Premium Upsell Modal */}
+      <PremiumUpsellModal
         visible={showPaywall}
         onClose={() => setShowPaywall(false)}
+        context="general"
       />
 
       {/* Sandbox Developer Menu */}

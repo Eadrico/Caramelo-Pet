@@ -33,7 +33,6 @@ import { AddReminderSheet } from '@/components/AddReminderSheet';
 import { AddItemSelector } from '@/components/AddItemSelector';
 import { AddPetWizard } from '@/components/AddPetWizard';
 import { PetDetailScreen } from '@/components/PetDetailScreen';
-import { PaywallScreen } from '@/components/PaywallScreen';
 import { PremiumUpsellModal, UpsellContext } from '@/components/PremiumUpsellModal';
 import { useTranslation } from '@/lib/i18n';
 import { usePremiumStore, FREE_PET_LIMIT_COUNT, FREE_CARE_LIMIT_COUNT, FREE_REMINDER_LIMIT_COUNT } from '@/lib/premium-store';
@@ -70,7 +69,6 @@ export function HomeScreen() {
   const [showAddSheet, setShowAddSheet] = useState(false);
   const [showAddReminderSheet, setShowAddReminderSheet] = useState(false);
   const [showItemSelector, setShowItemSelector] = useState(false);
-  const [showPaywall, setShowPaywall] = useState(false);
   const [showAddPetWizard, setShowAddPetWizard] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [showUpsellModal, setShowUpsellModal] = useState(false);
@@ -91,9 +89,9 @@ export function HomeScreen() {
       setShowAddSheet(false);
       setShowAddReminderSheet(false);
       setShowItemSelector(false);
-      setShowPaywall(false);
       setShowAddPetWizard(false);
       setShowAddMenu(false);
+      setShowUpsellModal(false);
       setEditingItem(undefined);
       setEditingReminder(undefined);
 
@@ -566,17 +564,6 @@ export function HomeScreen() {
         visible={showAddPetWizard}
         onClose={() => setShowAddPetWizard(false)}
         onComplete={handleAddPetComplete}
-      />
-
-      {/* Premium Paywall */}
-      <PaywallScreen
-        visible={showPaywall}
-        onClose={() => setShowPaywall(false)}
-        onPurchaseSuccess={() => {
-          setShowPaywall(false);
-          // After successful purchase, show add pet wizard
-          setShowAddPetWizard(true);
-        }}
       />
 
       {/* Premium Upsell Modal */}
