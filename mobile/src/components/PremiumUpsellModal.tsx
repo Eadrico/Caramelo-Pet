@@ -581,11 +581,11 @@ export function PremiumUpsellModal({
                   </Text>
                 </Pressable>
               ) : (
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginTop: 8, marginBottom: 16 }}>
                   {/* Header */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                    <Ticket size={22} color={c.text} strokeWidth={2} />
-                    <Text style={{ fontSize: 18, fontWeight: '600', color: c.text, letterSpacing: -0.3 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 28 }}>
+                    <Ticket size={24} color={c.text} strokeWidth={2.5} />
+                    <Text style={{ fontSize: 20, fontWeight: '700', color: c.text, letterSpacing: -0.5 }}>
                       Cupom Promocional
                     </Text>
                   </View>
@@ -594,7 +594,7 @@ export function PremiumUpsellModal({
                   <View
                     style={{
                       backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
-                      borderRadius: 14,
+                      borderRadius: 16,
                       borderWidth: 1.5,
                       borderColor: couponError
                         ? '#EF4444'
@@ -602,7 +602,7 @@ export function PremiumUpsellModal({
                         ? 'rgba(255,255,255,0.12)'
                         : 'rgba(0,0,0,0.08)',
                       overflow: 'hidden',
-                      marginBottom: 16,
+                      marginBottom: 24,
                     }}
                   >
                     <TextInput
@@ -619,9 +619,9 @@ export function PremiumUpsellModal({
                       returnKeyType="done"
                       onSubmitEditing={handleRedeemCoupon}
                       style={{
-                        paddingVertical: 16,
-                        paddingHorizontal: 18,
-                        fontSize: 16,
+                        paddingVertical: 18,
+                        paddingHorizontal: 20,
+                        fontSize: 17,
                         color: c.text,
                         fontWeight: '500',
                       }}
@@ -633,37 +633,37 @@ export function PremiumUpsellModal({
                     <View
                       style={{
                         backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        borderRadius: 12,
-                        paddingVertical: 10,
-                        paddingHorizontal: 14,
-                        marginBottom: 16,
+                        borderRadius: 14,
+                        paddingVertical: 12,
+                        paddingHorizontal: 16,
+                        marginBottom: 24,
                         borderWidth: 1,
                         borderColor: 'rgba(239, 68, 68, 0.2)',
                       }}
                     >
-                      <Text style={{ fontSize: 13, color: '#EF4444', textAlign: 'center', lineHeight: 18 }}>
+                      <Text style={{ fontSize: 14, color: '#EF4444', textAlign: 'center', lineHeight: 20 }}>
                         {couponError}
                       </Text>
                     </View>
                   )}
 
                   {/* Action Buttons */}
-                  <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+                  <View style={{ flexDirection: 'row', gap: 12, marginBottom: 20 }}>
                     <Pressable
                       onPress={handleRedeemCoupon}
                       disabled={isRedeemingCoupon || !couponCode.trim() || isLoading}
                       style={({ pressed }) => ({
                         flex: 1,
                         backgroundColor: c.accent,
-                        borderRadius: 14,
-                        paddingVertical: 15,
+                        borderRadius: 16,
+                        paddingVertical: 16,
                         alignItems: 'center',
                         opacity: pressed ? 0.85 : 1,
                         shadowColor: c.accent,
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                        elevation: 2,
+                        shadowOffset: { width: 0, height: 3 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 6,
+                        elevation: 3,
                       })}
                     >
                       {isRedeemingCoupon ? (
@@ -671,9 +671,10 @@ export function PremiumUpsellModal({
                       ) : (
                         <Text
                           style={{
-                            fontSize: 16,
-                            fontWeight: '600',
+                            fontSize: 17,
+                            fontWeight: '700',
                             color: '#FFFFFF',
+                            letterSpacing: -0.2,
                           }}
                         >
                           Resgatar
@@ -687,17 +688,18 @@ export function PremiumUpsellModal({
                       style={({ pressed }) => ({
                         flex: 1,
                         backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
-                        borderRadius: 14,
-                        paddingVertical: 15,
+                        borderRadius: 16,
+                        paddingVertical: 16,
                         alignItems: 'center',
                         opacity: pressed ? 0.7 : 1,
                       })}
                     >
                       <Text
                         style={{
-                          fontSize: 16,
+                          fontSize: 17,
                           fontWeight: '600',
                           color: c.text,
+                          letterSpacing: -0.2,
                         }}
                       >
                         Restaurar
@@ -708,11 +710,11 @@ export function PremiumUpsellModal({
                   {/* Helper Text */}
                   <Text
                     style={{
-                      fontSize: 13,
+                      fontSize: 14,
                       color: c.textSecondary,
                       textAlign: 'center',
-                      lineHeight: 18,
-                      paddingHorizontal: 4,
+                      lineHeight: 20,
+                      paddingHorizontal: 8,
                     }}
                   >
                     Insira um cupom válido ou restaure suas compras anteriores
