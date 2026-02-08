@@ -238,31 +238,51 @@ export const usePremiumStore = create<PremiumState>((set, get) => ({
   },
 
   toggleAdminMode: async () => {
-    const { isAdminMode } = get();
+    const { isAdminMode, isCouponMode } = get();
     const newMode = !isAdminMode;
 
     await AsyncStorage.setItem(ADMIN_MODE_KEY, newMode ? 'true' : 'false');
+
+    // When turning OFF admin mode, check if there's a real premium status
+    // When turning ON admin mode, force premium to true
+    let actualPremium = newMode;
+    if (!newMode) {
+      // Check if user has premium from coupon or RevenueCat
+      actualPremium = isCouponMode;
+      if (!actualPremium && isRevenueCatEnabled()) {
+        const result = await hasEntitlement(PREMIUM_ENTITLEMENT_ID);
+        if (result.ok) {
+          actualPremium = result.data;
+        }
+      }
+    }
+
     set({
       isAdminMode: newMode,
-      isPremium: newMode ? true : get().isPremium,
+      isPremium: actualPremium,
     });
-
-    // If turning off admin mode, re-check actual premium status
-    if (!newMode) {
-      get().checkPremiumStatus();
-    }
   },
 
   setAdminMode: async (enabled: boolean) => {
+    const { isCouponMode } = get();
     await AsyncStorage.setItem(ADMIN_MODE_KEY, enabled ? 'true' : 'false');
+
+    // Same logic as toggleAdminMode
+    let actualPremium = enabled;
+    if (!enabled) {
+      actualPremium = isCouponMode;
+      if (!actualPremium && isRevenueCatEnabled()) {
+        const result = await hasEntitlement(PREMIUM_ENTITLEMENT_ID);
+        if (result.ok) {
+          actualPremium = result.data;
+        }
+      }
+    }
+
     set({
       isAdminMode: enabled,
-      isPremium: enabled ? true : get().isPremium,
+      isPremium: actualPremium,
     });
-
-    if (!enabled) {
-      get().checkPremiumStatus();
-    }
   },
 
   canAddPet: (currentPetCount: number) => {

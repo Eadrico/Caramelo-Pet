@@ -633,8 +633,6 @@ export default function SettingsScreen() {
 
   // Premium state
   const isPremium = usePremiumStore((s) => s.isPremium);
-  const isAdminMode = usePremiumStore((s) => s.isAdminMode);
-  const toggleAdminMode = usePremiumStore((s) => s.toggleAdminMode);
   const initializePremium = usePremiumStore((s) => s.initialize);
   const isPremiumInitialized = usePremiumStore((s) => s.isInitialized);
 
@@ -656,9 +654,7 @@ export default function SettingsScreen() {
   // Check if running in sandbox environment
   const isSandbox = isSandboxEnvironment();
 
-  // Admin mode tap counter for secret access
-  const [adminTapCount, setAdminTapCount] = useState(0);
-  const [showAdminSection, setShowAdminSection] = useState(false);
+  // Admin mode tap counter for secret access - removed, now using sandbox menu
 
   useEffect(() => {
     if (!isInitialized) {
@@ -671,13 +667,6 @@ export default function SettingsScreen() {
       initializePremium();
     }
   }, [isPremiumInitialized]);
-
-  // Show admin section if already in admin mode
-  useEffect(() => {
-    if (isAdminMode) {
-      setShowAdminSection(true);
-    }
-  }, [isAdminMode]);
 
   // Apply theme
   useEffect(() => {
@@ -711,28 +700,6 @@ export default function SettingsScreen() {
     } catch (error) {
       console.error('Error resetting app:', error);
     }
-  };
-
-  // Secret admin mode activation - tap title 5 times
-  const handleTitleTap = () => {
-    const newCount = adminTapCount + 1;
-    setAdminTapCount(newCount);
-
-    if (newCount >= 5) {
-      setShowAdminSection(true);
-      setAdminTapCount(0);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    } else if (newCount === 3) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-
-    // Reset counter after 2 seconds
-    setTimeout(() => setAdminTapCount(0), 2000);
-  };
-
-  const handleToggleAdmin = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    toggleAdminMode();
   };
 
   const languageOptions: { value: LanguageMode; label: string; icon: React.ReactNode }[] = [
@@ -812,8 +779,7 @@ export default function SettingsScreen() {
 
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         {/* Header */}
-        <Pressable
-          onPress={handleTitleTap}
+        <View
           style={{
             paddingHorizontal: 20,
             paddingTop: 8,
@@ -830,7 +796,7 @@ export default function SettingsScreen() {
           >
             {t('settings_title')}
           </Text>
-        </Pressable>
+        </View>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -980,60 +946,6 @@ export default function SettingsScreen() {
                 onPress={() => setShowSandboxMenu(true)}
                 rightContent={<ChevronRight size={18} color={c.textTertiary} />}
               />
-            </Section>
-          )}
-
-          {/* Admin/Developer Section - Hidden by default, shown after 5 taps on title */}
-          {showAdminSection && (
-            <Section title={t('settings_developer')}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingVertical: 14,
-                  paddingHorizontal: 16,
-                  gap: 14,
-                }}
-              >
-                <View
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    backgroundColor: 'rgba(234, 179, 8, 0.15)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Bug size={18} color="#EAB308" strokeWidth={2} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: '500',
-                      color: c.text,
-                    }}
-                  >
-                    {t('settings_admin_mode')}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: c.textSecondary,
-                      marginTop: 2,
-                    }}
-                  >
-                    {t('settings_admin_desc')}
-                  </Text>
-                </View>
-                <Switch
-                  value={isAdminMode}
-                  onValueChange={handleToggleAdmin}
-                  trackColor={{ false: c.border, true: c.accent }}
-                  thumbColor="#FFFFFF"
-                />
-              </View>
             </Section>
           )}
 
