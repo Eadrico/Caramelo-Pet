@@ -236,10 +236,28 @@ export function SandboxDevMenu({ visible, onClose }: SandboxDevMenuProps) {
                 borderColor: c.border,
               }}
             >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                 <Crown size={20} color={c.accent} />
                 <Text style={{ fontSize: 16, fontWeight: '600', color: c.text }}>
-                  Status Premium
+                  Status Premium (Simulação Local)
+                </Text>
+              </View>
+
+              {/* Warning about local simulation */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                  gap: 8,
+                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  padding: 10,
+                  borderRadius: 8,
+                  marginBottom: 16,
+                }}
+              >
+                <Info size={16} color="#3B82F6" style={{ marginTop: 2 }} />
+                <Text style={{ flex: 1, fontSize: 11, color: '#3B82F6', lineHeight: 16 }}>
+                  Estas configurações são apenas para testes locais e não afetam usuários da App Store ou TestFlight.
                 </Text>
               </View>
 
@@ -307,29 +325,80 @@ export function SandboxDevMenu({ visible, onClose }: SandboxDevMenuProps) {
                 </Text>
               </View>
 
-              {/* Admin Toggle */}
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  paddingTop: 12,
-                }}
-              >
-                <View>
-                  <Text style={{ fontSize: 14, color: c.text, fontWeight: '500' }}>
-                    Simular Premium
-                  </Text>
-                  <Text style={{ fontSize: 12, color: c.textSecondary, marginTop: 2 }}>
-                    Ativa premium sem compra real
-                  </Text>
-                </View>
-                <Switch
-                  value={isAdminMode}
-                  onValueChange={handleTogglePremium}
-                  trackColor={{ false: c.border, true: c.accent }}
-                  thumbColor="#FFFFFF"
-                />
+              {/* Simulate Premium/Free Toggle */}
+              <View style={{ paddingTop: 16, gap: 12 }}>
+                <Text style={{ fontSize: 13, color: c.textSecondary, fontWeight: '500' }}>
+                  Modo de Teste
+                </Text>
+
+                {/* Free Mode Button */}
+                <Pressable
+                  onPress={() => {
+                    if (isAdminMode) {
+                      handleTogglePremium();
+                    }
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: 12,
+                    borderRadius: 10,
+                    backgroundColor: !isAdminMode
+                      ? (isDark ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.1)')
+                      : (isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'),
+                    borderWidth: !isAdminMode ? 1.5 : 1,
+                    borderColor: !isAdminMode ? '#3B82F6' : c.border,
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: c.text }}>
+                      Modo Gratuito (Testar limites)
+                    </Text>
+                    <Text style={{ fontSize: 12, color: c.textSecondary, marginTop: 2 }}>
+                      2 pets, 1 cuidado, 1 lembrete
+                    </Text>
+                  </View>
+                  {!isAdminMode && (
+                    <CheckCircle size={20} color="#3B82F6" />
+                  )}
+                </Pressable>
+
+                {/* Premium Mode Button */}
+                <Pressable
+                  onPress={() => {
+                    if (!isAdminMode) {
+                      handleTogglePremium();
+                    }
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: 12,
+                    borderRadius: 10,
+                    backgroundColor: isAdminMode
+                      ? (isDark ? 'rgba(212, 165, 116, 0.15)' : 'rgba(212, 165, 116, 0.1)')
+                      : (isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'),
+                    borderWidth: isAdminMode ? 1.5 : 1,
+                    borderColor: isAdminMode ? c.accent : c.border,
+                  }}
+                >
+                  <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <Crown size={18} color={isAdminMode ? c.accent : c.textTertiary} />
+                    <View>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: c.text }}>
+                        Modo Premium (Testar recursos)
+                      </Text>
+                      <Text style={{ fontSize: 12, color: c.textSecondary, marginTop: 2 }}>
+                        Tudo ilimitado
+                      </Text>
+                    </View>
+                  </View>
+                  {isAdminMode && (
+                    <CheckCircle size={20} color={c.accent} />
+                  )}
+                </Pressable>
               </View>
             </View>
 
