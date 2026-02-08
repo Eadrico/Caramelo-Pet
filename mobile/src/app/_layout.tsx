@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 import { useSettingsStore } from '@/lib/settings-store';
 import { useStore } from '@/lib/store';
 import { LanguageProvider } from '@/lib/i18n';
-import { Image } from 'react-native';
 import { Asset } from 'expo-asset';
 import { migratePetsToAssets } from '@/lib/pet-migration';
 
@@ -82,13 +81,13 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
       require('../../assets/fuba-new.png'),
       require('../../assets/baunilha-new.png'),
     ]);
-  }, []);
+  }, [initializeSettings, initializeApp]);
 
   // Handle navigation based on onboarding state - only after navigation is ready
   useEffect(() => {
     if (settingsInitialized && appInitialized && isNavigationReady && !hasNavigated) {
       // Keep splash screen visible for 3.5 seconds
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         SplashScreen.hideAsync();
         setHasNavigated(true);
 
@@ -98,6 +97,8 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
           router.replace('/onboarding');
         }
       }, 3500); // 3.5 seconds delay
+
+      return () => clearTimeout(timer);
     }
   }, [settingsInitialized, appInitialized, hasCompletedOnboarding, isNavigationReady, hasNavigated]);
 

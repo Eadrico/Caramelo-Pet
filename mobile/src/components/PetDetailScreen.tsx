@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -28,13 +28,11 @@ import {
   Phone,
   FileText,
   Bell,
-  Plus,
   Trash2,
   Edit3,
   Check,
   X,
   AlertCircle,
-  Pill,
   Tag,
   Camera,
 } from 'lucide-react-native';
@@ -43,7 +41,6 @@ import {
   Pet,
   CareItem,
   Reminder,
-  formatDate,
   formatRelativeDate,
   formatAge,
   getRepeatLabel,
@@ -52,9 +49,6 @@ import {
 } from '@/lib/types';
 import {
   useColors,
-  GlassCard,
-  PrimaryButton,
-  SecondaryButton,
   SectionHeader,
 } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';

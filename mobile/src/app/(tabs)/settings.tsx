@@ -11,7 +11,6 @@ import {
   Image,
   Platform,
   Appearance,
-  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -172,8 +171,6 @@ function Section({
   children: React.ReactNode;
 }) {
   const c = useColors();
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
 
   return (
     <View style={{ marginBottom: 24 }}>
@@ -225,8 +222,6 @@ function SelectionModal<T extends string>({
   onSelect,
 }: SelectionModalProps<T>) {
   const c = useColors();
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
 
   return (
     <Modal
@@ -661,13 +656,13 @@ export default function SettingsScreen() {
     if (!isInitialized) {
       initialize();
     }
-  }, [isInitialized]);
+  }, [isInitialized, initialize]);
 
   useEffect(() => {
     if (!isPremiumInitialized) {
       initializePremium();
     }
-  }, [isPremiumInitialized]);
+  }, [isPremiumInitialized, initializePremium]);
 
   // Apply theme
   useEffect(() => {

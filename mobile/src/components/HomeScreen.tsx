@@ -17,13 +17,12 @@ import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Plus, Calendar, PawPrint, Crown, Stethoscope } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
-import { CareItem } from '@/lib/types';
+import { CareItem, Reminder } from '@/lib/types';
 import { calendarService } from '@/lib/calendarService';
 import {
   useColors,
   SectionHeader,
   EmptyState,
-  IconButton,
 } from '@/components/design-system';
 import { PetCard } from '@/components/home/PetCard';
 import { CareItemRow } from '@/components/home/CareItemRow';
@@ -35,8 +34,7 @@ import { AddPetWizard } from '@/components/AddPetWizard';
 import { PetDetailScreen } from '@/components/PetDetailScreen';
 import { PremiumUpsellModal, UpsellContext } from '@/components/PremiumUpsellModal';
 import { useTranslation } from '@/lib/i18n';
-import { usePremiumStore, FREE_PET_LIMIT_COUNT, FREE_CARE_LIMIT_COUNT, FREE_REMINDER_LIMIT_COUNT } from '@/lib/premium-store';
-import { Reminder } from '@/lib/types';
+import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
 import { useFocusEffect } from 'expo-router';
 
 export function HomeScreen() {
@@ -96,9 +94,11 @@ export function HomeScreen() {
       setEditingReminder(undefined);
 
       // Scroll to top after a small delay to ensure layout is ready
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         scrollViewRef.current?.scrollTo({ y: 0, animated: true });
       }, 100);
+
+      return () => clearTimeout(timer);
     }, [])
   );
 
@@ -175,11 +175,6 @@ export function HomeScreen() {
     setRefreshing(true);
     await refreshData();
     setRefreshing(false);
-  };
-
-  const handleAddPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setShowAddMenu(true);
   };
 
   const handleAddPressUnified = () => {

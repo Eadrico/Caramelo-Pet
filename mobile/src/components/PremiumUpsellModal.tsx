@@ -11,9 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  Dimensions,
   ScrollView,
-  Keyboard,
   Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,8 +24,6 @@ import Animated, {
   withTiming,
   interpolateColor,
   Easing,
-  withSequence,
-  withDelay,
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import {
@@ -52,8 +48,6 @@ interface PremiumUpsellModalProps {
   onClose: () => void;
   context: UpsellContext;
 }
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // App icon - optimized small version for instant loading
 const APP_ICON = require('../../assets/icon-small.png');
@@ -139,10 +133,6 @@ export function PremiumUpsellModal({
 
   const animatedGlowStyle = useAnimatedStyle(() => ({
     opacity: glowOpacity.value,
-  }));
-
-  const animatedIconStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: iconScale.value }],
   }));
 
   const animatedModalStyle = useAnimatedStyle(() => ({
