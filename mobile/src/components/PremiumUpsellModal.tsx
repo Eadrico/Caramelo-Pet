@@ -55,8 +55,8 @@ interface PremiumUpsellModalProps {
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// App icon - bundled locally, loads instantly
-const APP_ICON = require('../../assets/icon.png');
+// App icon - optimized small version for instant loading
+const APP_ICON = require('../../assets/icon-small.png');
 
 export function PremiumUpsellModal({
   visible,

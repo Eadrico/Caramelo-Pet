@@ -322,7 +322,7 @@ export function HomeScreen() {
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image
-                source={require('../../assets/Loki_log.png')}
+                source={require('../../assets/loki-logo-small.png')}
                 style={{
                   width: 34,
                   height: 34,
