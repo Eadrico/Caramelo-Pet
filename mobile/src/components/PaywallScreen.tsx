@@ -232,9 +232,9 @@ export function PaywallScreen({
               style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
             />
 
-        <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+        <SafeAreaView style={{ flex: 1 }} edges={['top']}>
           {/* Close Button */}
-          <View style={{ alignItems: 'flex-end', padding: 16 }}>
+          <View style={{ alignItems: 'flex-end', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}>
             <Pressable
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -586,7 +586,7 @@ export function PaywallScreen({
           {/* Close Button */}
           <Animated.View
             entering={FadeIn.duration(400).delay(700)}
-            style={{ paddingHorizontal: 20, marginBottom: 16 }}
+            style={{ paddingHorizontal: 20, paddingBottom: 20 }}
           >
             <Pressable
               onPress={() => {
@@ -608,6 +608,8 @@ export function PaywallScreen({
               </Text>
             </Pressable>
           </Animated.View>
+          {/* Bottom Safe Area */}
+          <SafeAreaView edges={['bottom']} style={{ backgroundColor: 'transparent' }} />
         </SafeAreaView>
       </View>
     </ScrollView>

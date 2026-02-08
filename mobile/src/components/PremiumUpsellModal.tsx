@@ -245,7 +245,7 @@ export function PremiumUpsellModal({
           ]}
         />
 
-        <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+        <SafeAreaView style={{ flex: 1 }} edges={['top']}>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1 }}
@@ -256,8 +256,8 @@ export function PremiumUpsellModal({
                 flexDirection: 'row',
                 justifyContent: 'flex-end',
                 paddingHorizontal: 20,
-                paddingTop: 4,
-                paddingBottom: 8,
+                paddingTop: 8,
+                paddingBottom: 16,
               }}
             >
               <Pressable
@@ -669,7 +669,7 @@ export function PremiumUpsellModal({
               {/* Maybe Later */}
               <Pressable
                 onPress={handleClose}
-                style={{ alignItems: 'center', paddingVertical: 10 }}
+                style={{ alignItems: 'center', paddingVertical: 10, paddingBottom: 20 }}
               >
                 <Text style={{ fontSize: 14, color: c.textTertiary, fontWeight: '500' }}>
                   Talvez depois
@@ -677,6 +677,8 @@ export function PremiumUpsellModal({
               </Pressable>
             </View>
           </KeyboardAvoidingView>
+          {/* Bottom Safe Area */}
+          <SafeAreaView edges={['bottom']} style={{ backgroundColor: 'transparent' }} />
         </SafeAreaView>
       </View>
     </Modal>
