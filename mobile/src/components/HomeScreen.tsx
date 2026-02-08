@@ -330,6 +330,7 @@ export function HomeScreen() {
                   borderRadius: 8,
                 }}
                 resizeMode="contain"
+                fadeDuration={0}
               />
               <Text
                 style={{

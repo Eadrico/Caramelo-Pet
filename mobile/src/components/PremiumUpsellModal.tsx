@@ -17,7 +17,6 @@ import {
   Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Asset } from 'expo-asset';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import Animated, {
@@ -56,11 +55,8 @@ interface PremiumUpsellModalProps {
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Pre-load the app icon for instant display
+// App icon - bundled locally, loads instantly
 const APP_ICON = require('../../assets/icon.png');
-
-// Preload the icon asset immediately when module loads
-Asset.fromModule(APP_ICON).downloadAsync();
 
 export function PremiumUpsellModal({
   visible,
