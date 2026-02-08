@@ -59,6 +59,9 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 // Pre-load the app icon for instant display
 const APP_ICON = require('../../assets/icon.png');
 
+// Preload the icon asset immediately when module loads
+Asset.fromModule(APP_ICON).downloadAsync();
+
 export function PremiumUpsellModal({
   visible,
   onClose,
@@ -86,39 +89,43 @@ export function PremiumUpsellModal({
   const shimmerProgress = useSharedValue(0);
   const glowOpacity = useSharedValue(0.3);
   const iconScale = useSharedValue(1);
+  const modalOpacity = useSharedValue(0);
+  const modalTranslateY = useSharedValue(20);
 
   useEffect(() => {
     if (visible) {
+      // Modal entrance animation
+      modalOpacity.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) });
+      modalTranslateY.value = withTiming(0, { duration: 350, easing: Easing.out(Easing.cubic) });
+
       // Iridescent border animation
       shimmerProgress.value = withRepeat(
         withTiming(1, { duration: 3000, easing: Easing.linear }),
         -1,
         false
       );
-      // Glow pulse animation
+      // Glow pulse animation - more fluid
       glowOpacity.value = withRepeat(
-        withSequence(
-          withTiming(0.6, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
-          withTiming(0.3, { duration: 1500, easing: Easing.inOut(Easing.ease) })
-        ),
+        withTiming(0.6, { duration: 2000, easing: Easing.inOut(Easing.sin) }),
         -1,
-        false
+        true
       );
-      // Icon subtle pulse
+      // Icon subtle pulse - more fluid
       iconScale.value = withRepeat(
-        withSequence(
-          withDelay(500, withTiming(1.05, { duration: 1000, easing: Easing.inOut(Easing.ease) })),
-          withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) })
-        ),
+        withTiming(1.08, { duration: 2000, easing: Easing.inOut(Easing.sin) }),
         -1,
-        false
+        true
       );
       // Reset coupon state
       setShowCouponInput(false);
       setCouponCode('');
       setCouponError(null);
+    } else {
+      // Modal exit animation
+      modalOpacity.value = 0;
+      modalTranslateY.value = 20;
     }
-  }, [visible, shimmerProgress, glowOpacity, iconScale]);
+  }, [visible, shimmerProgress, glowOpacity, iconScale, modalOpacity, modalTranslateY]);
 
   const animatedButtonStyle = useAnimatedStyle(() => ({
     borderColor: interpolateColor(
@@ -140,6 +147,11 @@ export function PremiumUpsellModal({
 
   const animatedIconStyle = useAnimatedStyle(() => ({
     transform: [{ scale: iconScale.value }],
+  }));
+
+  const animatedModalStyle = useAnimatedStyle(() => ({
+    opacity: modalOpacity.value,
+    transform: [{ translateY: modalTranslateY.value }],
   }));
 
   const handlePurchase = async () => {
@@ -282,10 +294,11 @@ export function PremiumUpsellModal({
           ]}
         />
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
-        >
+        <Animated.View style={[{ flex: 1 }, animatedModalStyle]}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1 }}
+          >
           <ScrollView
             style={{ flex: 1 }}
             contentContainerStyle={{
@@ -750,6 +763,7 @@ export function PremiumUpsellModal({
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
+        </Animated.View>
       </View>
     </Modal>
   );
