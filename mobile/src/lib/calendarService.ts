@@ -191,13 +191,14 @@ class CalendarService {
   }
 
   /**
-   * Add a care item to the calendar
+   * Add a care item to the calendar with optional recurrence
    */
   async addCareItemToCalendar(
     title: string,
     dueDate: string,
     notes?: string,
-    petName?: string
+    petName?: string,
+    repeatType: RecurrenceFrequency = 'none'
   ): Promise<CalendarEventResult> {
     const startDate = new Date(dueDate);
     const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hour duration
@@ -210,6 +211,7 @@ class CalendarService {
       startDate,
       endDate,
       notes: fullNotes,
+      recurrence: repeatType,
     });
   }
 

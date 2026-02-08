@@ -18,6 +18,7 @@ import * as Haptics from 'expo-haptics';
 import { Plus, Calendar, PawPrint, Crown, Stethoscope } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
 import { CareItem } from '@/lib/types';
+import { calendarService } from '@/lib/calendarService';
 import {
   useColors,
   SectionHeader,
@@ -48,6 +49,7 @@ export function HomeScreen() {
   const careItems = useStore((s) => s.careItems);
   const reminders = useStore((s) => s.reminders);
   const upcomingCareDays = useStore((s) => s.upcomingCareDays);
+  const deleteCareItem = useStore((s) => s.deleteCareItem);
 
   // Sort pets alphabetically by name
   const pets = useMemo(() => {
@@ -200,6 +202,19 @@ export function HomeScreen() {
   const handleCareItemPress = (item: CareItem) => {
     setEditingItem(item);
     setShowAddSheet(true);
+  };
+
+  const handleDeleteCareItem = async (item: CareItem) => {
+    try {
+      // Delete from calendar if it was added
+      if (item.calendarEventId) {
+        await calendarService.deleteEvent(item.calendarEventId);
+      }
+      await deleteCareItem(item.id);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (error) {
+      console.error('Error deleting care item:', error);
+    }
   };
 
   const handleReminderPress = (reminder: Reminder) => {
@@ -460,6 +475,7 @@ export function HomeScreen() {
                           item={unifiedItem.item}
                           pet={pet}
                           onPress={() => handleCareItemPress(unifiedItem.item)}
+                          onDelete={() => handleDeleteCareItem(unifiedItem.item)}
                         />
                       ) : (
                         <ReminderRow
