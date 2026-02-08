@@ -46,6 +46,8 @@ import { useColors } from '@/components/design-system';
 import { PaywallScreen } from '@/components/PaywallScreen';
 import { router } from 'expo-router';
 import { useTranslation } from '@/lib/i18n';
+import { isSandboxEnvironment } from '@/lib/sandboxDetection';
+import { SandboxDevMenu } from '@/components/SandboxDevMenu';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -649,6 +651,10 @@ export default function SettingsScreen() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [editField, setEditField] = useState<'name' | 'email' | 'phone' | null>(null);
+  const [showSandboxMenu, setShowSandboxMenu] = useState(false);
+
+  // Check if running in sandbox environment
+  const isSandbox = isSandboxEnvironment();
 
   // Admin mode tap counter for secret access
   const [adminTapCount, setAdminTapCount] = useState(0);
@@ -964,6 +970,19 @@ export default function SettingsScreen() {
             />
           </Section>
 
+          {/* Sandbox Developer Menu - Only visible in development */}
+          {isSandbox && (
+            <Section title="Sandbox">
+              <SettingRow
+                icon={<Bug size={18} color="#EAB308" strokeWidth={2} />}
+                title="Dev Sandbox Menu"
+                subtitle="Ferramentas de desenvolvimento e debug"
+                onPress={() => setShowSandboxMenu(true)}
+                rightContent={<ChevronRight size={18} color={c.textTertiary} />}
+              />
+            </Section>
+          )}
+
           {/* Admin/Developer Section - Hidden by default, shown after 5 taps on title */}
           {showAdminSection && (
             <Section title={t('settings_developer')}>
@@ -1235,6 +1254,12 @@ export default function SettingsScreen() {
       <PaywallScreen
         visible={showPaywall}
         onClose={() => setShowPaywall(false)}
+      />
+
+      {/* Sandbox Developer Menu */}
+      <SandboxDevMenu
+        visible={showSandboxMenu}
+        onClose={() => setShowSandboxMenu(false)}
       />
     </View>
   );
