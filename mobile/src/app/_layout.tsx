@@ -71,7 +71,7 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
     initializeApp();
 
     // Preload paywall icon for instant display
-    Image.prefetch(Asset.fromModule(require('../../../assets/icon-small.png')).uri);
+    Image.prefetch(Asset.fromModule(require('../../assets/icon-small.png')).uri);
   }, []);
 
   // Handle navigation based on onboarding state - only after navigation is ready
