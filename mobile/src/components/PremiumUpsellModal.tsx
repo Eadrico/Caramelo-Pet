@@ -203,22 +203,23 @@ export function PremiumUpsellModal({
             style={{
               flexDirection: 'row',
               justifyContent: 'flex-end',
-              paddingHorizontal: 20,
-              paddingTop: 8,
+              paddingHorizontal: 16,
+              paddingTop: 12,
+              paddingBottom: 8,
             }}
           >
             <Pressable
               onPress={handleClose}
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
+                width: 40,
+                height: 40,
+                borderRadius: 20,
                 backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <X size={18} color={c.textSecondary} />
+              <X size={20} color={c.textSecondary} />
             </Pressable>
           </View>
 
