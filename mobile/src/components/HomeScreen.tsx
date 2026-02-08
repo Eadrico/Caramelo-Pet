@@ -329,7 +329,7 @@ export function HomeScreen() {
                   marginRight: 8,
                   borderRadius: 8,
                 }}
-                resizeMode="contain"
+                resizeMode="cover"
                 fadeDuration={0}
               />
               <Text
