@@ -70,8 +70,6 @@ function MonthYearPicker({
       'en': 'en-US',
       'pt': 'pt-BR',
       'es': 'es-ES',
-      'fr': 'fr-FR',
-      'zh': 'zh-CN',
     };
     return localeMap[lang] || 'en-US';
   };
@@ -178,7 +176,6 @@ function MonthYearPicker({
                       fontSize: 17,
                       color: isSelected ? c.accent : c.text,
                       fontWeight: isSelected ? '600' : '400',
-                      textTransform: 'capitalize',
                     }}
                   >
                     {month}
@@ -257,8 +254,6 @@ function formatMonthYear(dateString: string, language: string): string {
     'en': 'en-US',
     'pt': 'pt-BR',
     'es': 'es-ES',
-    'fr': 'fr-FR',
-    'zh': 'zh-CN',
   };
   const locale = localeMap[language] || 'en-US';
   const formatter = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
@@ -422,7 +417,6 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                       fontSize: 17,
                       color: birthdate ? c.text : c.textTertiary,
                       fontWeight: birthdate ? '500' : '400',
-                      textTransform: 'capitalize',
                     }}
                   >
                     {birthdate ? formatMonthYear(birthdate, effectiveLanguage) : t('onboarding_select_birthdate')}

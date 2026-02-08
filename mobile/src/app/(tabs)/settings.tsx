@@ -56,8 +56,6 @@ const languageLabels: Record<LanguageMode, string> = {
   en: 'English',
   pt: 'Português',
   es: 'Español',
-  fr: 'Français',
-  zh: '中文',
 };
 
 // Setting Row Component
@@ -718,16 +716,6 @@ export default function SettingsScreen() {
       value: 'es',
       label: 'Español',
       icon: <Text style={{ fontSize: 18 }}>🇪🇸</Text>,
-    },
-    {
-      value: 'fr',
-      label: 'Français',
-      icon: <Text style={{ fontSize: 18 }}>🇫🇷</Text>,
-    },
-    {
-      value: 'zh',
-      label: '中文',
-      icon: <Text style={{ fontSize: 18 }}>🇨🇳</Text>,
     },
   ];
 

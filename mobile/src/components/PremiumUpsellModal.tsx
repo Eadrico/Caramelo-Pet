@@ -163,7 +163,7 @@ export function PremiumUpsellModal({
 
   const handleRedeemCoupon = async () => {
     if (!couponCode.trim()) {
-      setCouponError('Digite um cupom válido');
+      setCouponError(t('paywall_coupon_invalid'));
       return;
     }
     setIsRedeemingCoupon(true);
@@ -732,7 +732,7 @@ export function PremiumUpsellModal({
                       paddingHorizontal: 8,
                     }}
                   >
-                    Insira um cupom válido ou restaure suas compras anteriores
+                    {t('paywall_coupon_or_restore')}
                   </Text>
                 </View>
               )}

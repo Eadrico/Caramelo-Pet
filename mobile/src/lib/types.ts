@@ -205,6 +205,13 @@ export function getSpeciesEmoji(species: Species, customSpecies?: string): strin
   return '❤️';
 }
 
+// Get species translation key
+export function getSpeciesTranslationKey(species: Species): 'pet_species_dog' | 'pet_species_cat' | 'pet_species_other' {
+  if (species === 'dog') return 'pet_species_dog';
+  if (species === 'cat') return 'pet_species_cat';
+  return 'pet_species_other';
+}
+
 export function getRepeatLabel(repeatType: Reminder['repeatType'], t: (key: any) => string): string {
   switch (repeatType) {
     case 'none': return t('repeat_does_not_repeat');

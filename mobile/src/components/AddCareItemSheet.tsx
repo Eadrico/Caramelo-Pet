@@ -323,25 +323,22 @@ export function AddCareItemSheet({
 
               <ScrollView
                 style={{ flex: 1 }}
-                contentContainerStyle={{ padding: 20, gap: 24, paddingBottom: 40 }}
+                contentContainerStyle={{ padding: 20, gap: 20, paddingBottom: 40 }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
               >
-            {/* Pet Selector - Only show if no preselected pet or in edit mode */}
-            {(!preselectedPetId || editItem) && (
-              <View>
-                <Text
-                  style={{
-                    fontSize: 13,
-                    fontWeight: '600',
-                    color: c.textTertiary,
-                    marginBottom: 8,
-                    textTransform: 'uppercase',
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  {editItem ? t('care_pet_label') : t('care_select_pets')}
-                </Text>
+            {/* Pet Selector - Always visible */}
+            <View>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: '600',
+                  color: c.textTertiary,
+                  marginBottom: 10,
+                }}
+              >
+                {editItem ? t('care_pet_label') : t('care_select_pets')}
+              </Text>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
@@ -372,19 +369,16 @@ export function AddCareItemSheet({
                     />
                   ))}
                 </ScrollView>
-              </View>
-            )}
+            </View>
 
             {/* Care Type */}
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {t('care_type_label')}
@@ -399,10 +393,11 @@ export function AddCareItemSheet({
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  paddingVertical: 14,
+                  paddingVertical: 16,
                   paddingHorizontal: 16,
                   backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                   borderRadius: 12,
+                  minHeight: 52,
                 }}
               >
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
@@ -411,18 +406,7 @@ export function AddCareItemSheet({
                     const Icon = config?.icon || Syringe;
                     return (
                       <>
-                        <View
-                          style={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: 8,
-                            backgroundColor: c.accentLight,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Icon size={18} color={c.accent} />
-                        </View>
+                        <Icon size={20} color={c.accent} />
                         <Text style={{ fontSize: 17, color: c.text, flex: 1 }}>
                           {config?.label || selectedType}
                         </Text>
@@ -440,12 +424,10 @@ export function AddCareItemSheet({
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {t('care_title_label')}
@@ -459,10 +441,11 @@ export function AddCareItemSheet({
                 style={{
                   fontSize: 17,
                   color: c.text,
-                  paddingVertical: 14,
+                  paddingVertical: 16,
                   paddingHorizontal: 16,
                   backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                   borderRadius: 12,
+                  minHeight: 52,
                 }}
               />
             </View>
@@ -471,15 +454,13 @@ export function AddCareItemSheet({
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
-                {t('care_date_label')}
+                {t('common_date_time')}
               </Text>
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 {/* Date Picker */}
@@ -492,10 +473,11 @@ export function AddCareItemSheet({
                     flex: 1,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    paddingVertical: 14,
+                    paddingVertical: 16,
                     paddingHorizontal: 16,
                     backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                     borderRadius: 12,
+                    minHeight: 52,
                     gap: 12,
                   }}
                 >
@@ -512,13 +494,15 @@ export function AddCareItemSheet({
                     setShowTimePicker(true);
                   }}
                   style={{
+                    flex: 1,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    paddingVertical: 14,
+                    justifyContent: 'center',
+                    paddingVertical: 16,
                     paddingHorizontal: 16,
                     backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                     borderRadius: 12,
-                    minWidth: 100,
+                    minHeight: 52,
                   }}
                 >
                   <Text style={{ fontSize: 17, color: c.text }}>
@@ -532,12 +516,10 @@ export function AddCareItemSheet({
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {t('common_repeat')}
@@ -593,12 +575,10 @@ export function AddCareItemSheet({
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {t('care_notes_label')}
@@ -614,7 +594,7 @@ export function AddCareItemSheet({
                 style={{
                   fontSize: 17,
                   color: c.text,
-                  paddingVertical: 14,
+                  paddingVertical: 16,
                   paddingHorizontal: 16,
                   backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                   borderRadius: 12,
@@ -656,10 +636,10 @@ export function AddCareItemSheet({
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 17, color: c.text, fontWeight: '500' }}>
-                      Adicionar ao Calendário
+                      {t('calendar_add_to_calendar')}
                     </Text>
                     <Text style={{ fontSize: 13, color: c.textSecondary, marginTop: 2 }}>
-                      Sincronize com seu calendário pessoal
+                      {t('calendar_sync_description')}
                     </Text>
                   </View>
                 </View>
