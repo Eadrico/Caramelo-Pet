@@ -485,13 +485,12 @@ export function PaywallScreen({
                 style={{
                   marginHorizontal: 20,
                   marginBottom: 12,
-                  gap: 16,
                 }}
               >
                 {/* Header */}
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <Ticket size={24} color={c.text} strokeWidth={2} />
-                  <Text style={{ fontSize: 20, fontWeight: '600', color: c.text }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                  <Ticket size={22} color={c.text} strokeWidth={2} />
+                  <Text style={{ fontSize: 18, fontWeight: '600', color: c.text, letterSpacing: -0.3 }}>
                     Cupom Promocional
                   </Text>
                 </View>
@@ -499,11 +498,12 @@ export function PaywallScreen({
                 {/* Input */}
                 <View
                   style={{
-                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-                    borderRadius: 16,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                    borderRadius: 14,
                     borderWidth: 1.5,
-                    borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                    borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)',
                     overflow: 'hidden',
+                    marginBottom: 16,
                   }}
                 >
                   <TextInput
@@ -516,9 +516,9 @@ export function PaywallScreen({
                     returnKeyType="done"
                     onSubmitEditing={handleRedeemCoupon}
                     style={{
-                      paddingVertical: 18,
-                      paddingHorizontal: 20,
-                      fontSize: 17,
+                      paddingVertical: 16,
+                      paddingHorizontal: 18,
+                      fontSize: 16,
                       color: c.text,
                       fontWeight: '500',
                     }}
@@ -526,7 +526,7 @@ export function PaywallScreen({
                 </View>
 
                 {/* Action Buttons */}
-                <View style={{ flexDirection: 'row', gap: 12 }}>
+                <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
                   <Pressable
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -536,15 +536,20 @@ export function PaywallScreen({
                     style={({ pressed }) => ({
                       flex: 1,
                       backgroundColor: c.accent,
-                      borderRadius: 16,
-                      paddingVertical: 16,
+                      borderRadius: 14,
+                      paddingVertical: 15,
                       alignItems: 'center',
-                      opacity: pressed ? 0.8 : 1,
+                      opacity: pressed ? 0.85 : 1,
+                      shadowColor: c.accent,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 4,
+                      elevation: 2,
                     })}
                   >
                     <Text
                       style={{
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: '600',
                         color: '#FFFFFF',
                       }}
@@ -561,16 +566,16 @@ export function PaywallScreen({
                     disabled={isLoading}
                     style={({ pressed }) => ({
                       flex: 1,
-                      backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
-                      borderRadius: 16,
-                      paddingVertical: 16,
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
+                      borderRadius: 14,
+                      paddingVertical: 15,
                       alignItems: 'center',
-                      opacity: pressed ? 0.8 : 1,
+                      opacity: pressed ? 0.7 : 1,
                     })}
                   >
                     <Text
                       style={{
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: '600',
                         color: c.text,
                       }}
@@ -583,10 +588,11 @@ export function PaywallScreen({
                 {/* Helper Text */}
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 13,
                     color: c.textSecondary,
                     textAlign: 'center',
-                    lineHeight: 20,
+                    lineHeight: 18,
+                    paddingHorizontal: 4,
                   }}
                 >
                   Insira um cupom válido ou restaure suas compras anteriores

@@ -581,11 +581,11 @@ export function PremiumUpsellModal({
                   </Text>
                 </Pressable>
               ) : (
-                <View style={{ marginBottom: 12, gap: 16 }}>
+                <View style={{ marginBottom: 12 }}>
                   {/* Header */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                    <Ticket size={24} color={c.text} strokeWidth={2} />
-                    <Text style={{ fontSize: 20, fontWeight: '600', color: c.text }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                    <Ticket size={22} color={c.text} strokeWidth={2} />
+                    <Text style={{ fontSize: 18, fontWeight: '600', color: c.text, letterSpacing: -0.3 }}>
                       Cupom Promocional
                     </Text>
                   </View>
@@ -593,15 +593,16 @@ export function PremiumUpsellModal({
                   {/* Input */}
                   <View
                     style={{
-                      backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-                      borderRadius: 16,
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                      borderRadius: 14,
                       borderWidth: 1.5,
                       borderColor: couponError
                         ? '#EF4444'
                         : isDark
-                        ? 'rgba(255,255,255,0.1)'
-                        : 'rgba(0,0,0,0.1)',
+                        ? 'rgba(255,255,255,0.12)'
+                        : 'rgba(0,0,0,0.08)',
                       overflow: 'hidden',
+                      marginBottom: 16,
                     }}
                   >
                     <TextInput
@@ -618,27 +619,51 @@ export function PremiumUpsellModal({
                       returnKeyType="done"
                       onSubmitEditing={handleRedeemCoupon}
                       style={{
-                        paddingVertical: 18,
-                        paddingHorizontal: 20,
-                        fontSize: 17,
+                        paddingVertical: 16,
+                        paddingHorizontal: 18,
+                        fontSize: 16,
                         color: c.text,
                         fontWeight: '500',
                       }}
                     />
                   </View>
 
+                  {/* Error message */}
+                  {couponError && (
+                    <View
+                      style={{
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderRadius: 12,
+                        paddingVertical: 10,
+                        paddingHorizontal: 14,
+                        marginBottom: 16,
+                        borderWidth: 1,
+                        borderColor: 'rgba(239, 68, 68, 0.2)',
+                      }}
+                    >
+                      <Text style={{ fontSize: 13, color: '#EF4444', textAlign: 'center', lineHeight: 18 }}>
+                        {couponError}
+                      </Text>
+                    </View>
+                  )}
+
                   {/* Action Buttons */}
-                  <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
                     <Pressable
                       onPress={handleRedeemCoupon}
                       disabled={isRedeemingCoupon || !couponCode.trim() || isLoading}
                       style={({ pressed }) => ({
                         flex: 1,
                         backgroundColor: c.accent,
-                        borderRadius: 16,
-                        paddingVertical: 16,
+                        borderRadius: 14,
+                        paddingVertical: 15,
                         alignItems: 'center',
-                        opacity: pressed ? 0.8 : 1,
+                        opacity: pressed ? 0.85 : 1,
+                        shadowColor: c.accent,
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.2,
+                        shadowRadius: 4,
+                        elevation: 2,
                       })}
                     >
                       {isRedeemingCoupon ? (
@@ -646,7 +671,7 @@ export function PremiumUpsellModal({
                       ) : (
                         <Text
                           style={{
-                            fontSize: 17,
+                            fontSize: 16,
                             fontWeight: '600',
                             color: '#FFFFFF',
                           }}
@@ -661,16 +686,16 @@ export function PremiumUpsellModal({
                       disabled={isLoading || isRedeemingCoupon}
                       style={({ pressed }) => ({
                         flex: 1,
-                        backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
-                        borderRadius: 16,
-                        paddingVertical: 16,
+                        backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
+                        borderRadius: 14,
+                        paddingVertical: 15,
                         alignItems: 'center',
-                        opacity: pressed ? 0.8 : 1,
+                        opacity: pressed ? 0.7 : 1,
                       })}
                     >
                       <Text
                         style={{
-                          fontSize: 17,
+                          fontSize: 16,
                           fontWeight: '600',
                           color: c.text,
                         }}
@@ -683,30 +708,15 @@ export function PremiumUpsellModal({
                   {/* Helper Text */}
                   <Text
                     style={{
-                      fontSize: 14,
+                      fontSize: 13,
                       color: c.textSecondary,
                       textAlign: 'center',
-                      lineHeight: 20,
+                      lineHeight: 18,
+                      paddingHorizontal: 4,
                     }}
                   >
                     Insira um cupom válido ou restaure suas compras anteriores
                   </Text>
-
-                  {/* Error message */}
-                  {couponError && (
-                    <View
-                      style={{
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        borderRadius: 12,
-                        padding: 12,
-                        marginTop: -8,
-                      }}
-                    >
-                      <Text style={{ fontSize: 14, color: '#EF4444', textAlign: 'center', lineHeight: 20 }}>
-                        {couponError}
-                      </Text>
-                    </View>
-                  )}
                 </View>
               )}
 
