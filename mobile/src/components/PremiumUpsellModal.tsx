@@ -245,18 +245,18 @@ export function PremiumUpsellModal({
           ]}
         />
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
-        >
-          <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+        <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1 }}
+          >
             {/* Close button */}
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'flex-end',
-                paddingHorizontal: 16,
-                paddingTop: 12,
+                paddingHorizontal: 20,
+                paddingTop: 4,
                 paddingBottom: 8,
               }}
             >
@@ -607,8 +607,8 @@ export function PremiumUpsellModal({
                 </Text>
               </Pressable>
             </View>
-          </SafeAreaView>
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       </View>
     </Modal>
   );
