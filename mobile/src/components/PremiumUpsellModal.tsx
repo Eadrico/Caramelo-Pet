@@ -16,6 +16,7 @@ import {
   Keyboard,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Asset } from 'expo-asset';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import Animated, {
@@ -53,6 +54,9 @@ interface PremiumUpsellModalProps {
 }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Pre-load the app icon for instant display
+const APP_ICON = require('../../assets/icon.png');
 
 export function PremiumUpsellModal({
   visible,
@@ -335,12 +339,14 @@ export function PremiumUpsellModal({
                   />
                   {/* App icon */}
                   <Image
-                    source={require('../../assets/icon.png')}
+                    source={APP_ICON}
                     style={{
                       width: 100,
                       height: 100,
                       borderRadius: 24,
                     }}
+                    fadeDuration={0}
+                    resizeMode="cover"
                   />
                   {/* Crown badge */}
                   <View
