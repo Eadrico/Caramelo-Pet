@@ -27,6 +27,7 @@ Para funcionar corretamente, o App pode solicitar as seguintes permissões:
 - **Câmera**: Para capturar fotos dos seus pets dentro do app
 - **Galeria de Fotos**: Para selecionar fotos existentes dos seus pets
 - **Notificações**: Para enviar lembretes sobre cuidados dos seus pets
+- **Calendário**: Para adicionar lembretes de cuidados e consultas veterinárias ao seu calendário pessoal
 
 **Importante**: Você pode negar essas permissões e o app continuará funcionando, porém com funcionalidades limitadas.
 
@@ -166,6 +167,7 @@ To function properly, the App may request the following permissions:
 - **Camera**: To capture photos of your pets within the app
 - **Photo Library**: To select existing photos of your pets
 - **Notifications**: To send reminders about your pets' care
+- **Calendar**: To add care reminders and veterinary appointments to your personal calendar
 
 **Important**: You can deny these permissions and the app will continue to work with limited functionality.
 

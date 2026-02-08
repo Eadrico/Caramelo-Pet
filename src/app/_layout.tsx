@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react';
 import { useSettingsStore } from '@/lib/settings-store';
 import { useStore } from '@/lib/store';
 import { LanguageProvider } from '@/lib/i18n';
+import { Asset } from 'expo-asset';
+import { migratePetsToAssets } from '@/lib/pet-migration';
 
 import '../../global.css';
 
@@ -63,23 +65,40 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
   const rootNavigationState = useRootNavigationState();
   const isNavigationReady = rootNavigationState?.key != null;
 
-  // Initialize on mount
+  // Initialize on mount and preload images
   useEffect(() => {
     initializeSettings();
     initializeApp();
-  }, []);
+
+    // Run migration to update pets with photoAsset
+    migratePetsToAssets();
+
+    // Preload all pet images for instant display
+    Asset.loadAsync([
+      require('../../assets/icon-small.png'),
+      require('../../assets/loki-new.png'),
+      require('../../assets/brownie-new.png'),
+      require('../../assets/fuba-new.png'),
+      require('../../assets/baunilha-new.png'),
+    ]);
+  }, [initializeSettings, initializeApp]);
 
   // Handle navigation based on onboarding state - only after navigation is ready
   useEffect(() => {
     if (settingsInitialized && appInitialized && isNavigationReady && !hasNavigated) {
-      SplashScreen.hideAsync();
-      setHasNavigated(true);
+      // Keep splash screen visible for 3.5 seconds
+      const timer = setTimeout(() => {
+        SplashScreen.hideAsync();
+        setHasNavigated(true);
 
-      if (hasCompletedOnboarding) {
-        router.replace('/(tabs)');
-      } else {
-        router.replace('/onboarding');
-      }
+        if (hasCompletedOnboarding) {
+          router.replace('/(tabs)');
+        } else {
+          router.replace('/onboarding');
+        }
+      }, 3500); // 3.5 seconds delay
+
+      return () => clearTimeout(timer);
     }
   }, [settingsInitialized, appInitialized, hasCompletedOnboarding, isNavigationReady, hasNavigated]);
 

@@ -12,6 +12,7 @@ import { BlurView } from 'expo-blur';
 import { Pet, CareItem, formatRelativeDate, getSpeciesEmoji } from '@/lib/types';
 import { useColors } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';
+import { getPetImageSource, hasPetPhoto } from '@/lib/pet-images';
 
 interface PetCardProps {
   pet: Pet;
@@ -54,7 +55,7 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
     >
       <View
         style={{
-          borderRadius: 20,
+          borderRadius: 24,
           overflow: 'hidden',
           backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.9)',
           borderWidth: 1,
@@ -64,13 +65,13 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
         {/* Photo Section */}
         <View
           style={{
-            height: 140,
+            height: 200,
             backgroundColor: c.accentLight,
           }}
         >
-          {pet.photoUri ? (
+          {hasPetPhoto(pet) ? (
             <Image
-              source={{ uri: pet.photoUri }}
+              source={getPetImageSource(pet)!}
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />
@@ -94,39 +95,57 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
               backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.9)',
               paddingHorizontal: 8,
               paddingVertical: 4,
-              borderRadius: 8,
+              borderRadius: 12,
             }}
           >
             <Text style={{ fontSize: 14 }}>
-              {getSpeciesEmoji(pet.species)}
+              {getSpeciesEmoji(pet.species, pet.customSpecies)}
             </Text>
           </View>
-        </View>
 
-        {/* Info Section */}
-        <View style={{ padding: 14 }}>
-          <Text
+          {/* Glass Name Banner - Overlaid on Photo */}
+          <View
             style={{
-              fontSize: 17,
-              fontWeight: '600',
-              color: c.text,
-              marginBottom: 4,
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              overflow: 'hidden',
             }}
-            numberOfLines={1}
           >
-            {pet.name}
-          </Text>
-          {nextCareItem && (
-            <Text
+            <BlurView
+              intensity={isDark ? 40 : 60}
+              tint={isDark ? 'dark' : 'light'}
               style={{
-                fontSize: 13,
-                color: c.textSecondary,
+                paddingVertical: 12,
+                paddingHorizontal: 14,
+                backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.4)',
               }}
-              numberOfLines={1}
             >
-              {nextCareItem.title} • {formatRelativeDate(nextCareItem.dueDate, t)}
-            </Text>
-          )}
+              <Text
+                style={{
+                  fontSize: 17,
+                  fontWeight: '600',
+                  color: isDark ? '#FFFFFF' : '#1C1917',
+                  marginBottom: nextCareItem ? 2 : 0,
+                }}
+                numberOfLines={1}
+              >
+                {pet.name}
+              </Text>
+              {nextCareItem && (
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                  }}
+                  numberOfLines={1}
+                >
+                  {nextCareItem.title} • {formatRelativeDate(nextCareItem.dueDate, t)}
+                </Text>
+              )}
+            </BlurView>
+          </View>
         </View>
       </View>
     </AnimatedPressable>

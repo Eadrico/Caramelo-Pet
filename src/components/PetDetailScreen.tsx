@@ -13,9 +13,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
+import { BlurView } from 'expo-blur';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { getPetImageSource, hasPetPhoto } from '@/lib/pet-images';
 import {
   ChevronLeft,
   PawPrint,
@@ -25,31 +28,27 @@ import {
   Phone,
   FileText,
   Bell,
-  Plus,
   Trash2,
   Edit3,
   Check,
   X,
   AlertCircle,
-  Pill,
   Tag,
+  Camera,
 } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
 import {
   Pet,
   CareItem,
   Reminder,
-  formatDate,
   formatRelativeDate,
   formatAge,
   getRepeatLabel,
   getCareTypeLabel,
+  getSpeciesEmoji,
 } from '@/lib/types';
 import {
   useColors,
-  GlassCard,
-  PrimaryButton,
-  SecondaryButton,
   SectionHeader,
 } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';
@@ -89,6 +88,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showBirthdatePicker, setShowBirthdatePicker] = useState(false);
   const [showAddCareSheet, setShowAddCareSheet] = useState(false);
   const [editingCareItem, setEditingCareItem] = useState<CareItem | undefined>();
 
@@ -128,6 +128,12 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
 
   const handleStartEdit = () => {
     setEditedPet({
+      name: pet.name,
+      species: pet.species,
+      customSpecies: pet.customSpecies,
+      photoUri: pet.photoUri,
+      photoAsset: pet.photoAsset,
+      birthdate: pet.birthdate,
       breed: pet.breed,
       microchipId: pet.microchipId,
       allergies: pet.allergies,
@@ -138,6 +144,30 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
     });
     setIsEditing(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handlePickPhoto = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permissão necessária',
+        'Precisamos de acesso à sua galeria para alterar a foto.',
+        [{ text: t('common_cancel') }]
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setEditedPet((prev) => ({ ...prev, photoUri: result.assets[0].uri }));
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
   };
 
   const handleDeletePet = () => {
@@ -286,15 +316,17 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               }}
             >
               {/* Photo */}
-              <View
+              <Pressable
+                onPress={isEditing ? handlePickPhoto : undefined}
+                disabled={!isEditing}
                 style={{
-                  height: 200,
+                  height: 360,
                   backgroundColor: c.accentLight,
                 }}
               >
-                {pet.photoUri ? (
+                {(editedPet.photoUri || hasPetPhoto(pet)) ? (
                   <Image
-                    source={{ uri: pet.photoUri }}
+                    source={editedPet.photoUri ? { uri: editedPet.photoUri } : getPetImageSource(pet)!}
                     style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                   />
@@ -309,55 +341,250 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                     <PawPrint size={64} color={c.accent} strokeWidth={1.5} />
                   </View>
                 )}
-              </View>
 
-              {/* Pet Info */}
-              <View style={{ padding: 20 }}>
-                <Text
+                {/* Edit Photo Button - shown when editing */}
+                {isEditing && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 16,
+                      right: 16,
+                      backgroundColor: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)',
+                      borderRadius: 24,
+                      padding: 12,
+                    }}
+                  >
+                    <Camera size={24} color={c.accent} />
+                  </View>
+                )}
+
+                {/* Glass Info Banner - Overlaid on Photo */}
+                <View
                   style={{
-                    fontSize: 28,
-                    fontWeight: '700',
-                    color: c.text,
-                    marginBottom: 4,
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    overflow: 'hidden',
                   }}
                 >
-                  {pet.name}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: c.textSecondary,
-                    marginBottom: 16,
-                  }}
-                >
-                  {pet.species === 'dog'
-                    ? t('pet_species_dog')
-                    : pet.species === 'cat'
-                    ? t('pet_species_cat')
-                    : t('pet_species_other')}
-                  {pet.breed ? ` • ${isEditing ? '' : pet.breed}` : ''}
-                </Text>
+                  <BlurView
+                    intensity={isDark ? 50 : 70}
+                    tint={isDark ? 'dark' : 'light'}
+                    style={{
+                      paddingVertical: 20,
+                      paddingHorizontal: 20,
+                      backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.5)',
+                    }}
+                  >
+                    {isEditing ? (
+                      <RNTextInput
+                        value={editedPet.name}
+                        onChangeText={(text) => setEditedPet((prev) => ({ ...prev, name: text }))}
+                        style={{
+                          fontSize: 28,
+                          fontWeight: '700',
+                          color: isDark ? '#FFFFFF' : '#1C1917',
+                          marginBottom: 4,
+                          padding: 0,
+                        }}
+                        placeholder={pet.name}
+                        placeholderTextColor={isDark ? 'rgba(255,255,255,0.5)' : 'rgba(28,25,23,0.5)'}
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 28,
+                          fontWeight: '700',
+                          color: isDark ? '#FFFFFF' : '#1C1917',
+                          marginBottom: 4,
+                        }}
+                      >
+                        {pet.name}
+                      </Text>
+                    )}
 
-                {/* Quick Stats */}
-                <View style={{ flexDirection: 'row', gap: 16 }}>
-                  {pet.birthdate && (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Calendar size={16} color={c.textSecondary} />
-                      <Text style={{ fontSize: 14, color: c.textSecondary }}>
-                        {formatAge(pet.birthdate)}
+                    {/* Species and Breed */}
+                    {isEditing ? (
+                      <View style={{ marginBottom: 16, gap: 10 }}>
+                        {/* Species Selector */}
+                        <View style={{ flexDirection: 'row', gap: 8 }}>
+                          <Pressable
+                            onPress={() => {
+                              setEditedPet((prev) => ({ ...prev, species: 'dog', customSpecies: undefined }));
+                              Haptics.selectionAsync();
+                            }}
+                            style={{
+                              flex: 1,
+                              paddingVertical: 12,
+                              paddingHorizontal: 4,
+                              borderRadius: 10,
+                              backgroundColor: (editedPet.species || pet.species) === 'dog'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                              borderWidth: 1,
+                              borderColor: (editedPet.species || pet.species) === 'dog'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            <Text style={{ fontSize: 24 }}>🐕</Text>
+                            <Text
+                              style={{
+                                fontSize: 13,
+                                fontWeight: '500',
+                                color: (editedPet.species || pet.species) === 'dog'
+                                  ? '#FFFFFF'
+                                  : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                              }}
+                            >
+                              {t('pet_species_dog')}
+                            </Text>
+                          </Pressable>
+
+                          <Pressable
+                            onPress={() => {
+                              setEditedPet((prev) => ({ ...prev, species: 'cat', customSpecies: undefined }));
+                              Haptics.selectionAsync();
+                            }}
+                            style={{
+                              flex: 1,
+                              paddingVertical: 12,
+                              paddingHorizontal: 4,
+                              borderRadius: 10,
+                              backgroundColor: (editedPet.species || pet.species) === 'cat'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                              borderWidth: 1,
+                              borderColor: (editedPet.species || pet.species) === 'cat'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            <Text style={{ fontSize: 24 }}>🐈</Text>
+                            <Text
+                              style={{
+                                fontSize: 13,
+                                fontWeight: '500',
+                                color: (editedPet.species || pet.species) === 'cat'
+                                  ? '#FFFFFF'
+                                  : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                              }}
+                            >
+                              {t('pet_species_cat')}
+                            </Text>
+                          </Pressable>
+
+                          <Pressable
+                            onPress={() => {
+                              setEditedPet((prev) => ({ ...prev, species: 'other' }));
+                              Haptics.selectionAsync();
+                            }}
+                            style={{
+                              flex: 1,
+                              paddingVertical: 12,
+                              paddingHorizontal: 4,
+                              borderRadius: 10,
+                              backgroundColor: (editedPet.species || pet.species) === 'other'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                              borderWidth: 1,
+                              borderColor: (editedPet.species || pet.species) === 'other'
+                                ? c.accent
+                                : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            <Text style={{ fontSize: 24 }}>
+                              {(editedPet.species || pet.species) === 'other' && (editedPet.customSpecies || pet.customSpecies)
+                                ? getSpeciesEmoji('other', editedPet.customSpecies || pet.customSpecies)
+                                : '❤️'}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 13,
+                                fontWeight: '500',
+                                color: (editedPet.species || pet.species) === 'other'
+                                  ? '#FFFFFF'
+                                  : isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                              }}
+                            >
+                              {(editedPet.species || pet.species) === 'other' && (editedPet.customSpecies || pet.customSpecies)
+                                ? (editedPet.customSpecies || pet.customSpecies)
+                                : t('pet_species_other')}
+                            </Text>
+                          </Pressable>
+                        </View>
+
+                        {/* Custom Species Input */}
+                        {(editedPet.species || pet.species) === 'other' && (
+                          <RNTextInput
+                            value={editedPet.customSpecies !== undefined ? editedPet.customSpecies : pet.customSpecies}
+                            onChangeText={(text) => setEditedPet((prev) => ({ ...prev, customSpecies: text }))}
+                            placeholder="Ex: Coelho, Hamster, Peixe..."
+                            placeholderTextColor={isDark ? 'rgba(255,255,255,0.4)' : 'rgba(28,25,23,0.4)'}
+                            style={{
+                              fontSize: 15,
+                              color: isDark ? 'rgba(255,255,255,0.9)' : 'rgba(28,25,23,0.8)',
+                              backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                              paddingHorizontal: 12,
+                              paddingVertical: 8,
+                              borderRadius: 8,
+                            }}
+                          />
+                        )}
+                      </View>
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)',
+                          marginBottom: 16,
+                        }}
+                      >
+                        {pet.species === 'dog'
+                          ? t('pet_species_dog')
+                          : pet.species === 'cat'
+                          ? t('pet_species_cat')
+                          : pet.customSpecies || t('pet_species_other')}
+                        {pet.breed ? ` • ${pet.breed}` : ''}
                       </Text>
+                    )}
+
+                    {/* Quick Stats */}
+                    <View style={{ flexDirection: 'row', gap: 16 }}>
+                      {(isEditing ? editedPet.birthdate : pet.birthdate) ? (
+                        <Pressable
+                          onPress={isEditing ? () => setShowBirthdatePicker(true) : undefined}
+                          disabled={!isEditing}
+                          style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                        >
+                          <Calendar size={16} color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(28,25,23,0.6)'} />
+                          <Text style={{ fontSize: 14, color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)' }}>
+                            {formatAge((isEditing && editedPet.birthdate) ? editedPet.birthdate : pet.birthdate!)}
+                          </Text>
+                        </Pressable>
+                      ) : null}
+                      {(isEditing ? editedPet.weightKg : pet.weightKg) ? (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                          <Weight size={16} color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(28,25,23,0.6)'} />
+                          <Text style={{ fontSize: 14, color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(28,25,23,0.7)' }}>
+                            {isEditing ? editedPet.weightKg : pet.weightKg} kg
+                          </Text>
+                        </View>
+                      ) : null}
                     </View>
-                  )}
-                  {pet.weightKg && (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Weight size={16} color={c.textSecondary} />
-                      <Text style={{ fontSize: 14, color: c.textSecondary }}>
-                        {pet.weightKg} kg
-                      </Text>
-                    </View>
-                  )}
+                  </BlurView>
                 </View>
-              </View>
+              </Pressable>
             </View>
           </Animated.View>
 
@@ -498,7 +725,11 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
           >
             <SectionHeader
               title={t('pet_details_reminders')}
-              action={{ label: t('common_add'), onPress: () => setShowReminderModal(true) }}
+              action={
+                petReminders.length > 0
+                  ? { label: t('common_add'), onPress: () => setShowReminderModal(true) }
+                  : undefined
+              }
             />
 
             {petReminders.length > 0 ? (
@@ -559,7 +790,11 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
           >
             <SectionHeader
               title={t('pet_details_upcoming_care')}
-              action={{ label: t('common_add'), onPress: handleAddCarePress }}
+              action={
+                upcomingCareItems.length > 0
+                  ? { label: t('common_add'), onPress: handleAddCarePress }
+                  : undefined
+              }
             />
 
             {upcomingCareItems.length > 0 ? (
@@ -612,7 +847,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                           marginTop: 2,
                         }}
                       >
-                        {getCareTypeLabel(item.type)} • {formatRelativeDate(item.dueDate, t)}
+                        {getCareTypeLabel(item.type, t)} • {formatRelativeDate(item.dueDate, t)}
                       </Text>
                     </View>
                   </Pressable>
@@ -983,6 +1218,80 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
         editItem={editingCareItem}
         preselectedPetId={petId}
       />
+
+      {/* Birthdate Picker */}
+      {showBirthdatePicker && isEditing && (
+        <Modal
+          visible={showBirthdatePicker}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowBirthdatePicker(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+            }}
+          >
+            <Pressable
+              style={{ flex: 1 }}
+              onPress={() => setShowBirthdatePicker(false)}
+            />
+            <View
+              style={{
+                backgroundColor: isDark ? '#1C1917' : '#FFFFFF',
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                paddingBottom: 40,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingHorizontal: 20,
+                  paddingVertical: 16,
+                  borderBottomWidth: 1,
+                  borderBottomColor: c.border,
+                }}
+              >
+                <Pressable onPress={() => setShowBirthdatePicker(false)}>
+                  <Text style={{ color: c.textSecondary, fontSize: 17 }}>
+                    {t('common_cancel')}
+                  </Text>
+                </Pressable>
+                <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
+                  Data de Nascimento
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    setShowBirthdatePicker(false);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}
+                >
+                  <Text style={{ color: c.accent, fontSize: 17, fontWeight: '600' }}>
+                    {t('common_done')}
+                  </Text>
+                </Pressable>
+              </View>
+              <DateTimePicker
+                value={editedPet.birthdate ? new Date(editedPet.birthdate) : new Date()}
+                mode="date"
+                display="spinner"
+                onChange={(event, date) => {
+                  if (date) {
+                    setEditedPet((prev) => ({ ...prev, birthdate: date.toISOString() }));
+                  }
+                }}
+                maximumDate={new Date()}
+                style={{ alignSelf: 'center' }}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }

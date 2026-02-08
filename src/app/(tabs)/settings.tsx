@@ -11,12 +11,12 @@ import {
   Image,
   Platform,
   Appearance,
-  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
+import Constants from 'expo-constants';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -36,14 +36,17 @@ import {
   Check,
   Crown,
   Bug,
+  Calendar,
 } from 'lucide-react-native';
 import { useSettingsStore, ThemeMode, LanguageMode } from '@/lib/settings-store';
 import { useStore } from '@/lib/store';
 import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
 import { useColors } from '@/components/design-system';
-import { PaywallScreen } from '@/components/PaywallScreen';
+import { PremiumUpsellModal } from '@/components/PremiumUpsellModal';
 import { router } from 'expo-router';
 import { useTranslation } from '@/lib/i18n';
+import { isSandboxEnvironment } from '@/lib/sandboxDetection';
+import { SandboxDevMenu } from '@/components/SandboxDevMenu';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -168,8 +171,6 @@ function Section({
   children: React.ReactNode;
 }) {
   const c = useColors();
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
 
   return (
     <View style={{ marginBottom: 24 }}>
@@ -181,7 +182,7 @@ function Section({
           textTransform: 'uppercase',
           letterSpacing: 0.5,
           marginBottom: 8,
-          marginLeft: 16,
+          marginLeft: 20,
         }}
       >
         {title}
@@ -221,8 +222,6 @@ function SelectionModal<T extends string>({
   onSelect,
 }: SelectionModalProps<T>) {
   const c = useColors();
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
 
   return (
     <Modal
@@ -629,44 +628,41 @@ export default function SettingsScreen() {
 
   // Premium state
   const isPremium = usePremiumStore((s) => s.isPremium);
-  const isAdminMode = usePremiumStore((s) => s.isAdminMode);
-  const toggleAdminMode = usePremiumStore((s) => s.toggleAdminMode);
   const initializePremium = usePremiumStore((s) => s.initialize);
   const isPremiumInitialized = usePremiumStore((s) => s.isInitialized);
 
   // App store for full reset
   const refreshData = useStore((s) => s.refreshData);
   const pets = useStore((s) => s.pets);
+  const upcomingCareDays = useStore((s) => s.upcomingCareDays);
+  const setUpcomingCareDays = useStore((s) => s.setUpcomingCareDays);
 
   // Modal states
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
+  const [showCareDaysModal, setShowCareDaysModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [editField, setEditField] = useState<'name' | 'email' | 'phone' | null>(null);
+  const [showSandboxMenu, setShowSandboxMenu] = useState(false);
+  const [showPremiumModalTest, setShowPremiumModalTest] = useState(false);
 
-  // Admin mode tap counter for secret access
-  const [adminTapCount, setAdminTapCount] = useState(0);
-  const [showAdminSection, setShowAdminSection] = useState(false);
+  // Check if running in sandbox environment
+  const isSandbox = isSandboxEnvironment();
+
+  // Admin mode tap counter for secret access - removed, now using sandbox menu
 
   useEffect(() => {
     if (!isInitialized) {
       initialize();
     }
-  }, [isInitialized]);
+  }, [isInitialized, initialize]);
 
   useEffect(() => {
     if (!isPremiumInitialized) {
       initializePremium();
     }
-  }, [isPremiumInitialized]);
-
-  // Show admin section if already in admin mode
-  useEffect(() => {
-    if (isAdminMode) {
-      setShowAdminSection(true);
-    }
-  }, [isAdminMode]);
+  }, [isPremiumInitialized, initializePremium]);
 
   // Apply theme
   useEffect(() => {
@@ -700,28 +696,6 @@ export default function SettingsScreen() {
     } catch (error) {
       console.error('Error resetting app:', error);
     }
-  };
-
-  // Secret admin mode activation - tap title 5 times
-  const handleTitleTap = () => {
-    const newCount = adminTapCount + 1;
-    setAdminTapCount(newCount);
-
-    if (newCount >= 5) {
-      setShowAdminSection(true);
-      setAdminTapCount(0);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    } else if (newCount === 3) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-
-    // Reset counter after 2 seconds
-    setTimeout(() => setAdminTapCount(0), 2000);
-  };
-
-  const handleToggleAdmin = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    toggleAdminMode();
   };
 
   const languageOptions: { value: LanguageMode; label: string; icon: React.ReactNode }[] = [
@@ -775,6 +749,19 @@ export default function SettingsScreen() {
     },
   ];
 
+  const careDaysOptions: { value: number; label: string }[] = [
+    { value: 7, label: t('settings_upcoming_care_days_7') },
+    { value: 14, label: t('settings_upcoming_care_days_14') },
+    { value: 30, label: t('settings_upcoming_care_days_30') },
+    { value: 60, label: t('settings_upcoming_care_days_60') },
+  ];
+
+  // Get app version
+  const getAppVersion = (): string => {
+    const version = Constants.expoConfig?.version || '1.0.0';
+    return `v${version}`;
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <LinearGradient
@@ -788,8 +775,7 @@ export default function SettingsScreen() {
 
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         {/* Header */}
-        <Pressable
-          onPress={handleTitleTap}
+        <View
           style={{
             paddingHorizontal: 20,
             paddingTop: 8,
@@ -806,7 +792,7 @@ export default function SettingsScreen() {
           >
             {t('settings_title')}
           </Text>
-        </Pressable>
+        </View>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -904,6 +890,14 @@ export default function SettingsScreen() {
               onPress={() => setShowThemeModal(true)}
               rightContent={<ChevronRight size={18} color={c.textTertiary} />}
             />
+            <View style={{ height: 1, backgroundColor: c.border, marginLeft: 66 }} />
+            <SettingRow
+              icon={<Calendar size={18} color={c.accent} strokeWidth={2} />}
+              title={t('settings_upcoming_care_days')}
+              subtitle={`${t('settings_upcoming_care_days_desc')} ${careDaysOptions.find(o => o.value === upcomingCareDays)?.label ?? ''}`}
+              onPress={() => setShowCareDaysModal(true)}
+              rightContent={<ChevronRight size={18} color={c.textTertiary} />}
+            />
           </Section>
 
           {/* Premium Section */}
@@ -938,57 +932,16 @@ export default function SettingsScreen() {
             />
           </Section>
 
-          {/* Admin/Developer Section - Hidden by default, shown after 5 taps on title */}
-          {showAdminSection && (
-            <Section title={t('settings_developer')}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingVertical: 14,
-                  paddingHorizontal: 16,
-                  gap: 14,
-                }}
-              >
-                <View
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    backgroundColor: 'rgba(234, 179, 8, 0.15)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Bug size={18} color="#EAB308" strokeWidth={2} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: '500',
-                      color: c.text,
-                    }}
-                  >
-                    {t('settings_admin_mode')}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: c.textSecondary,
-                      marginTop: 2,
-                    }}
-                  >
-                    {t('settings_admin_desc')}
-                  </Text>
-                </View>
-                <Switch
-                  value={isAdminMode}
-                  onValueChange={handleToggleAdmin}
-                  trackColor={{ false: c.border, true: c.accent }}
-                  thumbColor="#FFFFFF"
-                />
-              </View>
+          {/* Sandbox Developer Menu - Only visible in development */}
+          {isSandbox && (
+            <Section title="Sandbox">
+              <SettingRow
+                icon={<Bug size={18} color="#EAB308" strokeWidth={2} />}
+                title="Dev Sandbox Menu"
+                subtitle="Ferramentas de desenvolvimento e debug"
+                onPress={() => setShowSandboxMenu(true)}
+                rightContent={<ChevronRight size={18} color={c.textTertiary} />}
+              />
             </Section>
           )}
 
@@ -1035,7 +988,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/loki-1766762610452-0.png')}
+                  source={require('../../../assets/loki-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1061,13 +1014,13 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/brownie-1766763191626-1.png')}
+                  source={require('../../../assets/brownie-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
               </View>
 
-              {/* Fuba */}
+              {/* Fubá */}
               <View
                 style={{
                   width: 56,
@@ -1087,13 +1040,13 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/fuba-1766763191626-2.png')}
+                  source={require('../../../assets/fuba-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
               </View>
 
-              {/* Baunilia - rightmost card */}
+              {/* Baunilha - rightmost card */}
               <View
                 style={{
                   width: 56,
@@ -1112,7 +1065,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/Baunilia-1766763191626-0.png')}
+                  source={require('../../../assets/baunilha-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1130,6 +1083,19 @@ export default function SettingsScreen() {
               }}
             >
               Feito pensando no Loki, Brownie, Fuba e Baunilia.
+            </Text>
+
+            {/* Version number */}
+            <Text
+              style={{
+                fontSize: 10,
+                color: c.textTertiary,
+                textAlign: 'center',
+                opacity: 0.5,
+                marginTop: 8,
+              }}
+            >
+              {getAppVersion()}
             </Text>
           </View>
         </ScrollView>
@@ -1152,6 +1118,18 @@ export default function SettingsScreen() {
         options={themeOptions}
         selected={theme}
         onSelect={setTheme}
+      />
+
+      <SelectionModal
+        visible={showCareDaysModal}
+        onClose={() => setShowCareDaysModal(false)}
+        title={t('settings_upcoming_care_days')}
+        options={careDaysOptions.map(opt => ({
+          value: String(opt.value),
+          label: opt.label,
+        }))}
+        selected={String(upcomingCareDays)}
+        onSelect={(value) => setUpcomingCareDays(Number(value))}
       />
 
       <ConfirmationModal
@@ -1180,10 +1158,35 @@ export default function SettingsScreen() {
         saveText={t('settings_save')}
       />
 
-      {/* Paywall */}
-      <PaywallScreen
+      {/* Premium Upsell Modal */}
+      <PremiumUpsellModal
         visible={showPaywall}
         onClose={() => setShowPaywall(false)}
+        context="general"
+      />
+
+      {/* Test Premium Modal - Sandbox only */}
+      <PremiumUpsellModal
+        visible={showPremiumModalTest}
+        onClose={() => setShowPremiumModalTest(false)}
+        context="general"
+      />
+
+      {/* Sandbox Developer Menu */}
+      <SandboxDevMenu
+        visible={showSandboxMenu}
+        onClose={() => setShowSandboxMenu(false)}
+        onOpenPremiumModal={() => {
+          setShowSandboxMenu(false);
+          setShowPremiumModalTest(true);
+        }}
+      />
+
+      {/* Premium Modal for testing */}
+      <PremiumUpsellModal
+        visible={showPremiumModalTest}
+        onClose={() => setShowPremiumModalTest(false)}
+        context="general"
       />
     </View>
   );

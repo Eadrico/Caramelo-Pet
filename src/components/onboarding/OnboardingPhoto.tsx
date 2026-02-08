@@ -1,7 +1,7 @@
 // Onboarding Step 2: Pet Photo (Optional)
 import React, { useState } from 'react';
 import { View, Text, Image, Pressable, useColorScheme, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as ImagePicker from 'expo-image-picker';
@@ -28,6 +28,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   const name = useStore((s) => s.onboardingData.name);
   const photoUri = useStore((s) => s.onboardingData.photoUri);
@@ -93,11 +94,11 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
         }
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+      <View style={{ flex: 1, paddingTop: insets.top }}>
         {/* Header */}
         <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <ProgressIndicator current={2} total={5} />
+            <ProgressIndicator current={2} total={4} />
             <Pressable
               onPress={onBack}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -204,7 +205,7 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
         </View>
 
         {/* Bottom Buttons */}
-        <SafeAreaView edges={['bottom']}>
+        <View style={{ paddingBottom: insets.bottom }}>
           <Animated.View
             entering={FadeInDown.duration(400).delay(300)}
             style={{ paddingHorizontal: 20, paddingBottom: 8, gap: 12 }}
@@ -221,8 +222,8 @@ export function OnboardingPhoto({ onNext, onBack }: OnboardingPhotoProps) {
               </Pressable>
             )}
           </Animated.View>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
     </View>
   );
 }

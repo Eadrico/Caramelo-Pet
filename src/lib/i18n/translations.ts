@@ -110,6 +110,12 @@ type TranslationKey =
   | 'settings_theme_system'
   | 'settings_theme_light'
   | 'settings_theme_dark'
+  | 'settings_upcoming_care_days'
+  | 'settings_upcoming_care_days_desc'
+  | 'settings_upcoming_care_days_7'
+  | 'settings_upcoming_care_days_14'
+  | 'settings_upcoming_care_days_30'
+  | 'settings_upcoming_care_days_60'
   | 'settings_danger_zone'
   | 'settings_reset_app'
   | 'settings_reset_desc'
@@ -155,6 +161,7 @@ type TranslationKey =
   | 'care_type_label'
   | 'care_title_label'
   | 'care_due_date_label'
+  | 'care_date_label'
   | 'care_notes_label'
   | 'care_select_pet'
   | 'care_select_pets'
@@ -167,6 +174,11 @@ type TranslationKey =
   | 'care_grooming'
   | 'care_medication'
   | 'care_vet_visit'
+  | 'care_type_vaccine'
+  | 'care_type_grooming'
+  | 'care_type_medication'
+  | 'care_type_vet_visit'
+  | 'care_type_general'
   // Paywall
   | 'paywall_title'
   | 'paywall_subtitle'
@@ -208,6 +220,8 @@ type TranslationKey =
   | 'common_month'
   | 'common_years'
   | 'common_year'
+  | 'common_and'
+  | 'common_less_than_month'
   | 'common_delete'
   | 'common_edit'
   | 'common_confirm'
@@ -346,6 +360,12 @@ const en: Translations = {
   settings_theme_system: 'System',
   settings_theme_light: 'Light',
   settings_theme_dark: 'Dark',
+  settings_upcoming_care_days: 'Upcoming Care Window',
+  settings_upcoming_care_days_desc: 'Show care items and reminders for the next',
+  settings_upcoming_care_days_7: '7 days',
+  settings_upcoming_care_days_14: '14 days',
+  settings_upcoming_care_days_30: '30 days',
+  settings_upcoming_care_days_60: '60 days',
   settings_danger_zone: 'Danger Zone',
   settings_reset_app: 'Reset App',
   settings_reset_desc: 'Delete all data',
@@ -392,6 +412,7 @@ const en: Translations = {
   care_type_label: 'Type',
   care_title_label: 'Title',
   care_due_date_label: 'Due Date',
+  care_date_label: 'Date',
   care_notes_label: 'Notes (Optional)',
   care_select_pet: 'Select a pet',
   care_select_pets: 'Select Pet(s)',
@@ -404,6 +425,11 @@ const en: Translations = {
   care_grooming: 'Grooming',
   care_medication: 'Medication',
   care_vet_visit: 'Vet Visit',
+  care_type_vaccine: 'Vaccine',
+  care_type_grooming: 'Grooming',
+  care_type_medication: 'Medication',
+  care_type_vet_visit: 'Vet Visit',
+  care_type_general: 'Care',
   // Paywall
   paywall_title: 'Unlock Premium',
   paywall_subtitle: 'Unlimited care for all your pets',
@@ -434,6 +460,8 @@ const en: Translations = {
   common_month: 'month',
   common_years: 'years',
   common_year: 'year',
+  common_and: 'and',
+  common_less_than_month: 'Less than 1 month',
   common_delete: 'Delete',
   common_edit: 'Edit',
   common_confirm: 'Confirm',
@@ -580,6 +608,12 @@ const pt: Translations = {
   settings_theme_system: 'Sistema',
   settings_theme_light: 'Claro',
   settings_theme_dark: 'Escuro',
+  settings_upcoming_care_days: 'Janela de Cuidados',
+  settings_upcoming_care_days_desc: 'Mostrar cuidados e lembretes dos próximos',
+  settings_upcoming_care_days_7: '7 dias',
+  settings_upcoming_care_days_14: '14 dias',
+  settings_upcoming_care_days_30: '30 dias',
+  settings_upcoming_care_days_60: '60 dias',
   settings_danger_zone: 'Zona de Perigo',
   settings_reset_app: 'Resetar App',
   settings_reset_desc: 'Apaga todos os dados',
@@ -626,6 +660,7 @@ const pt: Translations = {
   care_type_label: 'Tipo',
   care_title_label: 'Título',
   care_due_date_label: 'Data de Vencimento',
+  care_date_label: 'Data',
   care_notes_label: 'Notas (Opcional)',
   care_select_pet: 'Selecione um pet',
   care_select_pets: 'Selecione Pet(s)',
@@ -638,6 +673,11 @@ const pt: Translations = {
   care_grooming: 'Banho/Tosa',
   care_medication: 'Medicação',
   care_vet_visit: 'Consulta Veterinária',
+  care_type_vaccine: 'Vacina',
+  care_type_grooming: 'Banho/Tosa',
+  care_type_medication: 'Medicação',
+  care_type_vet_visit: 'Consulta Veterinária',
+  care_type_general: 'Cuidado',
   // Paywall
   paywall_title: 'Desbloqueie o Premium',
   paywall_subtitle: 'Cuidado ilimitado para todos os seus pets',
@@ -668,6 +708,8 @@ const pt: Translations = {
   common_month: 'mês',
   common_years: 'anos',
   common_year: 'ano',
+  common_and: 'e',
+  common_less_than_month: 'Menos de 1 mês',
   common_delete: 'Excluir',
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
@@ -814,6 +856,12 @@ const es: Translations = {
   settings_theme_system: 'Sistema',
   settings_theme_light: 'Claro',
   settings_theme_dark: 'Oscuro',
+  settings_upcoming_care_days: 'Ventana de Cuidados',
+  settings_upcoming_care_days_desc: 'Mostrar cuidados y recordatorios de los próximos',
+  settings_upcoming_care_days_7: '7 días',
+  settings_upcoming_care_days_14: '14 días',
+  settings_upcoming_care_days_30: '30 días',
+  settings_upcoming_care_days_60: '60 días',
   settings_danger_zone: 'Zona de Peligro',
   settings_reset_app: 'Restablecer App',
   settings_reset_desc: 'Elimina todos los datos',
@@ -860,6 +908,7 @@ const es: Translations = {
   care_type_label: 'Tipo',
   care_title_label: 'Título',
   care_due_date_label: 'Fecha de Vencimiento',
+  care_date_label: 'Fecha',
   care_notes_label: 'Notas (Opcional)',
   care_select_pet: 'Selecciona una mascota',
   care_select_pets: 'Selecciona Mascota(s)',
@@ -872,6 +921,11 @@ const es: Translations = {
   care_grooming: 'Baño/Peluquería',
   care_medication: 'Medicación',
   care_vet_visit: 'Visita al Veterinario',
+  care_type_vaccine: 'Vacuna',
+  care_type_grooming: 'Baño/Peluquería',
+  care_type_medication: 'Medicación',
+  care_type_vet_visit: 'Visita al Veterinario',
+  care_type_general: 'Cuidado',
   // Paywall
   paywall_title: 'Desbloquea Premium',
   paywall_subtitle: 'Cuidado ilimitado para todas tus mascotas',
@@ -902,6 +956,8 @@ const es: Translations = {
   common_month: 'mes',
   common_years: 'años',
   common_year: 'año',
+  common_and: 'y',
+  common_less_than_month: 'Menos de 1 mes',
   common_delete: 'Eliminar',
   common_edit: 'Editar',
   common_confirm: 'Confirmar',
@@ -1048,6 +1104,12 @@ const fr: Translations = {
   settings_theme_system: 'Système',
   settings_theme_light: 'Clair',
   settings_theme_dark: 'Sombre',
+  settings_upcoming_care_days: 'Fenêtre de Soins',
+  settings_upcoming_care_days_desc: 'Afficher les soins et rappels des prochains',
+  settings_upcoming_care_days_7: '7 jours',
+  settings_upcoming_care_days_14: '14 jours',
+  settings_upcoming_care_days_30: '30 jours',
+  settings_upcoming_care_days_60: '60 jours',
   settings_danger_zone: 'Zone de Danger',
   settings_reset_app: 'Réinitialiser l\'App',
   settings_reset_desc: 'Supprime toutes les données',
@@ -1094,6 +1156,7 @@ const fr: Translations = {
   care_type_label: 'Type',
   care_title_label: 'Titre',
   care_due_date_label: 'Date d\'Expiration',
+  care_date_label: 'Date',
   care_notes_label: 'Notes (Optionnel)',
   care_select_pet: 'Sélectionnez un animal',
   care_select_pets: 'Sélectionnez Animal(s)',
@@ -1106,6 +1169,11 @@ const fr: Translations = {
   care_grooming: 'Toilettage',
   care_medication: 'Médicament',
   care_vet_visit: 'Visite Vétérinaire',
+  care_type_vaccine: 'Vaccin',
+  care_type_grooming: 'Toilettage',
+  care_type_medication: 'Médicament',
+  care_type_vet_visit: 'Visite Vétérinaire',
+  care_type_general: 'Soin',
   // Paywall
   paywall_title: 'Débloquez Premium',
   paywall_subtitle: 'Soins illimités pour tous vos animaux',
@@ -1136,6 +1204,8 @@ const fr: Translations = {
   common_month: 'mois',
   common_years: 'ans',
   common_year: 'an',
+  common_and: 'et',
+  common_less_than_month: 'Moins d\'un mois',
   common_delete: 'Supprimer',
   common_edit: 'Modifier',
   common_confirm: 'Confirmer',
@@ -1282,6 +1352,12 @@ const zh: Translations = {
   settings_theme_system: '跟随系统',
   settings_theme_light: '浅色',
   settings_theme_dark: '深色',
+  settings_upcoming_care_days: '护理时间窗口',
+  settings_upcoming_care_days_desc: '显示未来的护理项目和提醒',
+  settings_upcoming_care_days_7: '7天',
+  settings_upcoming_care_days_14: '14天',
+  settings_upcoming_care_days_30: '30天',
+  settings_upcoming_care_days_60: '60天',
   settings_danger_zone: '危险区域',
   settings_reset_app: '重置应用',
   settings_reset_desc: '删除所有数据',
@@ -1328,6 +1404,7 @@ const zh: Translations = {
   care_type_label: '类型',
   care_title_label: '标题',
   care_due_date_label: '截止日期',
+  care_date_label: '日期',
   care_notes_label: '备注（可选）',
   care_select_pet: '选择一个宠物',
   care_select_pets: '选择宠物',
@@ -1340,6 +1417,11 @@ const zh: Translations = {
   care_grooming: '美容',
   care_medication: '药物',
   care_vet_visit: '兽医就诊',
+  care_type_vaccine: '疫苗',
+  care_type_grooming: '美容',
+  care_type_medication: '药物',
+  care_type_vet_visit: '兽医就诊',
+  care_type_general: '护理',
   // Paywall
   paywall_title: '解锁高级版',
   paywall_subtitle: '为您所有宠物提供无限护理',
@@ -1370,6 +1452,8 @@ const zh: Translations = {
   common_month: '个月',
   common_years: '年',
   common_year: '年',
+  common_and: '又',
+  common_less_than_month: '不到1个月',
   common_delete: '删除',
   common_edit: '编辑',
   common_confirm: '确认',

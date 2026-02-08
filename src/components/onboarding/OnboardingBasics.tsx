@@ -5,11 +5,11 @@ import {
   Text,
   TextInput as RNTextInput,
   useColorScheme,
+  ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useStore } from '@/lib/store';
@@ -25,20 +25,41 @@ import {
 
 interface OnboardingBasicsProps {
   onNext: () => void;
+  hideCloseButton?: boolean;
 }
 
-export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
+export function OnboardingBasics({ onNext, hideCloseButton = false }: OnboardingBasicsProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   const name = useStore((s) => s.onboardingData.name);
   const species = useStore((s) => s.onboardingData.species);
+  const customSpecies = useStore((s) => s.onboardingData.customSpecies);
   const setName = useStore((s) => s.setOnboardingName);
   const setSpecies = useStore((s) => s.setOnboardingSpecies);
+  const setCustomSpecies = useStore((s) => s.setOnboardingCustomSpecies);
 
-  const isValid = name.trim().length >= 1;
+  const [localCustomSpecies, setLocalCustomSpecies] = useState(customSpecies || '');
+
+  const isValid = name.trim().length >= 1 && (species !== 'other' || localCustomSpecies.trim().length >= 1);
+
+  const handleNext = () => {
+    if (species === 'other' && localCustomSpecies.trim()) {
+      setCustomSpecies(localCustomSpecies.trim());
+    }
+    onNext();
+  };
+
+  const handleSpeciesChange = (newSpecies: Species) => {
+    setSpecies(newSpecies);
+    if (newSpecies !== 'other') {
+      setCustomSpecies(undefined);
+      setLocalCustomSpecies('');
+    }
+  };
 
   const speciesOptions: { value: Species; label: string }[] = [
     { value: 'dog', label: t('onboarding_species_dog') },
@@ -56,126 +77,151 @@ export function OnboardingBasics({ onNext }: OnboardingBasicsProps) {
         }
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            {/* Header */}
-            <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
-              <ProgressIndicator current={1} total={5} />
-              <Animated.View entering={FadeInDown.duration(400).delay(100)}>
-                <Text
-                  style={{
-                    fontSize: 34,
-                    fontWeight: '700',
-                    color: c.text,
-                    marginTop: 24,
-                    letterSpacing: -0.8,
-                  }}
-                >
-                  {t('onboarding_add_pet_title')}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 17,
-                    color: c.textSecondary,
-                    marginTop: 8,
-                    lineHeight: 24,
-                  }}
-                >
-                  {t('onboarding_add_pet_subtitle')}
-                </Text>
-              </Animated.View>
+          {/* Header with Safe Area Top Padding */}
+          <View style={{ paddingTop: insets.top, paddingHorizontal: 20 }}>
+            <View style={{ paddingTop: 16 }}>
+              <ProgressIndicator current={1} total={4} />
             </View>
-
-            {/* Content */}
-            <Animated.View
-              entering={FadeInDown.duration(400).delay(200)}
-              style={{ paddingHorizontal: 20, marginTop: 32 }}
-            >
-              <GlassCard>
-                {/* Name Input */}
-                <View style={{ marginBottom: 24 }}>
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      fontWeight: '600',
-                      color: c.textTertiary,
-                      marginBottom: 8,
-                      textTransform: 'uppercase',
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    {t('onboarding_pet_name')}
-                  </Text>
-                  <RNTextInput
-                    value={name}
-                    onChangeText={setName}
-                    placeholder={t('onboarding_pet_name_example')}
-                    placeholderTextColor={c.textTertiary}
-                    autoFocus
-                    autoCapitalize="words"
-                    autoCorrect={false}
-                    maxLength={30}
-                    returnKeyType="next"
-                    style={{
-                      fontSize: 24,
-                      fontWeight: '600',
-                      color: c.text,
-                      paddingVertical: 12,
-                      borderBottomWidth: 2,
-                      borderBottomColor: name ? c.accent : c.border,
-                    }}
-                  />
-                </View>
-
-                {/* Species Selection */}
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      fontWeight: '600',
-                      color: c.textTertiary,
-                      marginBottom: 12,
-                      textTransform: 'uppercase',
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    {t('onboarding_species_question')}
-                  </Text>
-                  <SegmentedControl
-                    options={speciesOptions}
-                    selected={species}
-                    onSelect={setSpecies}
-                  />
-                </View>
-              </GlassCard>
+            <Animated.View entering={FadeInDown.duration(400).delay(100)}>
+              <Text
+                style={{
+                  fontSize: 34,
+                  fontWeight: '700',
+                  color: c.text,
+                  marginTop: 24,
+                  letterSpacing: -0.8,
+                }}
+              >
+                {t('onboarding_add_pet_title')}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: c.textSecondary,
+                  marginTop: 8,
+                  lineHeight: 24,
+                }}
+              >
+                {t('onboarding_add_pet_subtitle')}
+              </Text>
             </Animated.View>
+          </View>
 
-            <View style={{ flex: 1 }} />
-          </ScrollView>
+          {/* Content */}
+          <Animated.View
+            entering={FadeInDown.duration(400).delay(200)}
+            style={{ paddingHorizontal: 20, marginTop: 32 }}
+          >
+            <GlassCard>
+              {/* Name Input */}
+              <View style={{ marginBottom: 24 }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '600',
+                    color: c.textTertiary,
+                    marginBottom: 8,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  {t('onboarding_pet_name')}
+                </Text>
+                <RNTextInput
+                  value={name}
+                  onChangeText={setName}
+                  placeholder={t('onboarding_pet_name_example')}
+                  placeholderTextColor={c.textTertiary}
+                  autoFocus
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  maxLength={30}
+                  returnKeyType="next"
+                  style={{
+                    fontSize: 24,
+                    fontWeight: '600',
+                    color: c.text,
+                    paddingVertical: 12,
+                    borderBottomWidth: 2,
+                    borderBottomColor: name ? c.accent : c.border,
+                  }}
+                />
+              </View>
 
-          {/* Bottom Button */}
-          <SafeAreaView edges={['bottom']}>
-            <Animated.View
-              entering={FadeInDown.duration(400).delay(300)}
-              style={{ paddingHorizontal: 20, paddingBottom: 8 }}
-            >
-              <PrimaryButton
-                title={t('onboarding_continue')}
-                onPress={onNext}
-                disabled={!isValid}
-              />
-            </Animated.View>
-          </SafeAreaView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+              {/* Species Selection */}
+              <View>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '600',
+                    color: c.textTertiary,
+                    marginBottom: 12,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  {t('onboarding_species_question')}
+                </Text>
+                <SegmentedControl
+                  options={speciesOptions}
+                  selected={species}
+                  onSelect={handleSpeciesChange}
+                />
+
+                {/* Custom Species Input - shown when "other" is selected */}
+                {species === 'other' && (
+                  <Animated.View
+                    entering={FadeInDown.duration(300).delay(100)}
+                    style={{ marginTop: 16 }}
+                  >
+                    <RNTextInput
+                      value={localCustomSpecies}
+                      onChangeText={setLocalCustomSpecies}
+                      placeholder="Ex: Coelho, Hamster, Peixe..."
+                      placeholderTextColor={c.textTertiary}
+                      autoCapitalize="words"
+                      autoCorrect={false}
+                      maxLength={30}
+                      returnKeyType="done"
+                      style={{
+                        fontSize: 17,
+                        color: c.text,
+                        paddingVertical: 14,
+                        paddingHorizontal: 16,
+                        backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: localCustomSpecies ? c.accent : c.border,
+                      }}
+                    />
+                  </Animated.View>
+                )}
+              </View>
+            </GlassCard>
+          </Animated.View>
+        </ScrollView>
+
+        {/* Bottom Button - Inside KeyboardAvoidingView */}
+        <View style={{ paddingBottom: insets.bottom }}>
+          <View style={{ paddingHorizontal: 20, paddingBottom: 8 }}>
+            <PrimaryButton
+              title={t('onboarding_continue')}
+              onPress={handleNext}
+              disabled={!isValid}
+            />
+          </View>
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }

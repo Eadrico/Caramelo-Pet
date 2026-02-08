@@ -14,12 +14,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
-import { Calendar, Trash2 } from 'lucide-react-native';
-import { Reminder, getRepeatLabel } from '@/lib/types';
+import { Calendar, Trash2, CalendarPlus } from 'lucide-react-native';
+import { Reminder } from '@/lib/types';
 import { useStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n';
 import { useColors } from '@/components/design-system';
 import { PetChip } from '@/components/PetChip';
+import { calendarService } from '@/lib/calendarService';
 
 interface AddReminderSheetProps {
   visible: boolean;
@@ -58,6 +59,7 @@ export function AddReminderSheet({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [addToCalendar, setAddToCalendar] = useState(false);
 
   // Reset form when opening
   useEffect(() => {
@@ -87,6 +89,23 @@ export function AddReminderSheet({
     try {
       if (editItem) {
         // Edit mode: update single reminder
+        let calendarEventId = editItem.calendarEventId;
+
+        // Add to calendar if requested
+        if (addToCalendar) {
+          const pet = pets.find((p) => p.id === selectedPetIds[0]);
+          const result = await calendarService.addReminderToCalendar(
+            title.trim(),
+            dateTime.toISOString(),
+            message.trim() || undefined,
+            pet?.name,
+            repeatType
+          );
+          if (result.success && result.eventId) {
+            calendarEventId = result.eventId;
+          }
+        }
+
         await updateReminder(editItem.id, {
           petId: selectedPetIds[0],
           title: title.trim(),
@@ -94,19 +113,38 @@ export function AddReminderSheet({
           dateTime: dateTime.toISOString(),
           repeatType,
           isEnabled: editItem.isEnabled,
+          calendarEventId,
         });
       } else {
         // Create mode: create one reminder for each selected pet
-        const promises = selectedPetIds.map((petId) =>
-          addReminder({
+        const promises = selectedPetIds.map(async (petId) => {
+          let calendarEventId: string | undefined;
+
+          // Add to calendar if requested
+          if (addToCalendar) {
+            const pet = pets.find((p) => p.id === petId);
+            const result = await calendarService.addReminderToCalendar(
+              title.trim(),
+              dateTime.toISOString(),
+              message.trim() || undefined,
+              pet?.name,
+              repeatType
+            );
+            if (result.success && result.eventId) {
+              calendarEventId = result.eventId;
+            }
+          }
+
+          await addReminder({
             petId,
             title: title.trim(),
             message: message.trim() || undefined,
             dateTime: dateTime.toISOString(),
             repeatType,
             isEnabled: true,
-          })
-        );
+            calendarEventId,
+          });
+        });
         await Promise.all(promises);
       }
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -132,6 +170,10 @@ export function AddReminderSheet({
           style: 'destructive',
           onPress: async () => {
             try {
+              // Delete from calendar if it was added
+              if (editItem.calendarEventId) {
+                await calendarService.deleteEvent(editItem.calendarEventId);
+              }
               await deleteReminder(editItem.id);
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
               onClose();
@@ -194,13 +236,24 @@ export function AddReminderSheet({
               borderBottomColor: c.border,
             }}
           >
-            <Pressable onPress={onClose}>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onClose();
+              }}
+            >
               <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
               {editItem ? t('common_edit_reminder') : t('common_new_reminder')}
             </Text>
-            <Pressable onPress={handleSave} disabled={!isValid || isSaving}>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                handleSave();
+              }}
+              disabled={!isValid || isSaving}
+            >
               <Text
                 style={{
                   fontSize: 17,
@@ -406,51 +459,126 @@ export function AddReminderSheet({
                 {t('common_repeat')}
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                {(['none', 'daily', 'weekly', 'monthly'] as const).map((type) => (
-                  <Pressable
-                    key={type}
-                    onPress={() => {
-                      setRepeatType(type);
-                      Haptics.selectionAsync();
-                    }}
-                    style={{
-                      paddingHorizontal: 16,
-                      paddingVertical: 10,
-                      borderRadius: 20,
-                      backgroundColor:
-                        repeatType === type
-                          ? c.accent
-                          : isDark
-                          ? 'rgba(255,255,255,0.05)'
-                          : 'rgba(0,0,0,0.05)',
-                      borderWidth: 1,
-                      borderColor: repeatType === type ? c.accent : c.border,
-                    }}
-                  >
-                    <Text
+                {(['none', 'daily', 'weekly', 'monthly'] as const).map((type) => {
+                  const getLabel = () => {
+                    switch (type) {
+                      case 'none': return t('common_once');
+                      case 'daily': return t('common_daily');
+                      case 'weekly': return t('common_weekly');
+                      case 'monthly': return t('common_monthly');
+                    }
+                  };
+
+                  return (
+                    <Pressable
+                      key={type}
+                      onPress={() => {
+                        setRepeatType(type);
+                        Haptics.selectionAsync();
+                      }}
                       style={{
-                        color: repeatType === type ? '#FFFFFF' : c.text,
-                        fontSize: 14,
-                        fontWeight: '500',
+                        paddingHorizontal: 16,
+                        paddingVertical: 10,
+                        borderRadius: 20,
+                        backgroundColor:
+                          repeatType === type
+                            ? c.accent
+                            : isDark
+                            ? 'rgba(255,255,255,0.05)'
+                            : 'rgba(0,0,0,0.05)',
+                        borderWidth: 1,
+                        borderColor: repeatType === type ? c.accent : c.border,
                       }}
                     >
-                      {type === 'none'
-                        ? t('common_once')
-                        : type === 'daily'
-                        ? t('common_daily')
-                        : type === 'weekly'
-                        ? t('common_weekly')
-                        : t('common_monthly')}
-                    </Text>
-                  </Pressable>
-                ))}
+                      <Text
+                        style={{
+                          color: repeatType === type ? '#FFFFFF' : c.text,
+                          fontSize: 14,
+                          fontWeight: '500',
+                        }}
+                      >
+                        {getLabel()}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
+            </View>
+
+            {/* Add to Calendar Toggle */}
+            <View>
+              <Pressable
+                onPress={() => {
+                  setAddToCalendar(!addToCalendar);
+                  Haptics.selectionAsync();
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingVertical: 14,
+                  paddingHorizontal: 16,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  borderRadius: 12,
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+                  <View
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      backgroundColor: addToCalendar ? c.accentLight : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <CalendarPlus size={18} color={addToCalendar ? c.accent : c.textSecondary} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 17, color: c.text, fontWeight: '500' }}>
+                      Adicionar ao Calendário
+                    </Text>
+                    <Text style={{ fontSize: 13, color: c.textSecondary, marginTop: 2 }}>
+                      Sincronize com seu calendário pessoal
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    width: 51,
+                    height: 31,
+                    borderRadius: 15.5,
+                    backgroundColor: addToCalendar ? c.accent : isDark ? 'rgba(255,255,255,0.16)' : 'rgba(0,0,0,0.1)',
+                    justifyContent: 'center',
+                    paddingHorizontal: 2,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 27,
+                      height: 27,
+                      borderRadius: 13.5,
+                      backgroundColor: '#FFFFFF',
+                      alignSelf: addToCalendar ? 'flex-end' : 'flex-start',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 2,
+                      elevation: 3,
+                    }}
+                  />
+                </View>
+              </Pressable>
             </View>
 
             {/* Delete Button (Edit Mode) */}
             {editItem && (
               <Pressable
-                onPress={handleDelete}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  handleDelete();
+                }}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -485,12 +613,12 @@ export function AddReminderSheet({
               style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
               onPress={() => setShowDatePicker(false)}
             />
+            <SafeAreaView edges={['bottom']} style={{ backgroundColor: c.surface }}>
             <View
               style={{
                 backgroundColor: c.surface,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
-                paddingBottom: 34,
               }}
             >
               <View
@@ -503,13 +631,23 @@ export function AddReminderSheet({
                   borderBottomColor: c.border,
                 }}
               >
-                <Pressable onPress={() => setShowDatePicker(false)}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowDatePicker(false);
+                  }}
+                >
                   <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
                 </Pressable>
                 <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
                   {t('common_date')}
                 </Text>
-                <Pressable onPress={() => setShowDatePicker(false)}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowDatePicker(false);
+                  }}
+                >
                   <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
                 </Pressable>
               </View>
@@ -521,6 +659,7 @@ export function AddReminderSheet({
                 style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
+            </SafeAreaView>
           </Modal>
         ) : (
           showDatePicker && (
@@ -544,12 +683,12 @@ export function AddReminderSheet({
               style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
               onPress={() => setShowTimePicker(false)}
             />
+            <SafeAreaView edges={['bottom']} style={{ backgroundColor: c.surface }}>
             <View
               style={{
                 backgroundColor: c.surface,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
-                paddingBottom: 34,
               }}
             >
               <View
@@ -562,13 +701,23 @@ export function AddReminderSheet({
                   borderBottomColor: c.border,
                 }}
               >
-                <Pressable onPress={() => setShowTimePicker(false)}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowTimePicker(false);
+                  }}
+                >
                   <Text style={{ fontSize: 17, color: c.textSecondary }}>{t('common_cancel')}</Text>
                 </Pressable>
                 <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>
                   {t('common_time')}
                 </Text>
-                <Pressable onPress={() => setShowTimePicker(false)}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowTimePicker(false);
+                  }}
+                >
                   <Text style={{ fontSize: 17, color: c.accent, fontWeight: '600' }}>{t('common_done')}</Text>
                 </Pressable>
               </View>
@@ -580,6 +729,7 @@ export function AddReminderSheet({
                 style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
+            </SafeAreaView>
           </Modal>
         ) : (
           showTimePicker && (

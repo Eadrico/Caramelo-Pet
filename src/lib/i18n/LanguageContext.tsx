@@ -1,34 +1,113 @@
 // Language Context - Global language management with React Context
 import React, { createContext, useContext, useCallback, useMemo, useEffect, useState } from 'react';
-import { NativeModules, Platform } from 'react-native';
+import { Platform, NativeModules } from 'react-native';
 import { translations, SupportedLanguage, TranslationKey, languageNames, languageFlags } from './translations';
 import { useSettingsStore } from '../settings-store';
 
-// Get device language
+// Get device language using multiple detection methods
 function getDeviceLanguage(): Exclude<SupportedLanguage, 'system'> {
-  let deviceLang = 'en';
-
   try {
-    if (Platform.OS === 'ios') {
-      deviceLang = NativeModules.SettingsManager?.settings?.AppleLocale ||
-                   NativeModules.SettingsManager?.settings?.AppleLanguages?.[0] ||
-                   'en';
-    } else {
-      deviceLang = NativeModules.I18nManager?.localeIdentifier || 'en';
+    let locale = 'en';
+    let region = '';
+
+    // Method 1: Try Intl API (works on modern React Native)
+    try {
+      if (typeof Intl !== 'undefined' && Intl.DateTimeFormat) {
+        const dtf = new Intl.DateTimeFormat();
+        const resolvedOptions = dtf.resolvedOptions();
+        if (resolvedOptions.locale) {
+          locale = resolvedOptions.locale;
+          console.log('[i18n] 🌍 Intl.DateTimeFormat locale:', locale);
+        }
+      }
+    } catch (e) {
+      console.log('[i18n] ⚠️ Intl API not available');
     }
-  } catch {
-    deviceLang = 'en';
+
+    // Method 2: Platform-specific NativeModules (fallback)
+    if (locale === 'en') {
+      if (Platform.OS === 'ios') {
+        const settings = NativeModules.SettingsManager?.settings;
+        const appleLocale = settings?.AppleLocale;
+        const appleLanguages = settings?.AppleLanguages;
+
+        console.log('[i18n] 🍎 iOS SettingsManager available:', !!settings);
+        if (appleLocale || appleLanguages) {
+          locale = appleLocale || appleLanguages?.[0] || 'en-US';
+          console.log('[i18n] 🍎 iOS NativeModules locale:', locale);
+        }
+      } else if (Platform.OS === 'android') {
+        const i18nLocale = NativeModules.I18nManager?.localeIdentifier;
+        if (i18nLocale) {
+          locale = i18nLocale;
+          console.log('[i18n] 🤖 Android I18nManager locale:', locale);
+        }
+      } else if (Platform.OS === 'web') {
+        locale = typeof navigator !== 'undefined'
+          ? (navigator.language || (navigator as any).userLanguage || 'en')
+          : 'en';
+        console.log('[i18n] 🌐 Web locale from navigator:', locale);
+      }
+    }
+
+    console.log('[i18n] 📍 Final detected locale:', locale);
+
+    // Extract language code and region
+    const parts = locale.split(/[-_]/);
+    const languageCode = parts[0].toLowerCase();
+    region = parts[1]?.toUpperCase() || '';
+
+    console.log('[i18n] 🔤 Extracted language:', languageCode, 'region:', region);
+
+    // Special case: If region is BR (Brazil), use Portuguese
+    // This handles cases like "en-BR" which should be "pt-BR"
+    if (region === 'BR') {
+      console.log('[i18n] 🇧🇷 Detected Brazil region, using Portuguese!');
+      return 'pt';
+    }
+
+    // Special case: If region is ES (Spain), use Spanish
+    if (region === 'ES') {
+      console.log('[i18n] 🇪🇸 Detected Spain region, using Spanish!');
+      return 'es';
+    }
+
+    // Special case: If region is FR (France), use French
+    if (region === 'FR') {
+      console.log('[i18n] 🇫🇷 Detected France region, using French!');
+      return 'fr';
+    }
+
+    // Special case: If region is CN/TW/HK (China/Taiwan/Hong Kong), use Chinese
+    if (['CN', 'TW', 'HK'].includes(region)) {
+      console.log('[i18n] 🇨🇳 Detected Chinese region, using Chinese!');
+      return 'zh';
+    }
+
+    // Map language code to supported languages
+    if (languageCode === 'pt') {
+      console.log('[i18n] ✅ Detected Portuguese!');
+      return 'pt';
+    }
+    if (languageCode === 'es') {
+      console.log('[i18n] ✅ Detected Spanish!');
+      return 'es';
+    }
+    if (languageCode === 'fr') {
+      console.log('[i18n] ✅ Detected French!');
+      return 'fr';
+    }
+    if (languageCode === 'zh') {
+      console.log('[i18n] ✅ Detected Chinese!');
+      return 'zh';
+    }
+
+    console.log('[i18n] ℹ️ Using English');
+    return 'en';
+  } catch (error) {
+    console.error('[i18n] ❌ Error detecting device language:', error);
+    return 'en';
   }
-
-  // Extract language code (e.g., 'pt-BR' -> 'pt', 'zh-Hans' -> 'zh')
-  const langCode = deviceLang.split(/[-_]/)[0].toLowerCase();
-
-  // Map to supported languages
-  if (langCode === 'pt') return 'pt';
-  if (langCode === 'es') return 'es';
-  if (langCode === 'fr') return 'fr';
-  if (langCode === 'zh') return 'zh';
-  return 'en';
 }
 
 interface LanguageContextType {

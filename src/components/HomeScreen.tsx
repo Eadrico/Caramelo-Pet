@@ -12,16 +12,17 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Plus, Calendar, PawPrint, Crown, Stethoscope } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
-import { CareItem } from '@/lib/types';
+import { CareItem, Reminder } from '@/lib/types';
+import { calendarService } from '@/lib/calendarService';
 import {
   useColors,
   SectionHeader,
   EmptyState,
-  IconButton,
 } from '@/components/design-system';
 import { PetCard } from '@/components/home/PetCard';
 import { CareItemRow } from '@/components/home/CareItemRow';
@@ -31,10 +32,9 @@ import { AddReminderSheet } from '@/components/AddReminderSheet';
 import { AddItemSelector } from '@/components/AddItemSelector';
 import { AddPetWizard } from '@/components/AddPetWizard';
 import { PetDetailScreen } from '@/components/PetDetailScreen';
-import { PaywallScreen } from '@/components/PaywallScreen';
+import { PremiumUpsellModal, UpsellContext } from '@/components/PremiumUpsellModal';
 import { useTranslation } from '@/lib/i18n';
 import { usePremiumStore, FREE_PET_LIMIT_COUNT } from '@/lib/premium-store';
-import { Reminder } from '@/lib/types';
 import { useFocusEffect } from 'expo-router';
 
 export function HomeScreen() {
@@ -43,23 +43,34 @@ export function HomeScreen() {
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
 
-  const pets = useStore((s) => s.pets);
+  const petsUnsorted = useStore((s) => s.pets);
   const careItems = useStore((s) => s.careItems);
   const reminders = useStore((s) => s.reminders);
+  const upcomingCareDays = useStore((s) => s.upcomingCareDays);
+  const deleteCareItem = useStore((s) => s.deleteCareItem);
+  const deleteReminder = useStore((s) => s.deleteReminder);
+
+  // Sort pets alphabetically by name
+  const pets = useMemo(() => {
+    return [...petsUnsorted].sort((a, b) => a.name.localeCompare(b.name));
+  }, [petsUnsorted]);
   const refreshData = useStore((s) => s.refreshData);
 
   // Premium state
   const isPremium = usePremiumStore((s) => s.isPremium);
   const canAddPet = usePremiumStore((s) => s.canAddPet);
+  const canAddCareItem = usePremiumStore((s) => s.canAddCareItem);
+  const canAddReminder = usePremiumStore((s) => s.canAddReminder);
   const initializePremium = usePremiumStore((s) => s.initialize);
   const isInitialized = usePremiumStore((s) => s.isInitialized);
 
   const [showAddSheet, setShowAddSheet] = useState(false);
   const [showAddReminderSheet, setShowAddReminderSheet] = useState(false);
   const [showItemSelector, setShowItemSelector] = useState(false);
-  const [showPaywall, setShowPaywall] = useState(false);
   const [showAddPetWizard, setShowAddPetWizard] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showUpsellModal, setShowUpsellModal] = useState(false);
+  const [upsellContext, setUpsellContext] = useState<UpsellContext>('pets');
   const [editingItem, setEditingItem] = useState<CareItem | undefined>();
   const [editingReminder, setEditingReminder] = useState<Reminder | undefined>();
   const [refreshing, setRefreshing] = useState(false);
@@ -76,16 +87,18 @@ export function HomeScreen() {
       setShowAddSheet(false);
       setShowAddReminderSheet(false);
       setShowItemSelector(false);
-      setShowPaywall(false);
       setShowAddPetWizard(false);
       setShowAddMenu(false);
+      setShowUpsellModal(false);
       setEditingItem(undefined);
       setEditingReminder(undefined);
 
       // Scroll to top after a small delay to ensure layout is ready
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         scrollViewRef.current?.scrollTo({ y: 0, animated: true });
       }, 100);
+
+      return () => clearTimeout(timer);
     }, [])
   );
 
@@ -96,25 +109,27 @@ export function HomeScreen() {
     }
   }, [isInitialized, initializePremium]);
 
-  // Get upcoming care items (next 14 days)
+  // Get upcoming care items (using configured days window)
   const upcomingCareItems = useMemo(() => {
     const now = new Date();
-    const futureDate = new Date();
-    futureDate.setDate(now.getDate() + 14);
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const futureDate = new Date(today);
+    futureDate.setDate(today.getDate() + upcomingCareDays);
 
     return careItems
       .filter((item) => {
         const dueDate = new Date(item.dueDate);
-        return dueDate >= new Date(now.setHours(0, 0, 0, 0)) && dueDate <= futureDate;
+        const dueDateOnly = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+        return dueDateOnly >= today && dueDateOnly <= futureDate;
       })
       .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
-  }, [careItems]);
+  }, [careItems, upcomingCareDays]);
 
-  // Get upcoming reminders (next 14 days)
+  // Get upcoming reminders (using configured days window)
   const upcomingReminders = useMemo(() => {
     const now = new Date();
     const futureDate = new Date();
-    futureDate.setDate(now.getDate() + 14);
+    futureDate.setDate(now.getDate() + upcomingCareDays);
 
     return reminders
       .filter((reminder) => {
@@ -123,7 +138,7 @@ export function HomeScreen() {
         return reminderDate >= now && reminderDate <= futureDate;
       })
       .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
-  }, [reminders]);
+  }, [reminders, upcomingCareDays]);
 
   // Unified list combining care items and reminders
   type UnifiedItem = 
@@ -162,28 +177,41 @@ export function HomeScreen() {
     setRefreshing(false);
   };
 
-  const handleAddPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setShowAddMenu(true);
-  };
-
   const handleAddPressUnified = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setShowItemSelector(true);
   };
 
   const handleSelectCare = () => {
+    // Check if user can add more care items
+    if (!canAddCareItem(careItems.length)) {
+      setUpsellContext('care');
+      setShowUpsellModal(true);
+      return;
+    }
     setEditingItem(undefined);
     setShowAddSheet(true);
   };
 
   const handleSelectReminder = () => {
+    // Check if user can add more reminders
+    if (!canAddReminder(reminders.length)) {
+      setUpsellContext('reminders');
+      setShowUpsellModal(true);
+      return;
+    }
     setEditingReminder(undefined);
     setShowAddReminderSheet(true);
   };
 
   const handleAddCarePress = () => {
     setShowAddMenu(false);
+    // Check if user can add more care items
+    if (!canAddCareItem(careItems.length)) {
+      setUpsellContext('care');
+      setShowUpsellModal(true);
+      return;
+    }
     setEditingItem(undefined);
     setShowAddSheet(true);
   };
@@ -191,6 +219,32 @@ export function HomeScreen() {
   const handleCareItemPress = (item: CareItem) => {
     setEditingItem(item);
     setShowAddSheet(true);
+  };
+
+  const handleDeleteCareItem = async (item: CareItem) => {
+    try {
+      // Delete from calendar if it was added
+      if (item.calendarEventId) {
+        await calendarService.deleteEvent(item.calendarEventId);
+      }
+      await deleteCareItem(item.id);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (error) {
+      console.error('Error deleting care item:', error);
+    }
+  };
+
+  const handleDeleteReminder = async (reminder: Reminder) => {
+    try {
+      // Delete from calendar if it was added
+      if (reminder.calendarEventId) {
+        await calendarService.deleteEvent(reminder.calendarEventId);
+      }
+      await deleteReminder(reminder.id);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (error) {
+      console.error('Error deleting reminder:', error);
+    }
   };
 
   const handleReminderPress = (reminder: Reminder) => {
@@ -218,8 +272,9 @@ export function HomeScreen() {
       // User can add pet - show wizard
       setShowAddPetWizard(true);
     } else {
-      // User has reached free limit - show paywall
-      setShowPaywall(true);
+      // User has reached free limit - show upsell modal
+      setUpsellContext('pets');
+      setShowUpsellModal(true);
     }
   };
 
@@ -262,14 +317,15 @@ export function HomeScreen() {
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image
-                source={require('../../assets/Loki_log.png')}
+                source={require('../../assets/loki-logo-small.png')}
                 style={{
                   width: 34,
                   height: 34,
                   marginRight: 8,
                   borderRadius: 8,
                 }}
-                resizeMode="contain"
+                resizeMode="cover"
+                fadeDuration={0}
               />
               <Text
                 style={{
@@ -351,58 +407,67 @@ export function HomeScreen() {
                     width: 160,
                     height: 200,
                     borderRadius: 20,
-                    borderWidth: 2,
-                    borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
-                    borderStyle: 'dashed',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+                    overflow: 'hidden',
                   }}
                 >
-                  <View
+                  <BlurView
+                    intensity={isDark ? 40 : 60}
+                    tint={isDark ? 'dark' : 'light'}
                     style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 24,
-                      backgroundColor: c.accentLight,
+                      flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginBottom: 12,
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.4)',
+                      borderWidth: 1,
+                      borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                      borderRadius: 20,
                     }}
                   >
-                    <Plus size={24} color={c.accent} strokeWidth={2} />
-                  </View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: '600',
-                      color: c.text,
-                      marginBottom: 4,
-                    }}
-                  >
-                    {t('home_add_pet')}
-                  </Text>
-                  {!isPremium && pets.length >= FREE_PET_LIMIT_COUNT && (
                     <View
                       style={{
-                        flexDirection: 'row',
+                        width: 48,
+                        height: 48,
+                        borderRadius: 24,
+                        backgroundColor: c.accentLight,
                         alignItems: 'center',
-                        gap: 4,
-                        marginTop: 4,
+                        justifyContent: 'center',
+                        marginBottom: 12,
                       }}
                     >
-                      <Crown size={12} color={c.accent} strokeWidth={2} />
-                      <Text
+                      <Plus size={24} color={c.accent} strokeWidth={2} />
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: '600',
+                        color: c.text,
+                        marginBottom: 4,
+                      }}
+                    >
+                      {t('home_add_pet')}
+                    </Text>
+                    {!isPremium && pets.length >= FREE_PET_LIMIT_COUNT && (
+                      <View
                         style={{
-                          fontSize: 11,
-                          color: c.accent,
-                          fontWeight: '500',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 4,
+                          marginTop: 4,
                         }}
                       >
-                        {t('home_premium_badge')}
-                      </Text>
-                    </View>
-                  )}
+                        <Crown size={12} color={c.accent} strokeWidth={2} />
+                        <Text
+                          style={{
+                            fontSize: 11,
+                            color: c.accent,
+                            fontWeight: '500',
+                          }}
+                        >
+                          {t('home_premium_badge')}
+                        </Text>
+                      </View>
+                    )}
+                  </BlurView>
                 </Pressable>
               </Animated.View>
             </ScrollView>
@@ -442,12 +507,14 @@ export function HomeScreen() {
                           item={unifiedItem.item}
                           pet={pet}
                           onPress={() => handleCareItemPress(unifiedItem.item)}
+                          onDelete={() => handleDeleteCareItem(unifiedItem.item)}
                         />
                       ) : (
                         <ReminderRow
                           reminder={unifiedItem.item}
                           pet={pet}
                           onPress={() => handleReminderPress(unifiedItem.item)}
+                          onDelete={() => handleDeleteReminder(unifiedItem.item)}
                         />
                       )}
                     </Animated.View>
@@ -495,15 +562,11 @@ export function HomeScreen() {
         onComplete={handleAddPetComplete}
       />
 
-      {/* Premium Paywall */}
-      <PaywallScreen
-        visible={showPaywall}
-        onClose={() => setShowPaywall(false)}
-        onPurchaseSuccess={() => {
-          setShowPaywall(false);
-          // After successful purchase, show add pet wizard
-          setShowAddPetWizard(true);
-        }}
+      {/* Premium Upsell Modal */}
+      <PremiumUpsellModal
+        visible={showUpsellModal}
+        onClose={() => setShowUpsellModal(false)}
+        context={upsellContext}
       />
 
       {/* Add Menu Modal */}

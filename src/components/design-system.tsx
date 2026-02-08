@@ -507,7 +507,10 @@ export function SectionHeader({ title, action }: SectionHeaderProps) {
       </Text>
       {action && (
         <Pressable
-          onPress={action.onPress}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            action.onPress();
+          }}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Text
@@ -643,7 +646,7 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
   const c = useColors();
 
   return (
-    <GlassCard className="mx-4">
+    <GlassCard>
       <View style={{ alignItems: 'center', paddingVertical: 24 }}>
         <View
           style={{

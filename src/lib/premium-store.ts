@@ -11,23 +11,35 @@ import {
 import type { PurchasesPackage } from 'react-native-purchases';
 
 const ADMIN_MODE_KEY = 'caramelo_admin_premium_mode';
+const COUPON_MODE_KEY = 'caramelo_coupon_premium_mode';
+const REDEEMED_COUPONS_KEY = 'caramelo_redeemed_coupons';
 const FREE_PET_LIMIT = 2;
+const FREE_CARE_LIMIT = 1;
+const FREE_REMINDER_LIMIT = 1;
 const PREMIUM_ENTITLEMENT_ID = 'premium';
+
+// Valid promotional coupons
+const VALID_COUPONS: Record<string, { name: string; expiresAt?: Date }> = {
+  '#CARNAVAU#': { name: 'Carnaval 2026' },
+};
 
 interface PremiumState {
   // State
   isPremium: boolean;
   isAdminMode: boolean; // For testing purposes
+  isCouponMode: boolean; // Premium via coupon
   isLoading: boolean;
   isInitialized: boolean;
   lifetimePackage: PurchasesPackage | null;
   priceString: string | null;
+  redeemedCoupons: string[];
 
   // Actions
   initialize: () => Promise<void>;
   checkPremiumStatus: () => Promise<boolean>;
   purchasePremium: () => Promise<{ success: boolean; error?: string }>;
   restorePurchases: () => Promise<{ success: boolean; restored: boolean; error?: string }>;
+  redeemCoupon: (coupon: string) => Promise<{ success: boolean; error?: string }>;
 
   // Admin/Test functions
   toggleAdminMode: () => Promise<void>;
@@ -35,15 +47,19 @@ interface PremiumState {
 
   // Helpers
   canAddPet: (currentPetCount: number) => boolean;
+  canAddCareItem: (currentCareCount: number) => boolean;
+  canAddReminder: (currentReminderCount: number) => boolean;
 }
 
 export const usePremiumStore = create<PremiumState>((set, get) => ({
   isPremium: false,
   isAdminMode: false,
+  isCouponMode: false,
   isLoading: false,
   isInitialized: false,
   lifetimePackage: null,
   priceString: null,
+  redeemedCoupons: [],
 
   initialize: async () => {
     if (get().isInitialized) return;
@@ -55,10 +71,18 @@ export const usePremiumStore = create<PremiumState>((set, get) => ({
       const adminMode = await AsyncStorage.getItem(ADMIN_MODE_KEY);
       const isAdminMode = adminMode === 'true';
 
-      // Check actual premium status from RevenueCat
-      let isPremium = isAdminMode;
+      // Check coupon mode from storage
+      const couponMode = await AsyncStorage.getItem(COUPON_MODE_KEY);
+      const isCouponMode = couponMode === 'true';
 
-      if (!isAdminMode && isRevenueCatEnabled()) {
+      // Load redeemed coupons
+      const redeemedCouponsData = await AsyncStorage.getItem(REDEEMED_COUPONS_KEY);
+      const redeemedCoupons: string[] = redeemedCouponsData ? JSON.parse(redeemedCouponsData) : [];
+
+      // Check actual premium status from RevenueCat
+      let isPremium = isAdminMode || isCouponMode;
+
+      if (!isPremium && isRevenueCatEnabled()) {
         const result = await hasEntitlement(PREMIUM_ENTITLEMENT_ID);
         if (result.ok) {
           isPremium = result.data;
@@ -90,8 +114,10 @@ export const usePremiumStore = create<PremiumState>((set, get) => ({
       set({
         isPremium,
         isAdminMode,
+        isCouponMode,
         lifetimePackage,
         priceString,
+        redeemedCoupons,
         isInitialized: true,
         isLoading: false,
       });
@@ -102,10 +128,10 @@ export const usePremiumStore = create<PremiumState>((set, get) => ({
   },
 
   checkPremiumStatus: async () => {
-    const { isAdminMode } = get();
+    const { isAdminMode, isCouponMode } = get();
 
-    // Admin mode overrides everything
-    if (isAdminMode) {
+    // Admin mode or coupon mode overrides everything
+    if (isAdminMode || isCouponMode) {
       set({ isPremium: true });
       return true;
     }
@@ -169,39 +195,113 @@ export const usePremiumStore = create<PremiumState>((set, get) => ({
     }
   },
 
-  toggleAdminMode: async () => {
-    const { isAdminMode } = get();
-    const newMode = !isAdminMode;
+  redeemCoupon: async (coupon: string) => {
+    const trimmedCoupon = coupon.trim();
 
-    await AsyncStorage.setItem(ADMIN_MODE_KEY, newMode ? 'true' : 'false');
-    set({
-      isAdminMode: newMode,
-      isPremium: newMode ? true : get().isPremium,
-    });
+    // Check if coupon is valid
+    if (!VALID_COUPONS[trimmedCoupon]) {
+      return { success: false, error: 'Cupom inválido' };
+    }
 
-    // If turning off admin mode, re-check actual premium status
-    if (!newMode) {
-      get().checkPremiumStatus();
+    const couponData = VALID_COUPONS[trimmedCoupon];
+
+    // Check if coupon is expired
+    if (couponData.expiresAt && new Date() > couponData.expiresAt) {
+      return { success: false, error: 'Cupom expirado' };
+    }
+
+    // Check if already redeemed
+    const { redeemedCoupons } = get();
+    if (redeemedCoupons.includes(trimmedCoupon)) {
+      return { success: false, error: 'Cupom já foi utilizado' };
+    }
+
+    try {
+      // Add to redeemed coupons
+      const updatedCoupons = [...redeemedCoupons, trimmedCoupon];
+      await AsyncStorage.setItem(REDEEMED_COUPONS_KEY, JSON.stringify(updatedCoupons));
+
+      // Enable coupon mode
+      await AsyncStorage.setItem(COUPON_MODE_KEY, 'true');
+
+      set({
+        isCouponMode: true,
+        isPremium: true,
+        redeemedCoupons: updatedCoupons,
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error('[PremiumStore] Error redeeming coupon:', error);
+      return { success: false, error: 'Erro ao resgatar cupom' };
     }
   },
 
+  toggleAdminMode: async () => {
+    const { isAdminMode, isCouponMode } = get();
+    const newMode = !isAdminMode;
+
+    await AsyncStorage.setItem(ADMIN_MODE_KEY, newMode ? 'true' : 'false');
+
+    // When turning OFF admin mode, check if there's a real premium status
+    // When turning ON admin mode, force premium to true
+    let actualPremium = newMode;
+    if (!newMode) {
+      // Check if user has premium from coupon or RevenueCat
+      actualPremium = isCouponMode;
+      if (!actualPremium && isRevenueCatEnabled()) {
+        const result = await hasEntitlement(PREMIUM_ENTITLEMENT_ID);
+        if (result.ok) {
+          actualPremium = result.data;
+        }
+      }
+    }
+
+    set({
+      isAdminMode: newMode,
+      isPremium: actualPremium,
+    });
+  },
+
   setAdminMode: async (enabled: boolean) => {
+    const { isCouponMode } = get();
     await AsyncStorage.setItem(ADMIN_MODE_KEY, enabled ? 'true' : 'false');
+
+    // Same logic as toggleAdminMode
+    let actualPremium = enabled;
+    if (!enabled) {
+      actualPremium = isCouponMode;
+      if (!actualPremium && isRevenueCatEnabled()) {
+        const result = await hasEntitlement(PREMIUM_ENTITLEMENT_ID);
+        if (result.ok) {
+          actualPremium = result.data;
+        }
+      }
+    }
+
     set({
       isAdminMode: enabled,
-      isPremium: enabled ? true : get().isPremium,
+      isPremium: actualPremium,
     });
-
-    if (!enabled) {
-      get().checkPremiumStatus();
-    }
   },
 
   canAddPet: (currentPetCount: number) => {
     const { isPremium } = get();
     return isPremium || currentPetCount < FREE_PET_LIMIT;
   },
+
+  canAddCareItem: (currentCareCount: number) => {
+    const { isPremium } = get();
+    return isPremium || currentCareCount < FREE_CARE_LIMIT;
+  },
+
+  canAddReminder: (currentReminderCount: number) => {
+    const { isPremium } = get();
+    return isPremium || currentReminderCount < FREE_REMINDER_LIMIT;
+  },
 }));
 
 // Export constants for use elsewhere
 export const FREE_PET_LIMIT_COUNT = FREE_PET_LIMIT;
+export const FREE_CARE_LIMIT_COUNT = FREE_CARE_LIMIT;
+export const FREE_REMINDER_LIMIT_COUNT = FREE_REMINDER_LIMIT;

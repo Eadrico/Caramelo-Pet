@@ -8,9 +8,11 @@ export interface Pet {
   id: string;
   name: string;
   species: Species;
+  customSpecies?: string; // For 'other' species, user can specify (e.g., "coelho", "hamster")
   birthdate?: string; // ISO date string
   weightKg?: number;
-  photoUri?: string;
+  photoUri?: string; // File URI or remote URL
+  photoAsset?: string; // Local bundled asset name (e.g., 'loki-new', 'brownie-new')
   createdAt: string; // ISO date string
   // Advanced info
   breed?: string;
@@ -30,6 +32,7 @@ export interface Reminder {
   repeatType: 'none' | 'daily' | 'weekly' | 'monthly';
   isEnabled: boolean;
   notificationId?: string;
+  calendarEventId?: string; // ID of the event in the device calendar
   createdAt: string; // ISO date string
 }
 
@@ -40,15 +43,19 @@ export interface CareItem {
   title: string;
   dueDate: string; // ISO date string
   notes?: string;
+  repeatType?: 'none' | 'daily' | 'weekly' | 'monthly';
+  calendarEventId?: string; // ID of the event in the device calendar
   createdAt: string; // ISO date string
 }
 
 export interface OnboardingPetData {
   name: string;
   species: Species;
+  customSpecies?: string; // For 'other' species
   birthdate?: string;
   weightKg?: number;
   photoUri?: string;
+  photoAsset?: string; // Local bundled asset name
   careItems: Omit<CareItem, 'id' | 'petId' | 'createdAt'>[];
 }
 
@@ -69,7 +76,13 @@ export function formatDate(dateString: string): string {
 export function formatRelativeDate(dateString: string, t: (key: any) => string): string {
   const date = new Date(dateString);
   const now = new Date();
-  const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Get dates without time for accurate day comparison
+  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const diffMs = dateOnly.getTime() - todayOnly.getTime();
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) return t('common_today');
   if (diffDays === 1) return t('common_tomorrow');
@@ -90,22 +103,106 @@ export function getCareTypeIcon(type: CareType): string {
   }
 }
 
-export function getCareTypeLabel(type: CareType): string {
+export function getCareTypeLabel(type: CareType, t: (key: any) => string): string {
   switch (type) {
-    case 'vaccine': return 'Vaccine';
-    case 'grooming': return 'Grooming';
-    case 'medication': return 'Medication';
-    case 'vet_visit': return 'Vet Visit';
-    default: return 'Care';
+    case 'vaccine': return t('care_type_vaccine');
+    case 'grooming': return t('care_type_grooming');
+    case 'medication': return t('care_type_medication');
+    case 'vet_visit': return t('care_type_vet_visit');
+    default: return t('care_type_general');
   }
 }
 
-export function getSpeciesEmoji(species: Species): string {
-  switch (species) {
-    case 'dog': return '🐕';
-    case 'cat': return '🐈';
-    case 'other': return '🐾';
+export function getSpeciesEmoji(species: Species, customSpecies?: string): string {
+  if (species === 'dog') return '🐕';
+  if (species === 'cat') return '🐈';
+
+  // For 'other' species, try to match with common pets
+  if (species === 'other' && customSpecies) {
+    const normalized = customSpecies.toLowerCase().trim();
+
+    // Animal emoji mapping
+    const emojiMap: Record<string, string> = {
+      // Rodents
+      'hamster': '🐹',
+      'coelho': '🐰',
+      'rabbit': '🐰',
+      'conejo': '🐰',
+      'lapin': '🐰',
+      'guinea pig': '🐹',
+      'porquinho da índia': '🐹',
+      'porquinho': '🐹',
+      'mouse': '🐭',
+      'rato': '🐭',
+      'ratón': '🐭',
+      'souris': '🐭',
+
+      // Birds
+      'pássaro': '🐦',
+      'bird': '🐦',
+      'pájaro': '🐦',
+      'oiseau': '🐦',
+      'parrot': '🦜',
+      'papagaio': '🦜',
+      'loro': '🦜',
+      'perroquet': '🦜',
+      'canary': '🐤',
+      'canário': '🐤',
+
+      // Reptiles
+      'turtle': '🐢',
+      'tartaruga': '🐢',
+      'tortuga': '🐢',
+      'tortue': '🐢',
+      'lizard': '🦎',
+      'lagarto': '🦎',
+      'snake': '🐍',
+      'cobra': '🐍',
+      'serpent': '🐍',
+
+      // Fish
+      'fish': '🐠',
+      'peixe': '🐠',
+      'pez': '🐠',
+      'poisson': '🐠',
+
+      // Farm animals
+      'horse': '🐴',
+      'cavalo': '🐴',
+      'caballo': '🐴',
+      'cheval': '🐴',
+      'pig': '🐷',
+      'porco': '🐷',
+      'cerdo': '🐷',
+      'cochon': '🐷',
+      'chicken': '🐔',
+      'galinha': '🐔',
+      'pollo': '🐔',
+      'poulet': '🐔',
+
+      // Others
+      'ferret': '🦦',
+      'furão': '🦦',
+      'hedgehog': '🦔',
+      'ouriço': '🦔',
+      'erizo': '🦔',
+    };
+
+    // Check for exact match first
+    if (emojiMap[normalized]) {
+      return emojiMap[normalized];
+    }
+
+    // Check for partial match
+    for (const [key, emoji] of Object.entries(emojiMap)) {
+      if (normalized.includes(key) || key.includes(normalized)) {
+        return emoji;
+      }
+    }
   }
+
+  // Default: red heart for any pet
+  return '❤️';
 }
 
 export function getRepeatLabel(repeatType: Reminder['repeatType'], t: (key: any) => string): string {

@@ -8,7 +8,7 @@ import {
   useColorScheme,
   ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
@@ -46,6 +46,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   const onboardingData = useStore((s) => s.onboardingData);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
@@ -78,18 +79,38 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
   const calculateAge = (birthdate: string) => {
     const birth = new Date(birthdate);
     const now = new Date();
-    const years = now.getFullYear() - birth.getFullYear();
-    const months = now.getMonth() - birth.getMonth();
+    let years = now.getFullYear() - birth.getFullYear();
+    let months = now.getMonth() - birth.getMonth();
 
+    // Adjust for negative months
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Adjust if we haven't reached the birth day this month
+    if (now.getDate() < birth.getDate()) {
+      months--;
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+    }
+
+    // Format the age string
+    if (years === 0 && months === 0) {
+      return t('common_less_than_month');
+    }
     if (years === 0) {
-      const monthCount = Math.max(0, months);
-      return `${monthCount} ${monthCount === 1 ? t('common_month') : t('common_months')}`;
+      return `${months} ${months === 1 ? t('common_month') : t('common_months')}`;
     }
-    if (years === 1 && months < 0) {
-      const monthCount = 12 + months;
-      return `${monthCount} ${monthCount === 1 ? t('common_month') : t('common_months')}`;
+    if (months === 0) {
+      return `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
     }
-    return `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
+    // Show both years and months
+    const yearStr = `${years} ${years === 1 ? t('common_year') : t('common_years')}`;
+    const monthStr = `${months} ${months === 1 ? t('common_month') : t('common_months')}`;
+    return `${yearStr} ${t('common_and')} ${monthStr}`;
   };
 
   return (
@@ -102,7 +123,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
         }
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+      <View style={{ flex: 1, paddingTop: insets.top }}>
         {/* Header */}
         <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -393,7 +414,7 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
         </ScrollView>
 
         {/* Bottom Button */}
-        <SafeAreaView edges={['bottom']} style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+        <View style={{ position: 'absolute', bottom: insets.bottom, left: 0, right: 0 }}>
           <View
             style={{
               backgroundColor: isDark ? '#0C0A09' : '#F5F2EE',
@@ -409,8 +430,8 @@ export function OnboardingReview({ onComplete, onBack }: OnboardingReviewProps) 
               loading={isSaving}
             />
           </View>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
     </View>
   );
 }
