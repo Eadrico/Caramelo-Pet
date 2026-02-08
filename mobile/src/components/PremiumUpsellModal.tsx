@@ -14,6 +14,7 @@ import {
   Dimensions,
   ScrollView,
   Keyboard,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Asset } from 'expo-asset';
@@ -147,8 +148,18 @@ export function PremiumUpsellModal({
     if (result.success) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       onClose();
+      Alert.alert(
+        '🎉 Bem-vindo ao Premium!',
+        'Agora você tem acesso completo a todos os recursos do Caramelo. Aproveite!',
+        [{ text: 'OK', style: 'default' }]
+      );
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      Alert.alert(
+        '❌ Erro na Compra',
+        result.error || 'Não foi possível completar a compra. Tente novamente mais tarde.',
+        [{ text: 'OK', style: 'cancel' }]
+      );
     }
   };
 
@@ -164,6 +175,11 @@ export function PremiumUpsellModal({
     if (result.success) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       onClose();
+      Alert.alert(
+        '✅ Cupom Resgatado!',
+        'Seu cupom foi aplicado com sucesso. Aproveite o acesso Premium!',
+        [{ text: 'OK', style: 'default' }]
+      );
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       setCouponError(result.error ?? 'Erro ao resgatar cupom');
