@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Calendar, Trash2, CalendarPlus } from 'lucide-react-native';
 import { Reminder } from '@/lib/types';
@@ -61,7 +60,6 @@ export function AddReminderSheet({
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [addToCalendar, setAddToCalendar] = useState(false);
-  const [hasAttemptedSave, setHasAttemptedSave] = useState(false);
 
   // Reset form when opening
   useEffect(() => {
@@ -85,12 +83,7 @@ export function AddReminderSheet({
   }, [visible, editItem, preselectedPetId, pets]);
 
   const handleSave = async () => {
-    setHasAttemptedSave(true);
-    
-    if (!title.trim() || selectedPetIds.length === 0) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      return;
-    }
+    if (!title.trim() || selectedPetIds.length === 0) return;
 
     setIsSaving(true);
     try {
@@ -279,7 +272,7 @@ export function AddReminderSheet({
             keyboardShouldPersistTaps="handled"
           >
             {/* Pet Selector - Always first, always shown */}
-            <Animated.View entering={FadeInDown.duration(400).delay(50)}>
+            <View>
               <Text
                 style={{
                   fontSize: 14,
@@ -318,12 +311,12 @@ export function AddReminderSheet({
                     }}
                     size="medium"
                   />
-                  ))}
+                ))}
               </ScrollView>
-            </Animated.View>
+            </View>
 
             {/* Title */}
-            <Animated.View entering={FadeInDown.duration(400).delay(100)}>
+            <View>
               <Text
                 style={{
                   fontSize: 14,
@@ -347,18 +340,12 @@ export function AddReminderSheet({
                   backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                   borderRadius: 12,
                   minHeight: 52,
-                  borderWidth: 1.5,
-                  borderColor: hasAttemptedSave && !title.trim()
-                    ? '#EF4444'
-                    : title.trim()
-                    ? '#22C55E'
-                    : 'transparent',
                 }}
               />
-            </Animated.View>
+            </View>
 
             {/* Message */}
-            <Animated.View entering={FadeInDown.duration(400).delay(150)}>
+            <View>
               <Text
                 style={{
                   fontSize: 14,
@@ -387,10 +374,10 @@ export function AddReminderSheet({
                   textAlignVertical: 'top',
                 }}
               />
-            </Animated.View>
+            </View>
 
             {/* Date & Time */}
-            <Animated.View entering={FadeInDown.duration(400).delay(200)}>
+            <View>
               <Text
                 style={{
                   fontSize: 14,
@@ -449,10 +436,10 @@ export function AddReminderSheet({
                   </Text>
                 </Pressable>
               </View>
-            </Animated.View>
+            </View>
 
             {/* Repeat */}
-            <Animated.View entering={FadeInDown.duration(400).delay(250)}>
+            <View>
               <Text
                 style={{
                   fontSize: 14,
@@ -508,10 +495,10 @@ export function AddReminderSheet({
                   );
                 })}
               </View>
-            </Animated.View>
+            </View>
 
             {/* Add to Calendar Toggle */}
-            <Animated.View entering={FadeInDown.duration(400).delay(300)}>
+            <View>
               <Pressable
                 onPress={() => {
                   setAddToCalendar(!addToCalendar);
@@ -579,7 +566,6 @@ export function AddReminderSheet({
 
             {/* Delete Button (Edit Mode) */}
             {editItem && (
-              <Animated.View entering={FadeInDown.duration(400).delay(350)}>
               <Pressable
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -604,7 +590,6 @@ export function AddReminderSheet({
                   {t('common_delete_reminder')}
                 </Text>
               </Pressable>
-              </Animated.View>
             )}
           </ScrollView>
         </SafeAreaView>
