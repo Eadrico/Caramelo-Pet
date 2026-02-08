@@ -24,12 +24,14 @@ import {
   Stethoscope,
   Calendar,
   Trash2,
+  CalendarPlus,
 } from 'lucide-react-native';
 import { CareItem, CareType, Pet, formatDate, getCareTypeLabel } from '@/lib/types';
 import { useStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n';
 import { useColors, PrimaryButton, SegmentedControl } from '@/components/design-system';
 import { PetChip } from '@/components/PetChip';
+import { calendarService } from '@/lib/calendarService';
 
 interface AddCareItemSheetProps {
   visible: boolean;
@@ -79,6 +81,7 @@ export function AddCareItemSheet({
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showTypeSelector, setShowTypeSelector] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [addToCalendar, setAddToCalendar] = useState(false);
 
   // Reset form when opening
   useEffect(() => {
@@ -128,17 +131,39 @@ export function AddCareItemSheet({
           dueDate: dueDate.toISOString(),
           notes: notes.trim() || undefined,
         });
+
+        // Add to calendar if requested
+        if (addToCalendar) {
+          const pet = pets.find((p) => p.id === selectedPetIds[0]);
+          await calendarService.addCareItemToCalendar(
+            title.trim(),
+            dueDate.toISOString(),
+            notes.trim() || undefined,
+            pet?.name
+          );
+        }
       } else {
         // Create mode: create one item for each selected pet
-        const promises = selectedPetIds.map((petId) =>
-          addCareItem({
+        const promises = selectedPetIds.map(async (petId) => {
+          await addCareItem({
             petId,
             type: selectedType,
             title: title.trim(),
             dueDate: dueDate.toISOString(),
             notes: notes.trim() || undefined,
-          })
-        );
+          });
+
+          // Add to calendar if requested
+          if (addToCalendar) {
+            const pet = pets.find((p) => p.id === petId);
+            await calendarService.addCareItemToCalendar(
+              title.trim(),
+              dueDate.toISOString(),
+              notes.trim() || undefined,
+              pet?.name
+            );
+          }
+        });
         await Promise.all(promises);
       }
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -509,6 +534,73 @@ export function AddCareItemSheet({
                   textAlignVertical: 'top',
                 }}
               />
+            </View>
+
+            {/* Add to Calendar Toggle */}
+            <View>
+              <Pressable
+                onPress={() => {
+                  setAddToCalendar(!addToCalendar);
+                  Haptics.selectionAsync();
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingVertical: 14,
+                  paddingHorizontal: 16,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  borderRadius: 12,
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+                  <View
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      backgroundColor: addToCalendar ? c.accentLight : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <CalendarPlus size={18} color={addToCalendar ? c.accent : c.textSecondary} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 17, color: c.text, fontWeight: '500' }}>
+                      Adicionar ao Calendário
+                    </Text>
+                    <Text style={{ fontSize: 13, color: c.textSecondary, marginTop: 2 }}>
+                      Sincronize com seu calendário pessoal
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    width: 51,
+                    height: 31,
+                    borderRadius: 15.5,
+                    backgroundColor: addToCalendar ? c.accent : isDark ? 'rgba(255,255,255,0.16)' : 'rgba(0,0,0,0.1)',
+                    justifyContent: 'center',
+                    paddingHorizontal: 2,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 27,
+                      height: 27,
+                      borderRadius: 13.5,
+                      backgroundColor: '#FFFFFF',
+                      alignSelf: addToCalendar ? 'flex-end' : 'flex-start',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 2,
+                      elevation: 3,
+                    }}
+                  />
+                </View>
+              </Pressable>
             </View>
 
             {/* Delete Button (Edit Mode) */}

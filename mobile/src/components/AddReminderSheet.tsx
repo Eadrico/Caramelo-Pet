@@ -14,12 +14,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
-import { Calendar, Trash2 } from 'lucide-react-native';
+import { Calendar, Trash2, CalendarPlus } from 'lucide-react-native';
 import { Reminder, getRepeatLabel } from '@/lib/types';
 import { useStore } from '@/lib/store';
 import { useTranslation } from '@/lib/i18n';
 import { useColors } from '@/components/design-system';
 import { PetChip } from '@/components/PetChip';
+import { calendarService } from '@/lib/calendarService';
 
 interface AddReminderSheetProps {
   visible: boolean;
@@ -58,6 +59,7 @@ export function AddReminderSheet({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [addToCalendar, setAddToCalendar] = useState(false);
 
   // Reset form when opening
   useEffect(() => {
@@ -95,18 +97,40 @@ export function AddReminderSheet({
           repeatType,
           isEnabled: editItem.isEnabled,
         });
+
+        // Add to calendar if requested
+        if (addToCalendar) {
+          const pet = pets.find((p) => p.id === selectedPetIds[0]);
+          await calendarService.addReminderToCalendar(
+            title.trim(),
+            dateTime.toISOString(),
+            message.trim() || undefined,
+            pet?.name
+          );
+        }
       } else {
         // Create mode: create one reminder for each selected pet
-        const promises = selectedPetIds.map((petId) =>
-          addReminder({
+        const promises = selectedPetIds.map(async (petId) => {
+          await addReminder({
             petId,
             title: title.trim(),
             message: message.trim() || undefined,
             dateTime: dateTime.toISOString(),
             repeatType,
             isEnabled: true,
-          })
-        );
+          });
+
+          // Add to calendar if requested
+          if (addToCalendar) {
+            const pet = pets.find((p) => p.id === petId);
+            await calendarService.addReminderToCalendar(
+              title.trim(),
+              dateTime.toISOString(),
+              message.trim() || undefined,
+              pet?.name
+            );
+          }
+        });
         await Promise.all(promises);
       }
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -461,6 +485,73 @@ export function AddReminderSheet({
                   );
                 })}
               </View>
+            </View>
+
+            {/* Add to Calendar Toggle */}
+            <View>
+              <Pressable
+                onPress={() => {
+                  setAddToCalendar(!addToCalendar);
+                  Haptics.selectionAsync();
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingVertical: 14,
+                  paddingHorizontal: 16,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  borderRadius: 12,
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+                  <View
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      backgroundColor: addToCalendar ? c.accentLight : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <CalendarPlus size={18} color={addToCalendar ? c.accent : c.textSecondary} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 17, color: c.text, fontWeight: '500' }}>
+                      Adicionar ao Calendário
+                    </Text>
+                    <Text style={{ fontSize: 13, color: c.textSecondary, marginTop: 2 }}>
+                      Sincronize com seu calendário pessoal
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    width: 51,
+                    height: 31,
+                    borderRadius: 15.5,
+                    backgroundColor: addToCalendar ? c.accent : isDark ? 'rgba(255,255,255,0.16)' : 'rgba(0,0,0,0.1)',
+                    justifyContent: 'center',
+                    paddingHorizontal: 2,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 27,
+                      height: 27,
+                      borderRadius: 13.5,
+                      backgroundColor: '#FFFFFF',
+                      alignSelf: addToCalendar ? 'flex-end' : 'flex-start',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 2,
+                      elevation: 3,
+                    }}
+                  />
+                </View>
+              </Pressable>
             </View>
 
             {/* Delete Button (Edit Mode) */}
