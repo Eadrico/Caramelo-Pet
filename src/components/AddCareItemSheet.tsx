@@ -406,18 +406,7 @@ export function AddCareItemSheet({
                     const Icon = config?.icon || Syringe;
                     return (
                       <>
-                        <View
-                          style={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: 8,
-                            backgroundColor: c.accentLight,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Icon size={18} color={c.accent} />
-                        </View>
+                        <Icon size={20} color={c.accent} />
                         <Text style={{ fontSize: 17, color: c.text, flex: 1 }}>
                           {config?.label || selectedType}
                         </Text>
