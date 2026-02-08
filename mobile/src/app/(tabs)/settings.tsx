@@ -979,6 +979,7 @@ export default function SettingsScreen() {
                   source={require('../../../assets/loki-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
+                  fadeDuration={0}
                 />
               </View>
 
@@ -1005,6 +1006,7 @@ export default function SettingsScreen() {
                   source={require('../../../assets/brownie-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
+                  fadeDuration={0}
                 />
               </View>
 
@@ -1031,6 +1033,7 @@ export default function SettingsScreen() {
                   source={require('../../../assets/fuba-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
+                  fadeDuration={0}
                 />
               </View>
 
@@ -1056,6 +1059,7 @@ export default function SettingsScreen() {
                   source={require('../../../assets/baunilha-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
+                  fadeDuration={0}
                 />
               </View>
             </View>

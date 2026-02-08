@@ -73,9 +73,11 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
     // Run migration to update pets with photoAsset
     migratePetsToAssets();
 
-    // Preload all pet images for instant display
+    // Preload all UI images for instant display
     Asset.loadAsync([
+      require('../../assets/logo.png'),
       require('../../assets/icon-small.png'),
+      require('../../assets/loki-logo-small.png'),
       require('../../assets/loki-new.png'),
       require('../../assets/brownie-new.png'),
       require('../../assets/fuba-new.png'),
