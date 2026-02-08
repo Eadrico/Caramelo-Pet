@@ -176,7 +176,6 @@ function MonthYearPicker({
                       fontSize: 17,
                       color: isSelected ? c.accent : c.text,
                       fontWeight: isSelected ? '600' : '400',
-                      textTransform: 'capitalize',
                     }}
                   >
                     {month}
@@ -418,7 +417,6 @@ export function OnboardingInfo({ onNext, onBack }: OnboardingInfoProps) {
                       fontSize: 17,
                       color: birthdate ? c.text : c.textTertiary,
                       fontWeight: birthdate ? '500' : '400',
-                      textTransform: 'capitalize',
                     }}
                   >
                     {birthdate ? formatMonthYear(birthdate, effectiveLanguage) : t('onboarding_select_birthdate')}
