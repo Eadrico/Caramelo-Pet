@@ -993,7 +993,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/loki-1766762610452-0.png')}
+                  source={require('../../../assets/loki-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
@@ -1019,13 +1019,13 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/brownie-1766763191626-1.png')}
+                  source={require('../../../assets/brownie-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
               </View>
 
-              {/* Fuba */}
+              {/* Fubá */}
               <View
                 style={{
                   width: 56,
@@ -1045,13 +1045,13 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/fuba-1766763191626-2.png')}
+                  source={require('../../../assets/fuba-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
               </View>
 
-              {/* Baunilia - rightmost card */}
+              {/* Baunilha - rightmost card */}
               <View
                 style={{
                   width: 56,
@@ -1070,7 +1070,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Image
-                  source={require('../../../assets/Baunilia-1766763191626-0.png')}
+                  source={require('../../../assets/baunilha-new.png')}
                   style={{ width: 56, height: 72 }}
                   resizeMode="cover"
                 />
