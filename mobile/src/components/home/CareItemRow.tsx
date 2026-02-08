@@ -109,7 +109,8 @@ export function CareItemRow({ item, pet, onPress, onDelete }: CareItemRowProps) 
       if (event.translationX < 0) {
         translateX.value = Math.max(event.translationX, -DELETE_BUTTON_WIDTH - 20);
       } else if (translateX.value < 0) {
-        translateX.value = Math.min(0, translateX.value + event.translationX);
+        // Allow swiping right to close
+        translateX.value = event.translationX;
       }
     })
     .onEnd((event) => {
@@ -117,8 +118,12 @@ export function CareItemRow({ item, pet, onPress, onDelete }: CareItemRowProps) 
         // Keep open to show delete button
         translateX.value = withSpring(-DELETE_BUTTON_WIDTH);
         runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Medium);
-      } else {
+      } else if (translateX.value > -DELETE_THRESHOLD / 2) {
+        // Close if swiped back
         translateX.value = withSpring(0);
+      } else {
+        // Stay in current position
+        translateX.value = withSpring(-DELETE_BUTTON_WIDTH);
       }
     });
 

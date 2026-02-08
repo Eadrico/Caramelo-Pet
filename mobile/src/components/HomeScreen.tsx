@@ -50,6 +50,7 @@ export function HomeScreen() {
   const reminders = useStore((s) => s.reminders);
   const upcomingCareDays = useStore((s) => s.upcomingCareDays);
   const deleteCareItem = useStore((s) => s.deleteCareItem);
+  const deleteReminder = useStore((s) => s.deleteReminder);
 
   // Sort pets alphabetically by name
   const pets = useMemo(() => {
@@ -214,6 +215,19 @@ export function HomeScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (error) {
       console.error('Error deleting care item:', error);
+    }
+  };
+
+  const handleDeleteReminder = async (reminder: Reminder) => {
+    try {
+      // Delete from calendar if it was added
+      if (reminder.calendarEventId) {
+        await calendarService.deleteEvent(reminder.calendarEventId);
+      }
+      await deleteReminder(reminder.id);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (error) {
+      console.error('Error deleting reminder:', error);
     }
   };
 
@@ -482,6 +496,7 @@ export function HomeScreen() {
                           reminder={unifiedItem.item}
                           pet={pet}
                           onPress={() => handleReminderPress(unifiedItem.item)}
+                          onDelete={() => handleDeleteReminder(unifiedItem.item)}
                         />
                       )}
                     </Animated.View>
