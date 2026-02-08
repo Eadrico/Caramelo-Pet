@@ -268,19 +268,17 @@ export function AddReminderSheet({
 
           <ScrollView
             style={{ flex: 1 }}
-            contentContainerStyle={{ padding: 20, gap: 24 }}
+            contentContainerStyle={{ padding: 20, gap: 20, paddingBottom: 40 }}
             keyboardShouldPersistTaps="handled"
           >
             {/* Pet Selector - Always first, always shown */}
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {editItem ? t('care_pet_label') : t('care_select_pets')}
@@ -321,12 +319,10 @@ export function AddReminderSheet({
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {t('common_title')}
@@ -339,10 +335,11 @@ export function AddReminderSheet({
                 style={{
                   fontSize: 17,
                   color: c.text,
-                  paddingVertical: 14,
+                  paddingVertical: 16,
                   paddingHorizontal: 16,
                   backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                   borderRadius: 12,
+                  minHeight: 52,
                 }}
               />
             </View>
@@ -351,12 +348,10 @@ export function AddReminderSheet({
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {t('common_message_optional')}
@@ -371,7 +366,7 @@ export function AddReminderSheet({
                 style={{
                   fontSize: 17,
                   color: c.text,
-                  paddingVertical: 14,
+                  paddingVertical: 16,
                   paddingHorizontal: 16,
                   backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                   borderRadius: 12,
@@ -385,12 +380,10 @@ export function AddReminderSheet({
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {t('common_date_time')}
@@ -405,10 +398,11 @@ export function AddReminderSheet({
                     flex: 1,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    paddingVertical: 14,
+                    paddingVertical: 16,
                     paddingHorizontal: 16,
                     backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                     borderRadius: 12,
+                    minHeight: 52,
                     gap: 12,
                   }}
                 >
@@ -426,14 +420,14 @@ export function AddReminderSheet({
                     flex: 1,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    paddingVertical: 14,
+                    justifyContent: 'center',
+                    paddingVertical: 16,
                     paddingHorizontal: 16,
                     backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                     borderRadius: 12,
-                    gap: 12,
+                    minHeight: 52,
                   }}
                 >
-                  <Calendar size={20} color={c.accent} />
                   <Text style={{ fontSize: 17, color: c.text }}>
                     {dateTime.toLocaleTimeString([], {
                       hour: '2-digit',
@@ -448,12 +442,10 @@ export function AddReminderSheet({
             <View>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: '600',
                   color: c.textTertiary,
-                  marginBottom: 8,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.5,
+                  marginBottom: 10,
                 }}
               >
                 {t('common_repeat')}
