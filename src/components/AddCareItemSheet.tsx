@@ -630,7 +630,6 @@ export function AddCareItemSheet({
 
             {/* Add to Calendar Toggle */}
             <Animated.View entering={FadeInDown.duration(400).delay(350)}>
-            <View>
               <Pressable
                 onPress={() => {
                   setAddToCalendar(!addToCalendar);
@@ -694,10 +693,11 @@ export function AddCareItemSheet({
                   />
                 </View>
               </Pressable>
-            </View>
+            </Animated.View>
 
             {/* Delete Button (Edit Mode) */}
             {editItem && (
+              <Animated.View entering={FadeInDown.duration(400).delay(400)}>
               <Pressable
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -722,6 +722,7 @@ export function AddCareItemSheet({
                   {t('care_delete_item')}
                 </Text>
               </Pressable>
+              </Animated.View>
             )}
           </ScrollView>
         </SafeAreaView>

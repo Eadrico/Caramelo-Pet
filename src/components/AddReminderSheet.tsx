@@ -575,7 +575,7 @@ export function AddReminderSheet({
                   />
                 </View>
               </Pressable>
-            </View>
+            </Animated.View>
 
             {/* Delete Button (Edit Mode) */}
             {editItem && (
