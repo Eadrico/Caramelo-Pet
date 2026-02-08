@@ -311,61 +311,59 @@ export function PremiumUpsellModal({
             >
               {/* App Icon with glow effect */}
               <View style={{ alignItems: 'center', marginBottom: 20 }}>
-                <Animated.View style={animatedIconStyle}>
-                  <View
+                <View
+                  style={{
+                    position: 'relative',
+                    width: 100,
+                    height: 100,
+                  }}
+                >
+                  {/* Glow behind icon */}
+                  <Animated.View
+                    style={[
+                      {
+                        position: 'absolute',
+                        top: -10,
+                        left: -10,
+                        right: -10,
+                        bottom: -10,
+                        borderRadius: 35,
+                        backgroundColor: '#D4A574',
+                      },
+                      animatedGlowStyle,
+                    ]}
+                  />
+                  {/* App icon */}
+                  <Image
+                    source={require('../../assets/icon.png')}
                     style={{
-                      position: 'relative',
                       width: 100,
                       height: 100,
+                      borderRadius: 24,
+                    }}
+                  />
+                  {/* Crown badge */}
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: -8,
+                      right: -8,
+                      width: 36,
+                      height: 36,
+                      borderRadius: 18,
+                      backgroundColor: '#D4A574',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      shadowColor: '#D4A574',
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.4,
+                      shadowRadius: 8,
+                      elevation: 8,
                     }}
                   >
-                    {/* Glow behind icon */}
-                    <Animated.View
-                      style={[
-                        {
-                          position: 'absolute',
-                          top: -10,
-                          left: -10,
-                          right: -10,
-                          bottom: -10,
-                          borderRadius: 35,
-                          backgroundColor: '#D4A574',
-                        },
-                        animatedGlowStyle,
-                      ]}
-                    />
-                    {/* App icon */}
-                    <Image
-                      source={require('../../assets/icon.png')}
-                      style={{
-                        width: 100,
-                        height: 100,
-                        borderRadius: 24,
-                      }}
-                    />
-                    {/* Crown badge */}
-                    <View
-                      style={{
-                        position: 'absolute',
-                        bottom: -8,
-                        right: -8,
-                        width: 36,
-                        height: 36,
-                        borderRadius: 18,
-                        backgroundColor: '#D4A574',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        shadowColor: '#D4A574',
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: 0.4,
-                        shadowRadius: 8,
-                        elevation: 8,
-                      }}
-                    >
-                      <Crown size={20} color="#FFFFFF" strokeWidth={2.5} />
-                    </View>
+                    <Crown size={20} color="#FFFFFF" strokeWidth={2.5} />
                   </View>
-                </Animated.View>
+                </View>
               </View>
 
               {/* Title */}
