@@ -72,7 +72,7 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
   // Handle navigation based on onboarding state - only after navigation is ready
   useEffect(() => {
     if (settingsInitialized && appInitialized && isNavigationReady && !hasNavigated) {
-      // Keep splash screen visible for 4 seconds
+      // Keep splash screen visible for 3.5 seconds
       setTimeout(() => {
         SplashScreen.hideAsync();
         setHasNavigated(true);
@@ -82,7 +82,7 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         } else {
           router.replace('/onboarding');
         }
-      }, 4000); // 4 seconds delay
+      }, 3500); // 3.5 seconds delay
     }
   }, [settingsInitialized, appInitialized, hasCompletedOnboarding, isNavigationReady, hasNavigated]);
 
