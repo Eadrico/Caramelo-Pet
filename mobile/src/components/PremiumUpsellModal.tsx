@@ -581,9 +581,9 @@ export function PremiumUpsellModal({
                   </Text>
                 </Pressable>
               ) : (
-                <View style={{ marginTop: 8, marginBottom: 16 }}>
+                <View style={{ marginTop: 16, marginBottom: 16 }}>
                   {/* Header */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 28 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 20 }}>
                     <Ticket size={24} color={c.text} strokeWidth={2.5} />
                     <Text style={{ fontSize: 20, fontWeight: '700', color: c.text, letterSpacing: -0.5 }}>
                       Cupom Promocional
@@ -602,7 +602,7 @@ export function PremiumUpsellModal({
                         ? 'rgba(255,255,255,0.12)'
                         : 'rgba(0,0,0,0.08)',
                       overflow: 'hidden',
-                      marginBottom: 24,
+                      marginBottom: 16,
                     }}
                   >
                     <TextInput
@@ -636,7 +636,7 @@ export function PremiumUpsellModal({
                         borderRadius: 14,
                         paddingVertical: 12,
                         paddingHorizontal: 16,
-                        marginBottom: 24,
+                        marginBottom: 16,
                         borderWidth: 1,
                         borderColor: 'rgba(239, 68, 68, 0.2)',
                       }}
@@ -648,7 +648,7 @@ export function PremiumUpsellModal({
                   )}
 
                   {/* Action Buttons */}
-                  <View style={{ flexDirection: 'row', gap: 12, marginBottom: 20 }}>
+                  <View style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
                     <Pressable
                       onPress={handleRedeemCoupon}
                       disabled={isRedeemingCoupon || !couponCode.trim() || isLoading}
