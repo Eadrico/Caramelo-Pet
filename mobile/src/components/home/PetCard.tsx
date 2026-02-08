@@ -12,6 +12,7 @@ import { BlurView } from 'expo-blur';
 import { Pet, CareItem, formatRelativeDate, getSpeciesEmoji } from '@/lib/types';
 import { useColors } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';
+import { getPetImageSource, hasPetPhoto } from '@/lib/pet-images';
 
 interface PetCardProps {
   pet: Pet;
@@ -68,9 +69,9 @@ export function PetCard({ pet, nextCareItem, onPress }: PetCardProps) {
             backgroundColor: c.accentLight,
           }}
         >
-          {pet.photoUri ? (
+          {hasPetPhoto(pet) ? (
             <Image
-              source={{ uri: pet.photoUri }}
+              source={getPetImageSource(pet)!}
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />

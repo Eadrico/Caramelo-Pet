@@ -11,7 +11,8 @@ export interface Pet {
   customSpecies?: string; // For 'other' species, user can specify (e.g., "coelho", "hamster")
   birthdate?: string; // ISO date string
   weightKg?: number;
-  photoUri?: string;
+  photoUri?: string; // File URI or remote URL
+  photoAsset?: string; // Local bundled asset name (e.g., 'loki-new', 'brownie-new')
   createdAt: string; // ISO date string
   // Advanced info
   breed?: string;
@@ -54,6 +55,7 @@ export interface OnboardingPetData {
   birthdate?: string;
   weightKg?: number;
   photoUri?: string;
+  photoAsset?: string; // Local bundled asset name
   careItems: Omit<CareItem, 'id' | 'petId' | 'createdAt'>[];
 }
 

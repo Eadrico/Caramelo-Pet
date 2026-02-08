@@ -18,6 +18,7 @@ import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { getPetImageSource, hasPetPhoto } from '@/lib/pet-images';
 import {
   ChevronLeft,
   PawPrint,
@@ -137,6 +138,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
       species: pet.species,
       customSpecies: pet.customSpecies,
       photoUri: pet.photoUri,
+      photoAsset: pet.photoAsset,
       birthdate: pet.birthdate,
       breed: pet.breed,
       microchipId: pet.microchipId,
@@ -328,9 +330,9 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                   backgroundColor: c.accentLight,
                 }}
               >
-                {(editedPet.photoUri || pet.photoUri) ? (
+                {(editedPet.photoUri || hasPetPhoto(pet)) ? (
                   <Image
-                    source={{ uri: editedPet.photoUri || pet.photoUri }}
+                    source={editedPet.photoUri ? { uri: editedPet.photoUri } : getPetImageSource(pet)!}
                     style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                   />

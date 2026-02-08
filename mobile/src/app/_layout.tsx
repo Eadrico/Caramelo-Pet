@@ -12,6 +12,7 @@ import { useStore } from '@/lib/store';
 import { LanguageProvider } from '@/lib/i18n';
 import { Image } from 'react-native';
 import { Asset } from 'expo-asset';
+import { migratePetsToAssets } from '@/lib/pet-migration';
 
 import '../../global.css';
 
@@ -70,8 +71,17 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
     initializeSettings();
     initializeApp();
 
-    // Preload paywall icon for instant display
-    Image.prefetch(Asset.fromModule(require('../../assets/icon-small.png')).uri);
+    // Run migration to update pets with photoAsset
+    migratePetsToAssets();
+
+    // Preload all pet images for instant display
+    Asset.loadAsync([
+      require('../../assets/icon-small.png'),
+      require('../../assets/loki-new.png'),
+      require('../../assets/brownie-new.png'),
+      require('../../assets/fuba-new.png'),
+      require('../../assets/baunilha-new.png'),
+    ]);
   }, []);
 
   // Handle navigation based on onboarding state - only after navigation is ready

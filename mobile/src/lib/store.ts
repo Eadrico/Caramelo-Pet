@@ -259,6 +259,7 @@ export const useStore = create<AppState>((set, get) => ({
         birthdate: onboardingData.birthdate,
         weightKg: onboardingData.weightKg,
         photoUri,
+        photoAsset: onboardingData.photoAsset,
       },
       onboardingData.careItems
     );
