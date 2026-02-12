@@ -241,6 +241,10 @@ type TranslationKey =
   | 'common_daily'
   | 'common_weekly'
   | 'common_monthly'
+  | 'common_custom'
+  | 'common_day'
+  | 'common_days'
+  | 'care_repeat_every'
   | 'common_new_reminder'
   | 'common_edit_reminder'
   | 'common_delete_reminder'
@@ -486,6 +490,10 @@ const en: Translations = {
   common_daily: 'Daily',
   common_weekly: 'Weekly',
   common_monthly: 'Monthly',
+  common_custom: 'Custom',
+  common_day: 'day',
+  common_days: 'days',
+  care_repeat_every: 'Repeat every',
   common_new_reminder: 'New reminder',
   common_edit_reminder: 'Edit reminder',
   common_delete_reminder: 'Delete reminder',
@@ -739,6 +747,10 @@ const pt: Translations = {
   common_daily: 'Diariamente',
   common_weekly: 'Semanalmente',
   common_monthly: 'Mensalmente',
+  common_custom: 'Personalizado',
+  common_day: 'dia',
+  common_days: 'dias',
+  care_repeat_every: 'Repetir a cada',
   common_new_reminder: 'Novo lembrete',
   common_edit_reminder: 'Editar lembrete',
   common_delete_reminder: 'Deletar lembrete',
@@ -992,6 +1004,10 @@ const es: Translations = {
   common_daily: 'Diariamente',
   common_weekly: 'Semanalmente',
   common_monthly: 'Mensualmente',
+  common_custom: 'Personalizado',
+  common_day: 'día',
+  common_days: 'días',
+  care_repeat_every: 'Repetir cada',
   common_new_reminder: 'Nuevo recordatorio',
   common_edit_reminder: 'Editar recordatorio',
   common_delete_reminder: 'Eliminar recordatorio',

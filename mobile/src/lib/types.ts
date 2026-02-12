@@ -43,7 +43,8 @@ export interface CareItem {
   title: string;
   dueDate: string; // ISO date string
   notes?: string;
-  repeatType?: 'none' | 'daily' | 'weekly' | 'monthly';
+  repeatType?: 'none' | 'daily' | 'weekly' | 'monthly' | 'custom';
+  customInterval?: number; // Number of days for custom repeat (e.g., "every 2 days")
   calendarEventId?: string; // ID of the event in the device calendar
   createdAt: string; // ISO date string
 }

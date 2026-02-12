@@ -25,6 +25,8 @@ import {
   Calendar,
   Trash2,
   CalendarPlus,
+  Plus,
+  Minus,
 } from 'lucide-react-native';
 import { CareItem, CareType, formatDate } from '@/lib/types';
 import { useStore } from '@/lib/store';
@@ -77,8 +79,11 @@ export function AddCareItemSheet({
     editItem ? new Date(editItem.dueDate) : new Date()
   );
   const [notes, setNotes] = useState(editItem?.notes || '');
-  const [repeatType, setRepeatType] = useState<'none' | 'daily' | 'weekly' | 'monthly'>(
+  const [repeatType, setRepeatType] = useState<'none' | 'daily' | 'weekly' | 'monthly' | 'custom'>(
     editItem?.repeatType || 'none'
+  );
+  const [customInterval, setCustomInterval] = useState<number>(
+    editItem?.customInterval || 2
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -100,6 +105,7 @@ export function AddCareItemSheet({
         setDueDate(new Date(editItem.dueDate));
         setNotes(editItem.notes || '');
         setRepeatType(editItem.repeatType || 'none');
+        setCustomInterval(editItem.customInterval || 2);
         setAddToCalendar(false);
       } else {
         // Create mode: start with one pet if preselected, otherwise empty
@@ -109,6 +115,7 @@ export function AddCareItemSheet({
         setDueDate(new Date());
         setNotes('');
         setRepeatType('none');
+        setCustomInterval(2);
         setAddToCalendar(false);
       }
     }
@@ -136,12 +143,14 @@ export function AddCareItemSheet({
         // Add to calendar if requested
         if (addToCalendar) {
           const pet = pets.find((p) => p.id === selectedPetIds[0]);
+          // Convert 'custom' to 'daily' for calendar (custom intervals not supported by calendar)
+          const calendarRepeatType = repeatType === 'custom' ? 'daily' : repeatType;
           const result = await calendarService.addCareItemToCalendar(
             title.trim(),
             dueDate.toISOString(),
             notes.trim() || undefined,
             pet?.name,
-            repeatType
+            calendarRepeatType
           );
           if (result.success && result.eventId) {
             calendarEventId = result.eventId;
@@ -155,6 +164,7 @@ export function AddCareItemSheet({
           dueDate: dueDate.toISOString(),
           notes: notes.trim() || undefined,
           repeatType,
+          customInterval: repeatType === 'custom' ? customInterval : undefined,
           calendarEventId,
         });
       } else {
@@ -165,12 +175,14 @@ export function AddCareItemSheet({
           // Add to calendar if requested
           if (addToCalendar) {
             const pet = pets.find((p) => p.id === petId);
+            // Convert 'custom' to 'daily' for calendar (custom intervals not supported by calendar)
+            const calendarRepeatType = repeatType === 'custom' ? 'daily' : repeatType;
             const result = await calendarService.addCareItemToCalendar(
               title.trim(),
               dueDate.toISOString(),
               notes.trim() || undefined,
               pet?.name,
-              repeatType
+              calendarRepeatType
             );
             if (result.success && result.eventId) {
               calendarEventId = result.eventId;
@@ -184,6 +196,7 @@ export function AddCareItemSheet({
             dueDate: dueDate.toISOString(),
             notes: notes.trim() || undefined,
             repeatType,
+            customInterval: repeatType === 'custom' ? customInterval : undefined,
             calendarEventId,
           });
         });
@@ -241,6 +254,13 @@ export function AddCareItemSheet({
       newDate.setDate(selectedDate.getDate());
       setDueDate(newDate);
     }
+  };
+
+  // Format date with weekday for better context
+  const formatDateWithWeekday = (date: Date) => {
+    const weekday = date.toLocaleDateString(undefined, { weekday: 'short' });
+    const dateStr = formatDate(date.toISOString());
+    return `${weekday}, ${dateStr}`;
   };
 
   const handleTimeChange = (event: any, selectedTime?: Date) => {
@@ -484,9 +504,14 @@ export function AddCareItemSheet({
                   }}
                 >
                   <Calendar size={20} color={c.accent} />
-                  <Text style={{ fontSize: 17, color: c.text }}>
-                    {formatDate(dueDate.toISOString())}
-                  </Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 17, color: c.text, fontWeight: '500' }}>
+                      {formatDate(dueDate.toISOString())}
+                    </Text>
+                    <Text style={{ fontSize: 13, color: c.textSecondary, marginTop: 2 }}>
+                      {dueDate.toLocaleDateString(undefined, { weekday: 'long' })}
+                    </Text>
+                  </View>
                 </Pressable>
 
                 {/* Time Picker */}
@@ -527,13 +552,14 @@ export function AddCareItemSheet({
                 {t('common_repeat')}
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                {(['none', 'daily', 'weekly', 'monthly'] as const).map((type) => {
+                {(['none', 'daily', 'weekly', 'monthly', 'custom'] as const).map((type) => {
                   const getLabel = () => {
                     switch (type) {
                       case 'none': return t('common_once');
                       case 'daily': return t('common_daily');
                       case 'weekly': return t('common_weekly');
                       case 'monthly': return t('common_monthly');
+                      case 'custom': return t('common_custom') || 'Personalizado';
                     }
                   };
 
@@ -571,6 +597,107 @@ export function AddCareItemSheet({
                   );
                 })}
               </View>
+
+              {/* Custom Interval Input */}
+              {repeatType === 'custom' && (
+                <View
+                  style={{
+                    marginTop: 12,
+                    paddingVertical: 16,
+                    paddingHorizontal: 16,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                    borderRadius: 12,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: c.text,
+                      marginBottom: 12,
+                      fontWeight: '500',
+                    }}
+                  >
+                    {t('care_repeat_every') || 'Repetir a cada'}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 12,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        if (customInterval > 1) {
+                          setCustomInterval(customInterval - 1);
+                          Haptics.selectionAsync();
+                        }
+                      }}
+                      disabled={customInterval <= 1}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 22,
+                        backgroundColor: customInterval > 1 ? c.accent : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Minus size={20} color={customInterval > 1 ? '#FFFFFF' : c.textTertiary} />
+                    </Pressable>
+
+                    <View
+                      style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        paddingVertical: 12,
+                        paddingHorizontal: 20,
+                        backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 24,
+                          fontWeight: '600',
+                          color: c.text,
+                        }}
+                      >
+                        {customInterval}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: c.textSecondary,
+                          marginTop: 4,
+                        }}
+                      >
+                        {customInterval === 1 ? (t('common_day') || 'dia') : (t('common_days') || 'dias')}
+                      </Text>
+                    </View>
+
+                    <Pressable
+                      onPress={() => {
+                        if (customInterval < 365) {
+                          setCustomInterval(customInterval + 1);
+                          Haptics.selectionAsync();
+                        }
+                      }}
+                      disabled={customInterval >= 365}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 22,
+                        backgroundColor: customInterval < 365 ? c.accent : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Plus size={20} color={customInterval < 365 ? '#FFFFFF' : c.textTertiary} />
+                    </Pressable>
+                  </View>
+                </View>
+              )}
             </View>
 
             {/* Notes */}
@@ -755,9 +882,9 @@ export function AddCareItemSheet({
               <DateTimePicker
                 value={dueDate}
                 mode="date"
-                display="spinner"
+                display="inline"
                 onChange={handleDateChange}
-                style={{ height: 200, alignSelf: 'center' }}
+                style={{ height: 320, alignSelf: 'center' }}
               />
             </View>
             </SafeAreaView>
