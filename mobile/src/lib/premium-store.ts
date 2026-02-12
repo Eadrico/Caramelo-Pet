@@ -292,11 +292,19 @@ export const usePremiumStore = create<PremiumState>((set, get) => ({
 
   canAddCareItem: (currentCareCount: number) => {
     const { isPremium } = get();
-    return isPremium || currentCareCount < FREE_CARE_LIMIT;
+    const canAdd = isPremium || currentCareCount < FREE_CARE_LIMIT;
+    console.log('[PremiumStore] canAddCareItem check:', {
+      currentCareCount,
+      FREE_CARE_LIMIT,
+      isPremium,
+      canAdd,
+    });
+    return canAdd;
   },
 
   canAddReminder: (currentReminderCount: number) => {
     const { isPremium } = get();
+    // Free users can add reminders until they reach the limit (inclusive)
     return isPremium || currentReminderCount < FREE_REMINDER_LIMIT;
   },
 }));

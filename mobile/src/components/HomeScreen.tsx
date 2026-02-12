@@ -184,6 +184,11 @@ export function HomeScreen() {
 
   const handleSelectCare = () => {
     // Check if user can add more care items
+    console.log('[HomeScreen] Checking care item limit:', {
+      careItemsLength: careItems.length,
+      isPremium,
+      canAdd: canAddCareItem(careItems.length),
+    });
     if (!canAddCareItem(careItems.length)) {
       setUpsellContext('care');
       setShowUpsellModal(true);
