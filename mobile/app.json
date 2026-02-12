@@ -3,7 +3,7 @@
     "name": "Caramelo Pets",
     "slug": "meucaramelo",
     "scheme": "caramelo",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Organize a vida dos seus pets com facilidade! Gerencie perfis, agende lembretes de vacinas e consultas, e acompanhe o crescimento dos seus amigos de quatro patas.",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
