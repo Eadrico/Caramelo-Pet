@@ -1,5 +1,5 @@
 // Settings Screen
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -47,6 +47,7 @@ import { router } from 'expo-router';
 import { useTranslation } from '@/lib/i18n';
 import { isSandboxEnvironment } from '@/lib/sandboxDetection';
 import { SandboxDevMenu } from '@/components/SandboxDevMenu';
+import { getPhotoFullUri, savePhoto } from '@/lib/storage';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -680,7 +681,9 @@ export default function SettingsScreen() {
     });
 
     if (!result.canceled && result.assets[0]) {
-      await updateProfile({ photoUri: result.assets[0].uri });
+      // Save photo and get relative path (just filename) for persistence
+      const relativePath = await savePhoto(result.assets[0].uri);
+      await updateProfile({ photoUri: relativePath });
     }
   };
 
@@ -811,7 +814,7 @@ export default function SettingsScreen() {
               >
                 {profile.photoUri ? (
                   <Image
-                    source={{ uri: profile.photoUri }}
+                    source={{ uri: getPhotoFullUri(profile.photoUri) }}
                     style={{ width: 88, height: 88 }}
                   />
                 ) : (

@@ -19,6 +19,7 @@ import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getPetImageSource, hasPetPhoto } from '@/lib/pet-images';
+import { savePhoto, getPhotoFullUri } from '@/lib/storage';
 import {
   ChevronLeft,
   PawPrint,
@@ -165,7 +166,9 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
     });
 
     if (!result.canceled && result.assets[0]) {
-      setEditedPet((prev) => ({ ...prev, photoUri: result.assets[0].uri }));
+      // Save photo and get relative path (just filename) for persistence
+      const relativePath = await savePhoto(result.assets[0].uri);
+      setEditedPet((prev) => ({ ...prev, photoUri: relativePath }));
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
@@ -326,7 +329,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
               >
                 {(editedPet.photoUri || hasPetPhoto(pet)) ? (
                   <Image
-                    source={editedPet.photoUri ? { uri: editedPet.photoUri } : getPetImageSource(pet)!}
+                    source={editedPet.photoUri ? { uri: getPhotoFullUri(editedPet.photoUri) } : getPetImageSource(pet)!}
                     style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                   />

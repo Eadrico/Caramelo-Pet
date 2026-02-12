@@ -9,7 +9,7 @@ const CARE_ITEMS_KEY = 'caramelo_care_items';
 const REMINDERS_KEY = 'caramelo_reminders';
 const UPCOMING_CARE_DAYS_KEY = 'caramelo_upcoming_care_days';
 const PHOTOS_DIR = `${FileSystem.documentDirectory}photos/`;
-const PHOTO_VALIDATION_KEY = 'caramelo_last_photo_validation';
+const PHOTO_MIGRATION_KEY = 'caramelo_photo_path_migrated_v2';
 
 // Settings operations
 export async function getUpcomingCareDays(): Promise<number | null> {
@@ -37,11 +37,49 @@ async function ensurePhotosDir(): Promise<void> {
   }
 }
 
+/**
+ * Converts a relative photo path (just filename) to a full URI.
+ * This is the key to surviving app updates - we store relative paths
+ * and reconstruct full URIs using the current documentDirectory.
+ */
+export function getPhotoFullUri(relativePath: string | undefined): string | undefined {
+  if (!relativePath) return undefined;
+
+  // If it's already a full path (legacy), extract just the filename
+  if (relativePath.includes('/')) {
+    const filename = relativePath.split('/').pop();
+    if (filename) {
+      return `${PHOTOS_DIR}${filename}`;
+    }
+    return undefined;
+  }
+
+  // It's a relative path (just filename), construct full URI
+  return `${PHOTOS_DIR}${relativePath}`;
+}
+
+/**
+ * Extracts just the filename from a full URI path.
+ * We store only the filename to survive app updates where
+ * the documentDirectory path changes.
+ */
+export function getPhotoRelativePath(fullUri: string | undefined): string | undefined {
+  if (!fullUri) return undefined;
+
+  // Extract just the filename
+  const filename = fullUri.split('/').pop();
+  return filename;
+}
+
 // Check if a photo file exists at the given URI
 export async function photoExists(uri: string | undefined): Promise<boolean> {
   if (!uri) return false;
   try {
-    const info = await FileSystem.getInfoAsync(uri);
+    // Convert relative path to full URI if needed
+    const fullUri = getPhotoFullUri(uri);
+    if (!fullUri) return false;
+
+    const info = await FileSystem.getInfoAsync(fullUri);
     return info.exists;
   } catch (error) {
     console.log('[PhotoValidation] Error checking photo:', uri, error);
@@ -49,45 +87,81 @@ export async function photoExists(uri: string | undefined): Promise<boolean> {
   }
 }
 
-// Validate and fix pet photos - removes invalid photoUri references
-// This fixes the bug where photos disappear after App Store updates
-// because iOS may change the app's sandbox path
-export async function validateAndFixPetPhotos(): Promise<{ fixed: number; pets: Pet[] }> {
+/**
+ * Migrates old absolute photo paths to relative paths (just filenames).
+ * This ensures photos survive app updates where iOS changes the sandbox path.
+ *
+ * Before: photoUri = "/var/mobile/.../photos/abc123.jpg" (breaks on update)
+ * After:  photoUri = "abc123.jpg" (survives updates)
+ */
+export async function migratePhotoPathsToRelative(): Promise<{ migrated: number }> {
   try {
-    const pets = await getPets();
-    let fixedCount = 0;
-    let hasChanges = false;
-
-    const validatedPets = await Promise.all(
-      pets.map(async (pet) => {
-        // Skip if pet uses photoAsset (bundled assets always exist)
-        if (pet.photoAsset) {
-          return pet;
-        }
-
-        // Check if photoUri file exists
-        if (pet.photoUri) {
-          const exists = await photoExists(pet.photoUri);
-          if (!exists) {
-            console.log(`[PhotoValidation] Pet "${pet.name}" photo not found at: ${pet.photoUri}`);
-            fixedCount++;
-            hasChanges = true;
-            // Remove invalid photoUri reference
-            return { ...pet, photoUri: undefined };
-          }
-        }
-
-        return pet;
-      })
-    );
-
-    // Save if any changes were made
-    if (hasChanges) {
-      await AsyncStorage.setItem(PETS_KEY, JSON.stringify(validatedPets));
-      console.log(`[PhotoValidation] Fixed ${fixedCount} pet(s) with missing photos`);
+    const alreadyMigrated = await AsyncStorage.getItem(PHOTO_MIGRATION_KEY);
+    if (alreadyMigrated === 'true') {
+      return { migrated: 0 };
     }
 
-    return { fixed: fixedCount, pets: validatedPets };
+    const pets = await getPets();
+    let migratedCount = 0;
+    let hasChanges = false;
+
+    const migratedPets = pets.map((pet) => {
+      if (pet.photoUri && pet.photoUri.includes('/')) {
+        const filename = pet.photoUri.split('/').pop();
+        if (filename) {
+          console.log(`[PhotoMigration] Migrating pet "${pet.name}" photo to relative path: ${filename}`);
+          migratedCount++;
+          hasChanges = true;
+          return { ...pet, photoUri: filename };
+        }
+      }
+      return pet;
+    });
+
+    if (hasChanges) {
+      await AsyncStorage.setItem(PETS_KEY, JSON.stringify(migratedPets));
+      console.log(`[PhotoMigration] Migrated ${migratedCount} pet photo paths to relative format`);
+    }
+
+    // Mark migration as complete
+    await AsyncStorage.setItem(PHOTO_MIGRATION_KEY, 'true');
+
+    return { migrated: migratedCount };
+  } catch (error) {
+    console.error('[PhotoMigration] Error migrating photo paths:', error);
+    return { migrated: 0 };
+  }
+}
+
+/**
+ * Validates that photo files exist and logs any missing ones.
+ * Unlike before, this doesn't remove references - it just reports.
+ */
+export async function validateAndFixPetPhotos(): Promise<{ fixed: number; pets: Pet[] }> {
+  try {
+    // First, migrate to relative paths if needed
+    await migratePhotoPathsToRelative();
+
+    const pets = await getPets();
+    let missingCount = 0;
+
+    // Just check and log, don't remove references
+    for (const pet of pets) {
+      if (pet.photoUri && !pet.photoAsset) {
+        const exists = await photoExists(pet.photoUri);
+        if (!exists) {
+          const fullUri = getPhotoFullUri(pet.photoUri);
+          console.log(`[PhotoValidation] Pet "${pet.name}" photo not found at: ${fullUri}`);
+          missingCount++;
+        }
+      }
+    }
+
+    if (missingCount > 0) {
+      console.log(`[PhotoValidation] ${missingCount} pet photo(s) not found - they may have been lost during app update`);
+    }
+
+    return { fixed: 0, pets };
   } catch (error) {
     console.error('[PhotoValidation] Error validating pet photos:', error);
     return { fixed: 0, pets: [] };
@@ -98,6 +172,21 @@ export async function validateAndFixPetPhotos(): Promise<{ fixed: number; pets: 
 export async function validateProfilePhoto(photoUri: string | undefined): Promise<boolean> {
   if (!photoUri) return true; // No photo is valid
   return photoExists(photoUri);
+}
+
+/**
+ * Migrates profile photo path to relative format.
+ */
+export async function migrateProfilePhotoPath(photoUri: string | undefined): Promise<string | undefined> {
+  if (!photoUri) return undefined;
+
+  // If it's already relative (no slashes), return as is
+  if (!photoUri.includes('/')) {
+    return photoUri;
+  }
+
+  // Extract filename from full path
+  return getPhotoRelativePath(photoUri);
 }
 
 // Pet operations
@@ -146,9 +235,9 @@ export async function deletePet(petId: string): Promise<void> {
     const pets = await getPets();
     const pet = pets.find(p => p.id === petId);
 
-    // Delete associated photo
+    // Delete associated photo (handles both relative and full paths)
     if (pet?.photoUri) {
-      await FileSystem.deleteAsync(pet.photoUri, { idempotent: true });
+      await deletePhoto(pet.photoUri);
     }
 
     // Delete pet
@@ -238,24 +327,36 @@ export async function deleteCareItem(itemId: string): Promise<void> {
 }
 
 // Photo operations
+/**
+ * Saves a photo to the photos directory and returns the RELATIVE path (filename only).
+ * This ensures photos survive app updates where iOS changes the sandbox path.
+ *
+ * @returns Just the filename (e.g., "abc123.jpg"), NOT the full path
+ */
 export async function savePhoto(uri: string): Promise<string> {
   try {
     await ensurePhotosDir();
     const filename = `${generateId()}.jpg`;
     const newUri = `${PHOTOS_DIR}${filename}`;
     await FileSystem.copyAsync({ from: uri, to: newUri });
-    return newUri;
+    // Return only the filename, not the full path
+    return filename;
   } catch (error) {
-    
     throw error;
   }
 }
 
+/**
+ * Deletes a photo. Accepts either a relative path (filename) or full URI.
+ */
 export async function deletePhoto(uri: string): Promise<void> {
   try {
-    await FileSystem.deleteAsync(uri, { idempotent: true });
+    const fullUri = getPhotoFullUri(uri);
+    if (fullUri) {
+      await FileSystem.deleteAsync(fullUri, { idempotent: true });
+    }
   } catch (error) {
-    
+    // Silent fail
   }
 }
 
