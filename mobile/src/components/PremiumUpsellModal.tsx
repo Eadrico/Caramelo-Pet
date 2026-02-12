@@ -39,6 +39,7 @@ import {
 } from 'lucide-react-native';
 import { useColors } from '@/components/design-system';
 import { usePremiumStore } from '@/lib/premium-store';
+import { useTranslation } from '@/lib/i18n';
 
 // 'general' is for settings - no limit message
 export type UpsellContext = 'pets' | 'care' | 'reminders' | 'general';
@@ -58,6 +59,7 @@ export function PremiumUpsellModal({
   context,
 }: PremiumUpsellModalProps) {
   const c = useColors();
+  const { t } = useTranslation();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
   const insets = useSafeAreaInsets();
