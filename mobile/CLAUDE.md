@@ -93,6 +93,32 @@
   For image analysis: actually send to LLM don't mock.
 </data>
 
+<photo_storage>
+  CRITICAL: iOS changes the app's sandbox path (UUID) on every update. NEVER store full file paths.
+
+  <correct_approach>
+    1. Save photos: Use savePhoto(uri) — returns ONLY filename (e.g., "abc123.jpg")
+    2. Store filename: Save returned filename to AsyncStorage, NEVER full path
+    3. Read photos: Use getPhotoFullUri(filename) to construct full URI at runtime
+    4. Display photos: Use getPetImageSource(pet) which handles assets + URIs automatically
+  </correct_approach>
+
+  <wrong_approach>
+    ❌ Storing full paths like `file:///var/mobile/.../photos/abc123.jpg` in database
+    ❌ Using pet.photoUri directly in Image source
+    ❌ Not using getPhotoFullUri() when displaying stored photos
+  </wrong_approach>
+
+  <helpers>
+    - savePhoto(uri) — Copies photo, returns filename only
+    - getPhotoFullUri(filename) — Converts filename to full URI
+    - getPetImageSource(pet) — Returns correct source (asset or URI)
+    - migratePhotoPathsToRelative() — Auto-migration on startup
+  </helpers>
+
+  This architecture ensures photos survive iOS app updates where sandbox paths change.
+</photo_storage>
+
 <design>
   Don't hold back. This is mobile — design for touch, thumb zones, glanceability.
   Inspiration: iOS, Instagram, Airbnb, Coinbase, polished habit trackers.

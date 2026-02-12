@@ -182,7 +182,9 @@ src/
 │       └── OnboardingReview.tsx  # Step 5
 └── lib/
     ├── types.ts          # TypeScript types (Pet, CareItem, Reminder, etc.)
-    ├── storage.ts        # AsyncStorage persistence + notifications
+    ├── storage.ts        # AsyncStorage persistence + photo management + notifications
+    ├── pet-images.ts     # Pet image utilities (asset/URI handling with relative path support)
+    ├── pet-migration.ts  # Photo path migration logic
     ├── store.ts          # Zustand state management
     ├── settings-store.ts # Settings/preferences + onboarding state
     ├── premium-store.ts  # Premium status, purchases, and coupon redemption
@@ -194,6 +196,30 @@ src/
         ├── translations.ts   # All translations (en, pt, es, fr, zh)
         └── LanguageContext.tsx # Language provider and hooks
 ```
+
+## Photo Storage Architecture
+
+The app implements a **robust photo persistence system** designed to survive iOS app updates:
+
+### Problem
+iOS changes the app's sandbox path (UUID) when an app is updated via the App Store. Storing full file paths (e.g., `file:///var/mobile/.../photos/abc123.jpg`) in the database causes photos to disappear after updates because the path becomes invalid.
+
+### Solution
+1. **Relative Path Storage**: Only filenames (e.g., `abc123.jpg`) are saved to AsyncStorage, never full paths
+2. **Dynamic Path Construction**: Full URIs are constructed at runtime using `FileSystem.documentDirectory + filename`
+3. **Automatic Migration**: On app startup, old absolute paths are automatically migrated to relative paths
+4. **Centralized Helpers**:
+   - `savePhoto()`: Saves photo to disk, returns only filename
+   - `getPhotoFullUri()`: Converts filename to full URI at runtime
+   - `getPetImageSource()`: Returns correct image source (asset or URI) with automatic path resolution
+
+### Implementation
+- **Storage Layer**: `src/lib/storage.ts` handles all photo operations
+- **Image Utils**: `src/lib/pet-images.ts` provides image source resolution
+- **Migration**: `migratePhotoPathsToRelative()` runs on app startup via `_layout.tsx`
+- **Settings Store**: Profile photos also use relative paths via `migrateProfilePhotoPath()`
+
+This ensures user photos persist across app updates, reinstalls, and iOS sandbox changes.
 
 ## Data Model
 

@@ -24,6 +24,7 @@ import {
 import { CareItem, Pet, formatRelativeDate, CareType } from '@/lib/types';
 import { useColors } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';
+import { getPetImageSource } from '@/lib/pet-images';
 
 interface CareItemRowProps {
   item: CareItem;
@@ -229,9 +230,9 @@ export function CareItemRow({ item, pet, onPress, onDelete }: CareItemRowProps) 
                     backgroundColor: c.accentLight,
                   }}
                 >
-                  {pet.photoUri ? (
+                  {getPetImageSource(pet) ? (
                     <Image
-                      source={{ uri: pet.photoUri }}
+                      source={getPetImageSource(pet)!}
                       style={{ width: '100%', height: '100%' }}
                       resizeMode="cover"
                     />

@@ -15,6 +15,7 @@ import { BlurView } from 'expo-blur';
 import { Reminder, Pet, formatRelativeDate, getRepeatLabel } from '@/lib/types';
 import { useColors } from '@/components/design-system';
 import { useTranslation } from '@/lib/i18n';
+import { getPetImageSource } from '@/lib/pet-images';
 
 interface ReminderRowProps {
   reminder: Reminder;
@@ -201,9 +202,9 @@ export function ReminderRow({ reminder, pet, onPress, onDelete }: ReminderRowPro
                     backgroundColor: c.accentLight,
                   }}
                 >
-                  {pet.photoUri ? (
+                  {getPetImageSource(pet) ? (
                     <Image
-                      source={{ uri: pet.photoUri }}
+                      source={getPetImageSource(pet)!}
                       style={{ width: '100%', height: '100%' }}
                       resizeMode="cover"
                     />
