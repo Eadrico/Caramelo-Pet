@@ -12,6 +12,7 @@ import { useStore } from '@/lib/store';
 import { LanguageProvider } from '@/lib/i18n';
 import { Asset } from 'expo-asset';
 import { migratePetsToAssets } from '@/lib/pet-migration';
+import { validateAndFixPetPhotos } from '@/lib/storage';
 
 import '../../global.css';
 
@@ -72,6 +73,13 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
 
     // Run migration to update pets with photoAsset
     migratePetsToAssets();
+
+    // Validate pet photos exist (fixes bug where photos disappear after app updates)
+    validateAndFixPetPhotos().then(({ fixed }) => {
+      if (fixed > 0) {
+        console.log(`[AppInit] Fixed ${fixed} pet(s) with missing photos after app update`);
+      }
+    });
 
     // Preload all UI images for instant display
     Asset.loadAsync([

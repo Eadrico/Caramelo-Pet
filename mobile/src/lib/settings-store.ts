@@ -1,6 +1,7 @@
 // Settings store for user preferences
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { validateProfilePhoto } from './storage';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
 export type LanguageMode = 'system' | 'en' | 'pt' | 'es';
@@ -67,8 +68,19 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       ]);
 
       const settings = settingsData ? JSON.parse(settingsData) : defaultSettings;
-      const profile = profileData ? JSON.parse(profileData) : defaultProfile;
+      let profile = profileData ? JSON.parse(profileData) : defaultProfile;
       const hasCompletedOnboarding = onboardingData === 'true';
+
+      // Validate profile photo exists (fixes bug where photos disappear after app updates)
+      if (profile.photoUri) {
+        const photoValid = await validateProfilePhoto(profile.photoUri);
+        if (!photoValid) {
+          console.log('[ProfileValidation] Profile photo not found, clearing reference');
+          profile = { ...profile, photoUri: undefined };
+          // Save the fixed profile
+          await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+        }
+      }
 
       set({
         theme: settings.theme ?? 'system',

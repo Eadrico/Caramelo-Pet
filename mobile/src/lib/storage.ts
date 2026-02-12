@@ -9,6 +9,7 @@ const CARE_ITEMS_KEY = 'caramelo_care_items';
 const REMINDERS_KEY = 'caramelo_reminders';
 const UPCOMING_CARE_DAYS_KEY = 'caramelo_upcoming_care_days';
 const PHOTOS_DIR = `${FileSystem.documentDirectory}photos/`;
+const PHOTO_VALIDATION_KEY = 'caramelo_last_photo_validation';
 
 // Settings operations
 export async function getUpcomingCareDays(): Promise<number | null> {
@@ -34,6 +35,69 @@ async function ensurePhotosDir(): Promise<void> {
   if (!dirInfo.exists) {
     await FileSystem.makeDirectoryAsync(PHOTOS_DIR, { intermediates: true });
   }
+}
+
+// Check if a photo file exists at the given URI
+export async function photoExists(uri: string | undefined): Promise<boolean> {
+  if (!uri) return false;
+  try {
+    const info = await FileSystem.getInfoAsync(uri);
+    return info.exists;
+  } catch (error) {
+    console.log('[PhotoValidation] Error checking photo:', uri, error);
+    return false;
+  }
+}
+
+// Validate and fix pet photos - removes invalid photoUri references
+// This fixes the bug where photos disappear after App Store updates
+// because iOS may change the app's sandbox path
+export async function validateAndFixPetPhotos(): Promise<{ fixed: number; pets: Pet[] }> {
+  try {
+    const pets = await getPets();
+    let fixedCount = 0;
+    let hasChanges = false;
+
+    const validatedPets = await Promise.all(
+      pets.map(async (pet) => {
+        // Skip if pet uses photoAsset (bundled assets always exist)
+        if (pet.photoAsset) {
+          return pet;
+        }
+
+        // Check if photoUri file exists
+        if (pet.photoUri) {
+          const exists = await photoExists(pet.photoUri);
+          if (!exists) {
+            console.log(`[PhotoValidation] Pet "${pet.name}" photo not found at: ${pet.photoUri}`);
+            fixedCount++;
+            hasChanges = true;
+            // Remove invalid photoUri reference
+            return { ...pet, photoUri: undefined };
+          }
+        }
+
+        return pet;
+      })
+    );
+
+    // Save if any changes were made
+    if (hasChanges) {
+      await AsyncStorage.setItem(PETS_KEY, JSON.stringify(validatedPets));
+      console.log(`[PhotoValidation] Fixed ${fixedCount} pet(s) with missing photos`);
+    }
+
+    return { fixed: fixedCount, pets: validatedPets };
+  } catch (error) {
+    console.error('[PhotoValidation] Error validating pet photos:', error);
+    return { fixed: 0, pets: [] };
+  }
+}
+
+// Validate user profile photo
+export async function validateProfilePhoto(photoUri: string | undefined): Promise<boolean> {
+  if (!photoUri) return true; // No photo is valid
+  return photoExists(photoUri);
 }
 
 // Pet operations

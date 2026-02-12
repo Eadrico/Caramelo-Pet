@@ -19,6 +19,10 @@ const PET_ASSETS: Record<string, ImageSourcePropType> = {
  * Gets the appropriate image source for a pet photo.
  * Prioritizes local bundled assets for instant loading.
  * Falls back to URI-based images (file system or remote).
+ *
+ * Note: For photoUri, this function returns the source even if the file
+ * may not exist (e.g., after an app update). The validateAndFixPetPhotos()
+ * function in storage.ts handles cleanup of invalid URIs on app startup.
  */
 export function getPetImageSource(pet: Pet): ImageSourcePropType | null {
   // Priority 1: Local bundled asset (instant loading, no network/file I/O)
@@ -37,6 +41,8 @@ export function getPetImageSource(pet: Pet): ImageSourcePropType | null {
 
 /**
  * Checks if a pet has any photo (asset or URI)
+ * Note: This only checks if a reference exists, not if the file is valid.
+ * Invalid URIs are cleaned up by validateAndFixPetPhotos() on app startup.
  */
 export function hasPetPhoto(pet: Pet): boolean {
   return !!(pet.photoAsset || pet.photoUri);
