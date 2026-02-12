@@ -17,7 +17,7 @@ import * as Haptics from 'expo-haptics';
 import { Calendar, Trash2, CalendarPlus } from 'lucide-react-native';
 import { Reminder } from '@/lib/types';
 import { useStore } from '@/lib/store';
-import { useTranslation } from '@/lib/i18n';
+import { useLanguage } from '@/lib/i18n';
 import { useColors } from '@/components/design-system';
 import { PetChip } from '@/components/PetChip';
 import { calendarService } from '@/lib/calendarService';
@@ -38,7 +38,7 @@ export function AddReminderSheet({
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
-  const { t } = useTranslation();
+  const { t, getLocale } = useLanguage();
 
   const pets = useStore((s) => s.pets);
   const addReminder = useStore((s) => s.addReminder);
@@ -650,6 +650,7 @@ export function AddReminderSheet({
                 mode="date"
                 display="spinner"
                 onChange={handleDateChange}
+                locale={getLocale()}
                 style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
@@ -662,6 +663,7 @@ export function AddReminderSheet({
               mode="date"
               display="default"
               onChange={handleDateChange}
+              locale={getLocale()}
             />
           )
         )}
@@ -720,6 +722,7 @@ export function AddReminderSheet({
                 mode="time"
                 display="spinner"
                 onChange={handleTimeChange}
+                locale={getLocale()}
                 style={{ height: 200, alignSelf: 'center' }}
               />
             </View>
@@ -732,6 +735,7 @@ export function AddReminderSheet({
               mode="time"
               display="default"
               onChange={handleTimeChange}
+              locale={getLocale()}
             />
           )
         )}

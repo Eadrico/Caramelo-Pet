@@ -292,14 +292,7 @@ export const usePremiumStore = create<PremiumState>((set, get) => ({
 
   canAddCareItem: (currentCareCount: number) => {
     const { isPremium } = get();
-    const canAdd = isPremium || currentCareCount < FREE_CARE_LIMIT;
-    console.log('[PremiumStore] canAddCareItem check:', {
-      currentCareCount,
-      FREE_CARE_LIMIT,
-      isPremium,
-      canAdd,
-    });
-    return canAdd;
+    return isPremium || currentCareCount < FREE_CARE_LIMIT;
   },
 
   canAddReminder: (currentReminderCount: number) => {

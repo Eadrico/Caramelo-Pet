@@ -98,6 +98,7 @@ interface LanguageContextType {
   supportedLanguages: SupportedLanguage[];
   getLanguageName: (lang: SupportedLanguage) => string;
   getLanguageFlag: (lang: SupportedLanguage) => string;
+  getLocale: () => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
@@ -176,6 +177,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     return languageFlags[lang] || '🌐';
   }, []);
 
+  // Get BCP 47 locale string for date pickers and other native components
+  const getLocale = useCallback((): string => {
+    switch (effectiveLanguage) {
+      case 'pt':
+        return 'pt-BR';
+      case 'es':
+        return 'es-ES';
+      case 'en':
+      default:
+        return 'en-US';
+    }
+  }, [effectiveLanguage]);
+
   const value = useMemo(() => ({
     language,
     effectiveLanguage,
@@ -184,7 +198,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     supportedLanguages,
     getLanguageName,
     getLanguageFlag,
-  }), [language, effectiveLanguage, setLanguage, t, getLanguageName, getLanguageFlag]);
+    getLocale,
+  }), [language, effectiveLanguage, setLanguage, t, getLanguageName, getLanguageFlag, getLocale]);
 
   return (
     <LanguageContext.Provider value={value}>

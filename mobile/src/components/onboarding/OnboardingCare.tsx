@@ -27,7 +27,7 @@ import {
 } from 'lucide-react-native';
 import { useStore } from '@/lib/store';
 import { CareType, formatDate, getCareTypeLabel } from '@/lib/types';
-import { useTranslation } from '@/lib/i18n';
+import { useLanguage } from '@/lib/i18n';
 import {
   GlassCard,
   PrimaryButton,
@@ -58,7 +58,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
-  const { t } = useTranslation();
+  const { t, getLocale } = useLanguage();
   const insets = useSafeAreaInsets();
 
   // Get translated care type config
@@ -499,6 +499,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
               display="spinner"
               onChange={handleDateChange}
               minimumDate={new Date()}
+              locale={getLocale()}
               style={{ height: 200, alignSelf: 'center' }}
             />
           </View>
@@ -512,6 +513,7 @@ export function OnboardingCare({ onNext, onBack }: OnboardingCareProps) {
           display="default"
           onChange={handleDateChange}
           minimumDate={new Date()}
+          locale={getLocale()}
         />
       )}
     </View>

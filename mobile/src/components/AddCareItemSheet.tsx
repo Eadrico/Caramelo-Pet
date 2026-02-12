@@ -30,7 +30,7 @@ import {
 } from 'lucide-react-native';
 import { CareItem, CareType, formatDate } from '@/lib/types';
 import { useStore } from '@/lib/store';
-import { useTranslation } from '@/lib/i18n';
+import { useLanguage } from '@/lib/i18n';
 import { useColors } from '@/components/design-system';
 import { PetChip } from '@/components/PetChip';
 import { calendarService } from '@/lib/calendarService';
@@ -51,7 +51,7 @@ export function AddCareItemSheet({
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
-  const { t } = useTranslation();
+  const { t, getLocale } = useLanguage();
 
   const careTypeConfig: {
     type: CareType;
@@ -884,6 +884,7 @@ export function AddCareItemSheet({
                 mode="date"
                 display="inline"
                 onChange={handleDateChange}
+                locale={getLocale()}
                 style={{ height: 320, alignSelf: 'center' }}
               />
             </View>
@@ -896,6 +897,7 @@ export function AddCareItemSheet({
               mode="date"
               display="default"
               onChange={handleDateChange}
+              locale={getLocale()}
             />
           )
         )}
@@ -937,6 +939,7 @@ export function AddCareItemSheet({
                   mode="time"
                   display="spinner"
                   onChange={handleTimeChange}
+                  locale={getLocale()}
                   style={{ height: 200, alignSelf: 'center' }}
                 />
               </View>
@@ -950,6 +953,7 @@ export function AddCareItemSheet({
               mode="time"
               display="default"
               onChange={handleTimeChange}
+              locale={getLocale()}
             />
           )
         )}

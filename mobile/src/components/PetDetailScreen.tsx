@@ -52,7 +52,7 @@ import {
   useColors,
   SectionHeader,
 } from '@/components/design-system';
-import { useTranslation } from '@/lib/i18n';
+import { useLanguage } from '@/lib/i18n';
 import { AddCareItemSheet } from '@/components/AddCareItemSheet';
 
 interface PetDetailScreenProps {
@@ -64,7 +64,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
   const c = useColors();
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
-  const { t } = useTranslation();
+  const { t, getLocale } = useLanguage();
 
   const pets = useStore((s) => s.pets);
   const careItems = useStore((s) => s.careItems);
@@ -1173,6 +1173,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 value={newReminder.dateTime}
                 mode="date"
                 display="spinner"
+                locale={getLocale()}
                 onChange={(event, date) => {
                   setShowDatePicker(false);
                   if (date) {
@@ -1196,6 +1197,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 value={newReminder.dateTime}
                 mode="time"
                 display="spinner"
+                locale={getLocale()}
                 onChange={(event, date) => {
                   setShowTimePicker(false);
                   if (date) {
@@ -1283,6 +1285,7 @@ export function PetDetailScreen({ petId, onBack }: PetDetailScreenProps) {
                 value={editedPet.birthdate ? new Date(editedPet.birthdate) : new Date()}
                 mode="date"
                 display="spinner"
+                locale={getLocale()}
                 onChange={(event, date) => {
                   if (date) {
                     setEditedPet((prev) => ({ ...prev, birthdate: date.toISOString() }));
@@ -1327,7 +1330,7 @@ function InfoRow({
   isDark,
   isLast = false,
 }: InfoRowProps) {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   return (
     <View
